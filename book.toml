@@ -1,0 +1,8 @@
+[book]
+title = "The Xous Operating System"
+author = "Sean \"xobs\" Cross and Andrew \"bunnie\" Huang, with Contributions from the Betrusted Community"
+
+[output.html]
+# additional-css = ["ferris.css", "theme/2018-edition.css"]
+# additional-js = ["ferris.js"]
+git-repository-url = "https://github.com/betrusted-io/xous-book"
