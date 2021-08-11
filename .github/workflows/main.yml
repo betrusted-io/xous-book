@@ -27,7 +27,7 @@ jobs:
     - name: Run tests
       run: mdbook test
   lint:
-    name: Run lints
+    name: Build, run lints, and deploy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
