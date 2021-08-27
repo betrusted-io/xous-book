@@ -29,7 +29,7 @@ When you allocate memory using `MapMemory(None, None, ..., ...)`, you will be ha
 
 Pages that are mapped-but-unallocated are visible in a process' page table view. As an example, consider the following excerpt from a page table view:
 
-```
+```text
     38 60026000 -> 400a3000 (flags: VALID | R | W | USER | A | D)
     41 60029000 -> 40108000 (flags: VALID | R | W | A | D)
     42 6002a000 -> 40109000 (flags: VALID | R | W | A | D)
