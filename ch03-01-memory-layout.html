@@ -186,7 +186,7 @@
 <h3><a class="header" href="#demand-paging" id="demand-paging">Demand Paging</a></h3>
 <p>When you allocate memory using <code>MapMemory(None, None, ..., ...)</code>, you will be handed memory from the <code>DEFAULT_BASE</code>. This memory will not be backed by a real page, and will only be allocated by the kernel once you access the page. This allows threads to allocate large stacks without running out of memory immediately.</p>
 <p>Pages that are mapped-but-unallocated are visible in a process' page table view. As an example, consider the following excerpt from a page table view:</p>
-<pre><code>    38 60026000 -&gt; 400a3000 (flags: VALID | R | W | USER | A | D)
+<pre><code class="language-text">    38 60026000 -&gt; 400a3000 (flags: VALID | R | W | USER | A | D)
     41 60029000 -&gt; 40108000 (flags: VALID | R | W | A | D)
     42 6002a000 -&gt; 40109000 (flags: VALID | R | W | A | D)
     43 6002b000 -&gt; 00000000 (flags: R | W)
