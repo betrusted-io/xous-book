@@ -14,3 +14,4 @@
 
 - [Server Architecture](ch02-00-server-architecture.md)
 - [Introducing the Kernel](ch03-00-introducing-the-kernel.md)
+    - [Memory Layout](ch03-01-memory-layout.md)
