@@ -240,13 +240,13 @@ Finally we define the `CONTROL` register. Our implementation simply has an `ENAB
 
 To use the new peripheral, save it in a `.cs` file, then include it in Renode. For example, if it was called `examplerngserver.cs`, you would include it in Renode by running:
 
-```
+```text
 (renode) i @examplerngserver.cs
 ```
 
 You can then use the `Miscellaneous.ExampleRNGServer` peripheral in any platform definition. For example, to create a new peripheral at offset `0x40048000` in the current machine, use the `LoadPlatformDescriptionFromString` command:
 
-```
+```text
 (renode) machine LoadPlatformDescriptionFromString 'rng: Miscellaneous.ExampleRNGServer @ sysbus 0x40048000'
 ```
 
