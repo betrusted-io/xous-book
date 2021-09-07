@@ -346,10 +346,10 @@ private bool enabled = true;
 <p>Finally we define the <code>CONTROL</code> register. Our implementation simply has an <code>ENABLE</code> bit at offset 4. This is the first time we've seen a <code>writeCallback</code>. This closure takes two arguments: the register itself and the written value. </p>
 <h2><a class="header" href="#using-the-new-peripheral" id="using-the-new-peripheral">Using the new peripheral</a></h2>
 <p>To use the new peripheral, save it in a <code>.cs</code> file, then include it in Renode. For example, if it was called <code>examplerngserver.cs</code>, you would include it in Renode by running:</p>
-<pre><code>(renode) i @examplerngserver.cs
+<pre><code class="language-text">(renode) i @examplerngserver.cs
 </code></pre>
 <p>You can then use the <code>Miscellaneous.ExampleRNGServer</code> peripheral in any platform definition. For example, to create a new peripheral at offset <code>0x40048000</code> in the current machine, use the <code>LoadPlatformDescriptionFromString</code> command:</p>
-<pre><code>(renode) machine LoadPlatformDescriptionFromString 'rng: Miscellaneous.ExampleRNGServer @ sysbus 0x40048000'
+<pre><code class="language-text">(renode) machine LoadPlatformDescriptionFromString 'rng: Miscellaneous.ExampleRNGServer @ sysbus 0x40048000'
 </code></pre>
 <p>Now, any accesses to <code>0x40048000</code> will be directed to your new peripheral.</p>
 
