@@ -3,9 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>The Xous Operating System</title>
-        
-        <meta name="robots" content="noindex" />
+        <title>Writing C# Peripherals - The Xous Operating System</title>
         
         
 
@@ -97,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">The Xous Operating System</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Foreword</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-renode.html"><strong aria-hidden="true">1.3.</strong> Hello, Renode!</a></li><li class="chapter-item expanded "><a href="ch01-04-hello-hardware.html"><strong aria-hidden="true">1.4.</strong> Hello, Hardware!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-platform-definition.html"><strong aria-hidden="true">4.1.</strong> Platform Definition</a></li><li class="chapter-item expanded "><a href="ch04-02-renode-startup-script.html"><strong aria-hidden="true">4.2.</strong> Renode Startup Script</a></li><li class="chapter-item expanded "><a href="ch04-03-python-extensions.html"><strong aria-hidden="true">4.3.</strong> Python Extensions</a></li><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.4.</strong> Writing C# Peripherals</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">The Xous Operating System</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Foreword</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-renode.html"><strong aria-hidden="true">1.3.</strong> Hello, Renode!</a></li><li class="chapter-item expanded "><a href="ch01-04-hello-hardware.html"><strong aria-hidden="true">1.4.</strong> Hello, Hardware!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-platform-definition.html"><strong aria-hidden="true">4.1.</strong> Platform Definition</a></li><li class="chapter-item expanded "><a href="ch04-02-renode-startup-script.html"><strong aria-hidden="true">4.2.</strong> Renode Startup Script</a></li><li class="chapter-item expanded "><a href="ch04-03-python-extensions.html"><strong aria-hidden="true">4.3.</strong> Python Extensions</a></li><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html" class="active"><strong aria-hidden="true">4.4.</strong> Writing C# Peripherals</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -169,78 +167,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#the-xous-operating-system" id="the-xous-operating-system">The Xous Operating System</a></h1>
-<p><em>by Sean &quot;xobs&quot; Cross and Andrew &quot;bunnie&quot; Huang, with contributions from the Rust Community</em></p>
-<p>This version of the text assumes you’re using Rust 1.54 with the Xous library
-installed.</p>
-<h1><a class="header" href="#foreword" id="foreword">Foreword</a></h1>
-<h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<h1><a class="header" href="#getting-started" id="getting-started">Getting Started</a></h1>
-<h1><a class="header" href="#installation" id="installation">Installation</a></h1>
-<h1><a class="header" href="#hello-world" id="hello-world">Hello, World!</a></h1>
-<h1><a class="header" href="#hello-renode" id="hello-renode">Hello, Renode!</a></h1>
-<h1><a class="header" href="#hello-hardware" id="hello-hardware">Hello, Hardware!</a></h1>
-<h1><a class="header" href="#server-architecture" id="server-architecture">Server Architecture</a></h1>
-<h1><a class="header" href="#introducing-the-kernel" id="introducing-the-kernel">Introducing the Kernel</a></h1>
-<h1><a class="header" href="#memory-management-in-xous" id="memory-management-in-xous">Memory Management in Xous</a></h1>
-<p>Memory is allocated with the <code>MapMemory</code> syscall. This call accepts four arguments:</p>
-<ul>
-<li>physical: <code>Option&lt;NonZeroUsize&gt;</code>: The physical address you would like to allocate. Specify <code>None</code> if you don't need a particular address.</li>
-<li>virtual: <code>Option&lt;NonZeroUsize&gt;</code>: The virtual address you would like to allocate. Specify <code>None</code> if you don't need a particular virtual address.</li>
-<li>size: <code>NonZeroUsize</code>: The size of the region to allocate. This must be page-aligned.</li>
-<li>flags: <code>MemoryFlags</code>: A list of platform-specific flags to apply to this region.</li>
-</ul>
-<p>The memory will return a <code>MemoryRange</code> that encompasses the given region.</p>
-<p>You can free memory with <code>UnmapMemory</code>, though be very careful not to free memory that is currently in use. <code>UnmapMemory</code> simply takes the <code>MemoryRange</code> returned by <code>MapMemory</code>.</p>
-<h2><a class="header" href="#physical-addresses" id="physical-addresses">Physical Addresses</a></h2>
-<p>A program rarely needs to access physical addresses, and in most operating systems it's not the kind of thing you can actually <em>do</em>. However, Xous is designed to be embedded, so it's entirely legal to request a physical address.</p>
-<p>The trick is that you can only request physical addresses that actually exist. For example, you cannot request a physical address for a mirrored region of a peripheral because that is not a valid address.</p>
-<p><strong>If you request a physical address from main RAM, the memory will be zeroed when you receive it</strong>. Peripherals and ares that are not in main RAM will not be zeroed. It is for this reason that system services are recommended to claim all peripherals before running user programs.</p>
-<h2><a class="header" href="#virtual-addresses" id="virtual-addresses">Virtual Addresses</a></h2>
-<p>All Xous programs run with virtual memory enabled. Attempting to perform an illegal operation will result in an exception. If you have an exception handler installed, illegal memory accesses will run this exception handler which may fixup the exception.</p>
-<h3><a class="header" href="#demand-paging" id="demand-paging">Demand Paging</a></h3>
-<p>When you allocate memory using <code>MapMemory(None, None, ..., ...)</code>, you will be handed memory from the <code>DEFAULT_BASE</code>. This memory will not be backed by a real page, and will only be allocated by the kernel once you access the page. This allows threads to allocate large stacks without running out of memory immediately.</p>
-<p>Pages that are mapped-but-unallocated are visible in a process' page table view. As an example, consider the following excerpt from a page table view:</p>
-<pre><code class="language-text">    38 60026000 -&gt; 400a3000 (flags: VALID | R | W | USER | A | D)
-    41 60029000 -&gt; 40108000 (flags: VALID | R | W | A | D)
-    42 6002a000 -&gt; 40109000 (flags: VALID | R | W | A | D)
-    43 6002b000 -&gt; 00000000 (flags: R | W)
-    44 6002c000 -&gt; 00000000 (flags: R | W)
-</code></pre>
-<p>Addresses 0x60026000 (#38), 0x60029000 (#41), and 0x6002a000 (#42) are all allocated. The rest of the pages are valid-but-unallocated.</p>
-<p>Address 0x60026000 (#38) is mapped to the process and has a valid physical address. Reads and writes to this page are backed by physical address 0x400a3000.</p>
-<p>Addresses 0x60029000 (#41) and 0x6002a000 (#42) are still owned by the kernel, likely because they were being cleared.</p>
-<p>Addresses 0x6002b000 (#43) and 0x6003c000 (#44) are on-demand allocated. They have no physical backing, and attempting to access them will result in a kernel fault where they will be allocated. When the page is allocated, it will be given the flags <code>R | W</code> in addition to default kernel flags.</p>
-<h3><a class="header" href="#the-heap" id="the-heap">The Heap</a></h3>
-<p>When we talk about &quot;The Heap&quot; we mean data that is managed by functions such as <code>malloc</code>. Xous has a pair of syscalls that behave vaguely like the Unix <code>brk</code> command.</p>
-<p><code>IncreaseHeap(usize, MemoryFlags)</code> will increase a program's heap by the given amount. This returns the new heap as a <code>MemoryRange</code>.</p>
-<p>To decrease the heap by a given amount, call <code>DecreaseHeap(usize)</code>.</p>
-<p>Note that you must adjust the heap in units of <code>PAGE_SIZE</code>.</p>
-<p>You can avoid using these syscalls by manually allocating regions using <code>MapMemory</code>, however they are a convenient abstraction with their own memory range.</p>
-<p><code>liballoc</code> as bundled by Xous uses these syscalls as a backing for memory.</p>
-<h3><a class="header" href="#virtual-memory-regions" id="virtual-memory-regions">Virtual Memory Regions</a></h3>
-<p>There are different memory regions in virtual address space:</p>
-<table><thead><tr><th>Address</th><th>Name</th><th>Variable</th><th>Description</th></tr></thead><tbody>
-<tr><td>0x00010000</td><td>text</td><td>-</td><td>Start of <code>.text</code> with the default riscv linker script (<code>riscv64-unknown-elf-ld -verbose</code>)</td></tr>
-<tr><td>0x20000000</td><td>heap</td><td>DEFAULT_HEAP_BASE</td><td>Start of the heap section returned by <code>IncreaseHeap</code></td></tr>
-<tr><td>0x40000000</td><td>message</td><td>DEFAULT_MESSAGE_BASE</td><td>Base address where <code>MemoryMessage</code> messages are mapped inside of a server</td></tr>
-<tr><td>0x60000000</td><td>default</td><td>DEFAULT_BASE</td><td>Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here</td></tr>
-<tr><td>0x7fffffff</td><td>stack</td><td>-</td><td>The default stack for the first thread - grows downwards</td></tr>
-<tr><td>0xff000000</td><td>kernel</td><td>USER_AREA_END</td><td>The end of user area and the start of kernel area</td></tr>
-<tr><td>0xff400000</td><td>pgtable</td><td>PAGE_TABLE_OFFSET</td><td>A process' page table is located at this offset, accessible only to the kernel</td></tr>
-<tr><td>0xff800000</td><td>pgroot</td><td>PAGE_TABLE_ROOT_OFFSET</td><td>The root page table is located at this offset, accessible only to the kernel</td></tr>
-</tbody></table>
-<p>In addition, there are special addresses that indicate the end of a function. The kernel will set these as the return address for various situations, and they are documented here for completeness:</p>
-<table><thead><tr><th>Address</th><th>Name</th><th>Variable</th><th>Description</th></tr></thead><tbody>
-<tr><td>0xff802000</td><td>retisr</td><td>RETURN_FROM_ISR</td><td>Indicates the return from an interrupt service routine</td></tr>
-<tr><td>0xff803000</td><td>exitthr</td><td>EXIT_THREAD</td><td>Indicates a thread should exit</td></tr>
-<tr><td>0xff804000</td><td>retex</td><td>RETURN_FROM_EXCEPTION_HANDLER</td><td>Indicates the return from an exception handler</td></tr>
-</tbody></table>
-<h1><a class="header" href="#renode-emulation" id="renode-emulation">Renode Emulation</a></h1>
-<p><a href="https://renode.io/">Renode</a> is a multi-device emulator written in C#. It is designed to assist in testing and development of software, and is also useful in developing new hardware blocks.</p>
-<p>The emulator is available for Windows, Mac, and Linux. It is designed to simulate whole systems of devices, meaning it can easily capture the interactions between devices on a network or bus. It allows you to pause the system and inspect memory, single-step, and watch various sections of the bus.</p>
-<p>There is extensive end-user documentation available at <a href="https://renode.readthedocs.io/en/latest/">readthedocs</a>, which is highly recommended. The remainder of this chapter will cover recommendations on how to use Renode with Xous.</p>
-<h1><a class="header" href="#writing-renode-c-peripherals" id="writing-renode-c-peripherals">Writing Renode C# Peripherals</a></h1>
+                        <h1><a class="header" href="#writing-renode-c-peripherals" id="writing-renode-c-peripherals">Writing Renode C# Peripherals</a></h1>
 <p>Renode is written in C#, which means it has access to the entire base of C#. One feature of C# is the <code>CSharpCodeProvider</code> object which provides the <code>CompileAssemblyFromSource(CompilerParameters, string[])</code> function. This means that Renode has a runtime C# compiler built in.</p>
 <p>You can <code>include</code> C# files in the Renode console or in your startup script to dynamically add new peripherals to your environment. Xous uses this extensively in Betrusted since the hardware peripherals are still under development and therefore change regularly. Updating a hardware module in Renode simply involves modifying the <code>.cs</code> file and restarting Renode. There is no additional compile step.</p>
 <h2><a class="header" href="#setting-up-an-ide----visual-studio-code" id="setting-up-an-ide----visual-studio-code">Setting up an IDE -- Visual Studio Code</a></h2>
@@ -431,6 +358,10 @@ private bool enabled = true;
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="ch04-03-python-extensions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
                         
 
@@ -440,6 +371,10 @@ private bool enabled = true;
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="ch04-03-python-extensions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
                 
 
                 
@@ -474,14 +409,6 @@ private bool enabled = true;
         <!-- Custom JS scripts -->
         
 
-        
-        
-        <script type="text/javascript">
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
-        
         
 
     </body>
