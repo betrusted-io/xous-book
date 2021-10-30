@@ -4,7 +4,7 @@
 
 This repository contains the source of "The Xous Operating System" book.
 
-(*Inert Link to Book Here*)
+The book is available online at https://betrusted.io/xous-book/
 
 ## Requirements
 
