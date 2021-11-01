@@ -539,10 +539,42 @@ The format for this tag consists of a single word defining how many additional s
 <li>There is an Argument structure located somewhere in memory and register <code>$a0</code> points to it</li>
 <li>The system has 16 MB of RAM and it is located at address <code>0x40000000</code></li>
 </ol>
-<p>Point #2 is flexible, and the loader has the ability to read the memory configuration out of the Argument structure. The decision to hardcode the memory offset and location was made in order to facilitate signature checking.</p>
-<p>The disk image has its signature checked prior to starting the main loader sequence. The loader runs in two stages. The first stage is resposible for determining how much memory is required for each initial process as well as the kernel, and loading them into memory. The second stage sets up the platform-specific page tables.</p>
-<h2><a class="header" href="#loader-signature-checking" id="loader-signature-checking">Loader Signature Checking</a></h2>
-<p>((TBD))</p>
+<p>Point #2 is flexible, and the loader has the ability to read the memory configuration out of the Argument structure, if one can accept trusting these parameters before the Argument structure is checked. However, in the current implementation, these values are hard-coded into the loader binary so that they are derived from an already verified, trusted location (see Loader Signature Checking below for why this is the case).</p>
+<p>After passing the signature check, the loader runs the main loader sequence. The loader runs in two stages. The first stage is resposible for determining how much memory is required for each initial process as well as the kernel, and loading them into memory. The second stage sets up the platform-specific page tables.</p>
+<h2><a class="header" href="#signature-checking-the-kernel" id="signature-checking-the-kernel">Signature Checking the Kernel</a></h2>
+<p>We do not discuss precisely how we come to trust the loader itself: this responsibility falls onto a bootloader that is assumed to be burned into the ROM of the SoC running Xous. Please refer to <a href="https://github.com/betrusted-io/betrusted-wiki/wiki/How-Does-Precursor-Get-to-the-Reset-Vector%3F">this page</a> for an example of one implementation for getting to the reset vector. It turns out in Precursor that the process to check the loader is identical to that of checking the kernel.</p>
+<p>Loader conditions #1 and #2, as outlined above, are set up by the bootloader. The following context is helpful to appreciate why we hard-code the RAM address and offset instead of reading it out of the loader Arguments:</p>
+<ul>
+<li>The Arguments to the loader describe the location and size of Kernel objects, in addition to encoding the amount and location of RAM</li>
+<li>The loader and its Arguments are located in FLASH, so that it may be updated</li>
+<li>It is expensive and hard to update the loader's digital signature recorded in the SoC, as it is often burned to a bank of OTP fuses</li>
+<li>We assume that Kernel updates are routine, but loader updates are infrequent</li>
+</ul>
+<p>Because the Arguments are tightly coupled to the Kernel image, we cannot check them at the same time that the loader binary. Therefore, we must treat the Arguments as untrusted at the entry point of the loader, and ask the loader to verify the Arguments. However, the loader needs to know its location and extent of RAM to run any Argument checking. Thus this presents a circular dependency: how are we to know where our memory is, when the structure that describes our memory is designed to be changed frequently? The method chosen to break this circular dependency is to hard-code the location and amount of RAM in the loader binary itself, thus allowing the Arguments that describe the kernel to be malleable with a signature check stored in FLASH.</p>
+<p>Signatures for both the loader and the kernel share a common structure. They consist of two sections: the detached signature, and the signed data itself. The detached signature has the following format in memory:</p>
+<table><thead><tr><th>Offset</th><th>Size</th><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>0</td><td>4</td><td>Version</td><td>Version number of the signature record. Currently <code>1</code></td></tr>
+<tr><td>4</td><td>4</td><td>Length</td><td>Length of the signed region (should be exactly +4 over the Length field in the signed region)</td></tr>
+<tr><td>8</td><td>64</td><td>Signature</td><td>64-byte Ed25519 signature of the signed region</td></tr>
+<tr><td>12</td><td>pad</td><td>Padding</td><td>0-pad up to 4096 bytes</td></tr>
+</tbody></table>
+<p>The signed region has the following format:</p>
+<table><thead><tr><th>Offset</th><th>Size</th><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>0</td><td>len(payload)</td><td>Payload</td><td>The signed payload (loader or kernel)</td></tr>
+<tr><td>len(payload)</td><td>4</td><td>Version</td><td>A repeat of the version number of the signature record</td></tr>
+<tr><td>len(payload)+4</td><td>4</td><td>Length</td><td>len(payload) + 4 = length of all the data up to this point</td></tr>
+</tbody></table>
+<p>Exactly every byte in the signed region, including the Version and Length, are signed. By including the Version and Length field in the signed region, we can mitigate downgrade and length extension attacks.</p>
+<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/ed25519-dalek">Dalek Cryptography Ed25519</a> crate.</p>
+<p>The public key used to check the signature can come from one of three sources:</p>
+<ol>
+<li>A self-generated key. This is the &quot;most trusted&quot; source. Ultimately, every device should self-sign its code.</li>
+<li>A third-party key. We do not handle the thorny issue of who provides the third party key, or how we come about to trust it.</li>
+<li>A developer key. This is a &quot;well known&quot; key which anyone can use to sign an image.</li>
+</ol>
+<p>The loader will attempt to verify the kernel image, in sequence, with each of the three keys. If it fails to find any image that matches, it prints an error message to the display and powers the system down after a short delay.</p>
+<p>If the image is signed with anything but the self-generated key, a visible marker (a set of fine dashed lines over the status bar) is turned on, so that users are aware that there could be a potential trust issue with the boot images. This can be rectified by re-computing a self-signature on the images, and rebooting.</p>
+<p>Upon the conclusion of the signature check, the loader also does a quick check of the stack usage, to ensure that nothing ran out of bounds. This is important because the Kernel assumes that no memory pages are modified across a suspend/resume, except for the (currently) two pages of RAM allocated to the loader's stack.</p>
 <h2><a class="header" href="#reading-initial-configuration" id="reading-initial-configuration">Reading Initial Configuration</a></h2>
 <p>The loader needs to know basic information about the Arguments structure before it can begin. This includes information about the memory layout, extra memory regions, kernel offset, and the number of initial programs.</p>
 <p>The loader performs one pass through the Arguments structure to ensure that it contains the required fields before continuing.</p>
