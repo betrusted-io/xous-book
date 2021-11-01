@@ -29,3 +29,4 @@
     - [MiniELF Format](ch05-03-minielf.md)
 
 - [Build System](ch06-00-build-system-overview.md)
+    - [Image Creation](ch06-02-create-image.md)
