@@ -13,6 +13,7 @@
     - [Hello, Hardware!](ch01-04-hello-hardware.md)
 
 - [Server Architecture](ch02-00-server-architecture.md)
+
 - [Introducing the Kernel](ch03-00-introducing-the-kernel.md)
     - [Memory Layout](ch03-01-memory-layout.md)
 
@@ -21,3 +22,10 @@
     - [Renode Startup Script](ch04-02-renode-startup-script.md)
     - [Python Extensions](ch04-03-python-extensions.md)
     - [Writing C# Peripherals](ch04-04-writing-cs-peripherals.md)
+
+- [System Startup](ch05-00-system-startup.md)
+    - [Arguments Structure](ch05-01-arguments.md)
+    - [Xous Loader](ch05-02-loader.md)
+    - [MiniELF Format](ch05-03-minielf.md)
+
+- [Build System](ch06-00-build-system-overview.md)
