@@ -1,0 +1,296 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Xous Loader - The Xous Operating System</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">The Xous Operating System</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Foreword</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-renode.html"><strong aria-hidden="true">1.3.</strong> Hello, Renode!</a></li><li class="chapter-item expanded "><a href="ch01-04-hello-hardware.html"><strong aria-hidden="true">1.4.</strong> Hello, Hardware!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-platform-definition.html"><strong aria-hidden="true">4.1.</strong> Platform Definition</a></li><li class="chapter-item expanded "><a href="ch04-02-renode-startup-script.html"><strong aria-hidden="true">4.2.</strong> Renode Startup Script</a></li><li class="chapter-item expanded "><a href="ch04-03-python-extensions.html"><strong aria-hidden="true">4.3.</strong> Python Extensions</a></li><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.4.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html" class="active"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Xous Operating System</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#xous-loader" id="xous-loader">Xous Loader</a></h1>
+<p>The Xous loader is located in the <a href="https://github.com/betrusted-io/xous/tree/main/loader">loader/</a> directory. This program runs in Machine mode, and makes the following assumptions:</p>
+<ol>
+<li>There is an Argument structure located somewhere in memory and register <code>$a0</code> points to it</li>
+<li>The system has 16 MB of RAM and it is located at address <code>0x40000000</code></li>
+</ol>
+<p>Point #2 is flexible, and the loader has the ability to read the memory configuration out of the Argument structure. The decision to hardcode the memory offset and location was made in order to facilitate signature checking.</p>
+<p>The disk image has its signature checked prior to starting the main loader sequence. The loader runs in two stages. The first stage is resposible for determining how much memory is required for each initial process as well as the kernel, and loading them into memory. The second stage sets up the platform-specific page tables.</p>
+<h2><a class="header" href="#loader-signature-checking" id="loader-signature-checking">Loader Signature Checking</a></h2>
+<p>((TBD))</p>
+<h2><a class="header" href="#reading-initial-configuration" id="reading-initial-configuration">Reading Initial Configuration</a></h2>
+<p>The loader needs to know basic information about the Arguments structure before it can begin. This includes information about the memory layout, extra memory regions, kernel offset, and the number of initial programs.</p>
+<p>The loader performs one pass through the Arguments structure to ensure that it contains the required fields before continuing.</p>
+<h2><a class="header" href="#loader-stage-1-accounting" id="loader-stage-1-accounting">Loader Stage 1: Accounting</a></h2>
+<p>The first stage goes through the Arguments structure and does initial accounting. This involves multiple passes over the arguments structure.</p>
+<h3><a class="header" href="#runtime-page-tracker" id="runtime-page-tracker">Runtime Page Tracker</a></h3>
+<p>The first pass sets up the <em>Runtime Page Tracker</em>. Each valid page in the system can be assigned to exactly one process. Memory that does not have an entry in the <em>Runtime Page Tracker</em> cannot be allocated, preventing us from allowing aliased memory.</p>
+<p>Each page in main memory as well as each page in memory-mapped IO will get one byte of data in the <em>Runtime Page Tracker</em>. This byte indicates the process ID that the memory is assigned to. Process ID <code>0</code> is invalid, and indicates the page is free.</p>
+<p>Whenever a page is allocated in the loader, it is marked in this region as belonging to the kernel -- i.e. PID 1. This region is passed to the kernel which will continue to use it to keep track of page allocations.</p>
+<p>This memory is zeroed out and will be filled in later.</p>
+<h3><a class="header" href="#process-allocation" id="process-allocation">Process Allocation</a></h3>
+<p>The loader allocates a set of initial processes, and it must pass this list of processes to the kernel. Fundamentally a process is just three things:</p>
+<ol>
+<li>A memory space</li>
+<li>An entrypoint</li>
+<li>A stack</li>
+</ol>
+<p>As such, the loader needs to allocate a table with these three pieces of information that is large enough to fit all of the initial processes. Therefore, it allocates a slice of memory that contains an <code>InitialProcess</code> struct that is big enough to cover all of the initial processes.</p>
+<p>This structure is zeroed out, and will be filled in later.</p>
+<h3><a class="header" href="#argument-copying" id="argument-copying">Argument Copying</a></h3>
+<p>The Arguments structure may be in RAM, but it may be located in some other area that will become inaccessible when the system is running. If configured, the Arguments structure is copied into RAM.</p>
+<h3><a class="header" href="#process-copying" id="process-copying">Process Copying</a></h3>
+<p>Each process, plus the kernel, is then copied into RAM.</p>
+<p>This is complex due to how memory data is laid out. For example, some sections are labeld NOCOPY, and indicate data such as <code>.bss</code> where there is no actual data to copy, it must simply be zeroed out.</p>
+<h3><a class="header" href="#setting-page-ownership" id="setting-page-ownership">Setting page ownership</a></h3>
+<p>Mark all loader pages as being owned by <code>PID 1</code>. This ensures they cannot be reallocated later on.</p>
+<h2><a class="header" href="#loader-stage-2-setting-page-tables" id="loader-stage-2-setting-page-tables">Loader Stage 2: Setting Page Tables</a></h2>
+<p>Now that memory has been copied, the second stage is responsible for parsing the loader file and setting up the system-specific page tables.</p>
+<p>The loader walks the Arguments structure again and loops through each initial process as well as the kernel. For each process, it allocates the root page table, sets up the various memory sections with their requested permissions, allocates a stack, and marks all memory as loaded by the correct process.</p>
+<p>After this is done, the loader maps all of the loader-specific sections into the kernel's memory space. In particular, the following are all mapped directly:</p>
+<ul>
+<li>Arguments structure</li>
+<li>Initial process list</li>
+<li>Runtime page tracker</li>
+</ul>
+<h2><a class="header" href="#jumping-to-the-kernel" id="jumping-to-the-kernel">Jumping to the Kernel</a></h2>
+<p>The loader runs in Machine mode, which means the MMU is disabled. As soon as the loader jumps to the kernel, the CPU enters Supervisor mode with the MMU enabled and never again returns to Machine mode.</p>
+<p>The loader stashes these settings in a structure called <code>backup_args</code>. This structure is currently placed at the end of loader stack, however in the future it may be allocated alongside structures such as the runtime page tracker.</p>
+<p>Execution continues in <code>start_kernel</code>, which is located in <code>asm.S</code>.</p>
+<p>In order to allow interrupts and exceptions to be handled by the kernel, the loader sets <code>mideleg</code> to <code>0xffffffff</code> in order to delegate all interrupts to Supervisor mode, and it sets <code>medeleg</code> to <code>0xffffffff</code> in order to delegate all CPU exceptions to the kernel.</p>
+<p>The loader then does the handover by setting <code>mepc</code> and issuing a <code>reti</code> Return from Interrupt opcode.</p>
+<h2><a class="header" href="#resuming-from-suspend" id="resuming-from-suspend">Resuming from Suspend</a></h2>
+<p>The operating system supports resuming from a cold poweroff. In order to get into this state, a program in the operating system wrote some values into RAM, then issued a command to power of the CPU in the middle of an interrupt handler.</p>
+<p>A system is considered to be suspended when RAM contains a valid group of murmur3-signed hashes located at the 3rd page from the end of memory. If these hashes match, then the system is considered to be in suspend.</p>
+<p>The loader then skips all remaining setup, beacuse setup was previously performed and the system is in a live state. Indeed, if the loader tried to set up the data section of proceses again, it would overwrite any volatile data in RAM.</p>
+<p>In order to resume, the loader triggers a <code>STATE_RESUME</code> interrupt. This interrupt is not handled yet, since interrupts are not enabled. Instead, this interrupt will stay triggered until the kernel unmasks them, at which point the kernel will resume execution in the <code>susres</code> server and process the resume.</p>
+<p>It then calls the kernel with arguments similar to a full boot. It reads values from the <em>backup_args</em> array located at the bottom of stack.</p>
+<p>There is one change, however. Instead of beginning inside the kernel <em>main</em> function, the kernel begins executing immediately at the previous process. This causes the kernel to skip its initialization, and the kernel will resume where it left off once the preemption timer resumes.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="ch05-01-arguments.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="ch05-03-minielf.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="ch05-01-arguments.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="ch05-03-minielf.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
