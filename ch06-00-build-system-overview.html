@@ -171,15 +171,20 @@
 <p>The Xous build system uses the <code>xtask</code> concept to perform complex tasks without needing an external build system.</p>
 <p>The <code>xtask</code> concept is simply an alias under <code>.cargo/config</code> that turns <code>cargo xtask</code> into <code>cargo run --package xtask --</code>.</p>
 <p>Therefore, all complex operations from building the kernel to constructing an output image are handled by <code>xtask/src/main.rs</code>, which is compiled and run as a normal Rust program.</p>
-<h2><a class="header" href="#step-0-build-the-build-system" id="step-0-build-the-build-system">Step 0: Build the Build System</a></h2>
+<h2><a class="header" href="#building-images" id="building-images">Building Images</a></h2>
+<p>Generally, users will want to use <code>cargo xtask app-image [app 1] [app ..]</code> to build a Xous image that contains the desired list of applications. The applications are the names of crates contained in the &quot;apps/&quot; directory.</p>
+<p>There are also convenience commands to build emulation images, such as <code>cargo xtask run</code> (for hosted mode, where Xous runs directly on your native OS) and <code>cargo xtask renode-image</code> (for a Renode image, where a cycle accurate simulation can be run inside the Renode emulator). See Chapter 4 for more information about Renode.</p>
+<h2><a class="header" href="#the-internal-flow-of-the-build-system" id="the-internal-flow-of-the-build-system">The Internal Flow of the Build System</a></h2>
+<p>For those curious as to what the builder does on the inside, here is the general flow of most build operations.</p>
+<h3><a class="header" href="#step-0-build-the-build-system" id="step-0-build-the-build-system">Step 0: Build the Build System</a></h3>
 <p>When you type <code>cargo xtask</code>, the build system will compile <code>xtask/src/main.rs</code>. This happens automatically.</p>
-<h2><a class="header" href="#step-1-build-the-kernel" id="step-1-build-the-kernel">Step 1: Build the Kernel</a></h2>
+<h3><a class="header" href="#step-1-build-the-kernel" id="step-1-build-the-kernel">Step 1: Build the Kernel</a></h3>
 <p>The build system runs <code>cargo build --package kernel --release --target riscv32imac-unknown-xous-elf</code> in the <code>kernel/</code> directory.</p>
-<h2><a class="header" href="#step-2-build-the-initial-programs" id="step-2-build-the-initial-programs">Step 2: Build the Initial Programs</a></h2>
+<h3><a class="header" href="#step-2-build-the-initial-programs" id="step-2-build-the-initial-programs">Step 2: Build the Initial Programs</a></h3>
 <p>The build system runs <code>cargo build --target riscv32imac-unknown-xous-elf</code> with every initial program appended as a <code>--package</code> argument.</p>
-<h2><a class="header" href="#step-3-build-the-loader" id="step-3-build-the-loader">Step 3: Build the Loader</a></h2>
+<h3><a class="header" href="#step-3-build-the-loader" id="step-3-build-the-loader">Step 3: Build the Loader</a></h3>
 <p>The build system runs <code>cargo build --target riscv32imac-unknown-xous-elf --package loader</code> in the <code>loader/</code> directory.</p>
-<h2><a class="header" href="#step-4-package-it-all-up" id="step-4-package-it-all-up">Step 4: Package it all Up</a></h2>
+<h3><a class="header" href="#step-4-package-it-all-up" id="step-4-package-it-all-up">Step 4: Package it all Up</a></h3>
 <p>The build system runs <code>cargo run --package tools --bin create-image --</code> followed by arguments to create the mage.</p>
 
                     </main>
