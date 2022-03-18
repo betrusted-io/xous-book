@@ -168,7 +168,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#messages-and-message-passing" id="messages-and-message-passing">Messages and Message Passing</a></h1>
-<p>Messages form the basis of interproces communication on Xous. A process exists in isolation and can only communicate to the outside world by sending messages. The limited API provided by the kernel means that almost all interactions are provided by userspace Servers, which must be communicated with using Messages.</p>
+<p>Messages form the basis of interprocess communication on Xous. A process exists in isolation and can only communicate to the outside world by sending messages. The limited API provided by the kernel means that almost all interactions are provided by userspace Servers, which must be communicated with using Messages.</p>
 <h2><a class="header" href="#connecting-to-and-disconnecting-from-servers" id="connecting-to-and-disconnecting-from-servers">Connecting to and Disconnecting from Servers</a></h2>
 <p>To connect to a server you must supply it an <code>Server ID</code>. A <code>Server ID</code> is a 16-byte value of some sort that is shared in a universal namespace. If you know a Server's <code>Server ID</code> then you can connect to that Server.</p>
 <p>There are a few well-known <code>Server ID</code>s. These include bare minimum IDs that are required by any process to do anything useful. They are:</p>
