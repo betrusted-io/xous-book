@@ -1,6 +1,6 @@
 # Messages and Message Passing
 
-Messages form the basis of interproces communication on Xous. A process exists in isolation and can only communicate to the outside world by sending messages. The limited API provided by the kernel means that almost all interactions are provided by userspace Servers, which must be communicated with using Messages.
+Messages form the basis of interprocess communication on Xous. A process exists in isolation and can only communicate to the outside world by sending messages. The limited API provided by the kernel means that almost all interactions are provided by userspace Servers, which must be communicated with using Messages.
 
 ## Connecting to and Disconnecting from Servers
 
