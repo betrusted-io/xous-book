@@ -60,6 +60,6 @@ The memory message types allow for one `usize` worth of tag data which can be us
 
 Furthermore, messages may also contain two advisory fields: `offset` and `valid`. These fields may be used to define an offset with the memory block where interesting data occurs. Similarly, the `valid` field could be used to define how large the data is.
 
-When memory is passed via `MutableBorrow` then the memory is mapped into the Server's address space as writable. Addtionally, the `offset` and `valid` fields become writable and may be updated in the server. As an example, if a Server implemented `bzero()` to clear a memory range to zero, then it might clear the contents of the buffer, then set both `offset` and `valid` to 0.
+When memory is passed via `MutableBorrow` then the memory is mapped into the Server's address space as writable. Additionally, the `offset` and `valid` fields become writable and may be updated in the server. As an example, if a Server implemented `bzero()` to clear a memory range to zero, then it might clear the contents of the buffer, then set both `offset` and `valid` to 0.
 
 Internally, the `MutableBorrow` is updated by passing the new fields to `ReturnMemory()` where it gets updated in the client.
