@@ -34,4 +34,4 @@ The build system runs `cargo build --target riscv32imac-unknown-xous-elf --packa
 
 ### Step 4: Package it all Up
 
-The build system runs `cargo run --package tools --bin create-image --` followed by arguments to create the mage.
+The build system runs `cargo run --package tools --bin create-image --` followed by arguments to create the image.
