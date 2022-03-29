@@ -21,7 +21,7 @@ The trick is that you can only request physical addresses that actually exist. F
 
 ## Virtual Addresses
 
-All Xous programs run with virtual memory enabled. Attempting to perform an illegal operation will result in an exception. If you have an exception handler installed, illegal memory accesses will run this exception handler which may fixup the exception.
+All Xous programs run with virtual memory enabled. Attempting to perform an illegal operation will result in an exception. If you have an exception handler installed, illegal memory accesses will run this exception handler which may fix up the exception.
 
 ### Demand Paging
 

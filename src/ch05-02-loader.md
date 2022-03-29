@@ -7,7 +7,7 @@ The Xous loader is located in the [loader/](https://github.com/betrusted-io/xous
 
 Point #2 is flexible, and the loader has the ability to read the memory configuration out of the Argument structure, if one can accept trusting these parameters before the Argument structure is checked. However, in the current implementation, these values are hard-coded into the loader binary so that they are derived from an already verified, trusted location (see Loader Signature Checking below for why this is the case).
 
-After passing the signature check, the loader runs the main loader sequence. The loader runs in two stages. The first stage is resposible for determining how much memory is required for each initial process as well as the kernel, and loading them into memory. The second stage sets up the platform-specific page tables.
+After passing the signature check, the loader runs the main loader sequence. The loader runs in two stages. The first stage is responsible for determining how much memory is required for each initial process as well as the kernel, and loading them into memory. The second stage sets up the platform-specific page tables.
 
 ## Signature Checking the Kernel
 
@@ -131,7 +131,7 @@ The operating system supports resuming from a cold poweroff. In order to get int
 
 A system is considered to be suspended when RAM contains a valid group of murmur3-signed hashes located at the 3rd page from the end of memory. If these hashes match, then the system is considered to be in suspend.
 
-The loader then skips all remaining setup, beacuse setup was previously performed and the system is in a live state. Indeed, if the loader tried to set up the data section of proceses again, it would overwrite any volatile data in RAM.
+The loader then skips all remaining setup, because setup was previously performed and the system is in a live state. Indeed, if the loader tried to set up the data section of processes again, it would overwrite any volatile data in RAM.
 
 In order to resume, the loader triggers a `STATE_RESUME` interrupt. This interrupt is not handled yet, since interrupts are not enabled. Instead, this interrupt will stay triggered until the kernel unmasks them, at which point the kernel will resume execution in the `susres` server and process the resume.
 
