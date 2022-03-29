@@ -182,7 +182,7 @@
 <p>The trick is that you can only request physical addresses that actually exist. For example, you cannot request a physical address for a mirrored region of a peripheral because that is not a valid address.</p>
 <p><strong>If you request a physical address from main RAM, the memory will be zeroed when you receive it</strong>. Peripherals and ares that are not in main RAM will not be zeroed. It is for this reason that system services are recommended to claim all peripherals before running user programs.</p>
 <h2><a class="header" href="#virtual-addresses" id="virtual-addresses">Virtual Addresses</a></h2>
-<p>All Xous programs run with virtual memory enabled. Attempting to perform an illegal operation will result in an exception. If you have an exception handler installed, illegal memory accesses will run this exception handler which may fixup the exception.</p>
+<p>All Xous programs run with virtual memory enabled. Attempting to perform an illegal operation will result in an exception. If you have an exception handler installed, illegal memory accesses will run this exception handler which may fix up the exception.</p>
 <h3><a class="header" href="#demand-paging" id="demand-paging">Demand Paging</a></h3>
 <p>When you allocate memory using <code>MapMemory(None, None, ..., ...)</code>, you will be handed memory from the <code>DEFAULT_BASE</code>. This memory will not be backed by a real page, and will only be allocated by the kernel once you access the page. This allows threads to allocate large stacks without running out of memory immediately.</p>
 <p>Pages that are mapped-but-unallocated are visible in a process' page table view. As an example, consider the following excerpt from a page table view:</p>
