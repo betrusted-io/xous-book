@@ -32,3 +32,6 @@
     - [Image Creation](ch06-02-create-image.md)
 
 - [Messages](ch07-00-messages.md)
+
+- [Graphics Toolkit](ch08-00-graphics.md)
+    - [Modals](ch08-01-modals.md)
