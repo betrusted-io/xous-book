@@ -62,3 +62,114 @@ modals.finish_progress().expect("couldn't dismiss progress bar");
 ```
 
 ## Text entry
+One can request text entry using the `get_text()` method. This takes the following parameters:
+
+- `prompt`: A `&str` that is the prompt to the user
+- `validator`: An `Option<fn(TextEntryPayload, u32) -> Option<ValidatorErr>>`. This is an optional function that takes the text entry payload, along with a dispatch opcode. The dispatch opcode allows a single validator function to be re-used across multiple invocations of `get_text()`.
+- `validator_op`: An `Option<u32>`. When `Some()`, the argument inside is passed to the validator to indicate which type of text is being validated.
+
+The idea behind the `validator_op` is that you could create an `Enum` type that specifies the type of text you're entering, and you would pass the `u32` version of that `Enum` to the `get_text()` call so that a single `validator` function can be used to check multiple types of text entry.
+
+```Rust
+// you can also use the num_derive crate to have bi-directional transformation of the enum
+enum ValidatorOp {
+    Int2 = 0,
+    Int = 1,
+}
+//
+fn my_code() {
+    // ... insert code to create modals object, etc.
+    match modals.get_text("Input an integer greater than 2", Some(test_validator), Some(ValidatorOp::Int2 as u32)) {
+        Ok(text) => {
+            log::info!("Input: {}", text.0);
+        }
+        _ => {
+            log::error!("get_text failed");
+        }
+    }
+    match modals.get_text("Input any integer", Some(test_validator), Some(ValidatorOp::Int2 as u32)) {
+        Ok(text) => {
+            log::info!("Input: {}", text.0);
+        }
+        _ => {
+            log::error!("get_text failed");
+        }
+    }
+}
+
+fn test_validator(input: TextEntryPayload, opcode: u32) -> Option<xous_ipc::String::<256>> {
+    let text_str = input.as_str();
+    match text_str.parse::<u32>() {
+        Ok(input_int) =>
+        if opcode == ValidatorOp::Int2 as u32 {
+            if input_int <= 2 {
+                return Some(xous_ipc::String::<256>::from_str("input must be larger than 2"))
+            } else {
+                return None
+            }
+        } else if opcode == ValidatorOp::Int as u32 {
+            return None
+        } else {
+            panic!("unknown discriminant");
+        }
+        _ => return Some(xous_ipc::String::<256>::from_str("enter an integer value"))
+    }
+}
+```
+
+## Radio Box
+A radio box is a mechanism to force a user to pick exactly one item from a list of options.
+
+One can construct a radio box by first repeatedly calling `add_list_item()` with a `&str`
+description of the items to select, and then calling `get_radiobutton()` with a `&str` of
+the prompt. The returned value will be the `&str` description of the selected item.
+
+Note that upon completion of the radio box, the list of items is automatically cleared
+in preparation for another invocation of `modals`.
+
+```Rust
+const RADIO_TEST: [&'static str; 4] = [
+    "zebra",
+    "cow",
+    "horse",
+    "cat",
+];
+
+for item in RADIO_TEST {
+    modals.add_list_item(item).expect("couldn't build radio item list");
+}
+match modals.get_radiobutton("Pick an animal") {
+    Ok(animal) => log::info!("{} was picked", animal),
+    _ => log::error!("get_radiobutton failed"),
+}
+```
+
+## Check Box
+A check box is a mechanism to present a user with a list of several options, of which
+they can select none, some, or all of them.
+
+The usage is nearly identical to the Radio Box above, except that the return value
+is a `Vec::<String>`. The `Vec` will be empty if no elements are selected.
+
+```Rust
+const CHECKBOX_TEST: [&'static str; 5] = [
+    "happy",
+    "😃",
+    "安",
+    "peaceful",
+    "...something else!",
+];
+
+for item in CHECKBOX_TEST {
+    modals.add_list_item(item).expect("couldn't build checkbox list");
+}
+match modals.get_checkbox("You can have it all:") {
+    Ok(things) => {
+        log::info!("The user picked {} things:", things.len());
+        for thing in things {
+            log::info!("{}", thing);
+        }
+    },
+    _ => log::error!("get_checkbox failed"),
+}
+```
