@@ -61,6 +61,26 @@ for i in (start..end).step_by(2) {
 modals.finish_progress().expect("couldn't dismiss progress bar");
 ```
 
+
+## Dynamic Notifications
+Dynamic notifications are notifications which don't have an option for the user
+to close them; instead, the calling program controls when the dialog can
+be closed, and can also dynamically update the message. This is useful for
+displaying, for example, multi-phase progress updates without stopping and
+waiting for a user to hit "OK".
+
+The API is similar to that of the Progress Bar, in that there are start, update,
+and close phases:
+
+- To pop up the dynamic notification, use the `dynamic_notification(title: Option<&str>, text: Option<&str>)`
+method. The both `title` and `text` are optional, but at least one is recommended, otherwise
+you get an empty notification.
+- Updates to the notification are done using `dynamic_notification_update(title: Option<&str>, text: Option<&str>)`.
+Arguments that are `None` do not update, and show the same text as before.
+- Once you are finished showing the set of notifications, you must close the
+dialog with `dynamic_notification_close()`.
+
+
 ## Text entry
 One can request text entry using the `get_text()` method. This takes the following parameters:
 
