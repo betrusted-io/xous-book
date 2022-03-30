@@ -217,7 +217,124 @@ for i in (start..end).step_by(2) {
 }
 modals.finish_progress().expect(&quot;couldn't dismiss progress bar&quot;);
 </code></pre>
+<h2><a class="header" href="#dynamic-notifications" id="dynamic-notifications">Dynamic Notifications</a></h2>
+<p>Dynamic notifications are notifications which don't have an option for the user
+to close them; instead, the calling program controls when the dialog can
+be closed, and can also dynamically update the message. This is useful for
+displaying, for example, multi-phase progress updates without stopping and
+waiting for a user to hit &quot;OK&quot;.</p>
+<p>The API is similar to that of the Progress Bar, in that there are start, update,
+and close phases:</p>
+<ul>
+<li>To pop up the dynamic notification, use the <code>dynamic_notification(title: Option&lt;&amp;str&gt;, text: Option&lt;&amp;str&gt;)</code>
+method. The both <code>title</code> and <code>text</code> are optional, but at least one is recommended, otherwise
+you get an empty notification.</li>
+<li>Updates to the notification are done using <code>dynamic_notification_update(title: Option&lt;&amp;str&gt;, text: Option&lt;&amp;str&gt;)</code>.
+Arguments that are <code>None</code> do not update, and show the same text as before.</li>
+<li>Once you are finished showing the set of notifications, you must close the
+dialog with <code>dynamic_notification_close()</code>.</li>
+</ul>
 <h2><a class="header" href="#text-entry" id="text-entry">Text entry</a></h2>
+<p>One can request text entry using the <code>get_text()</code> method. This takes the following parameters:</p>
+<ul>
+<li><code>prompt</code>: A <code>&amp;str</code> that is the prompt to the user</li>
+<li><code>validator</code>: An <code>Option&lt;fn(TextEntryPayload, u32) -&gt; Option&lt;ValidatorErr&gt;&gt;</code>. This is an optional function that takes the text entry payload, along with a dispatch opcode. The dispatch opcode allows a single validator function to be re-used across multiple invocations of <code>get_text()</code>.</li>
+<li><code>validator_op</code>: An <code>Option&lt;u32&gt;</code>. When <code>Some()</code>, the argument inside is passed to the validator to indicate which type of text is being validated.</li>
+</ul>
+<p>The idea behind the <code>validator_op</code> is that you could create an <code>Enum</code> type that specifies the type of text you're entering, and you would pass the <code>u32</code> version of that <code>Enum</code> to the <code>get_text()</code> call so that a single <code>validator</code> function can be used to check multiple types of text entry.</p>
+<pre><code class="language-Rust">// you can also use the num_derive crate to have bi-directional transformation of the enum
+enum ValidatorOp {
+    Int2 = 0,
+    Int = 1,
+}
+//
+fn my_code() {
+    // ... insert code to create modals object, etc.
+    match modals.get_text(&quot;Input an integer greater than 2&quot;, Some(test_validator), Some(ValidatorOp::Int2 as u32)) {
+        Ok(text) =&gt; {
+            log::info!(&quot;Input: {}&quot;, text.0);
+        }
+        _ =&gt; {
+            log::error!(&quot;get_text failed&quot;);
+        }
+    }
+    match modals.get_text(&quot;Input any integer&quot;, Some(test_validator), Some(ValidatorOp::Int2 as u32)) {
+        Ok(text) =&gt; {
+            log::info!(&quot;Input: {}&quot;, text.0);
+        }
+        _ =&gt; {
+            log::error!(&quot;get_text failed&quot;);
+        }
+    }
+}
+
+fn test_validator(input: TextEntryPayload, opcode: u32) -&gt; Option&lt;xous_ipc::String::&lt;256&gt;&gt; {
+    let text_str = input.as_str();
+    match text_str.parse::&lt;u32&gt;() {
+        Ok(input_int) =&gt;
+        if opcode == ValidatorOp::Int2 as u32 {
+            if input_int &lt;= 2 {
+                return Some(xous_ipc::String::&lt;256&gt;::from_str(&quot;input must be larger than 2&quot;))
+            } else {
+                return None
+            }
+        } else if opcode == ValidatorOp::Int as u32 {
+            return None
+        } else {
+            panic!(&quot;unknown discriminant&quot;);
+        }
+        _ =&gt; return Some(xous_ipc::String::&lt;256&gt;::from_str(&quot;enter an integer value&quot;))
+    }
+}
+</code></pre>
+<h2><a class="header" href="#radio-box" id="radio-box">Radio Box</a></h2>
+<p>A radio box is a mechanism to force a user to pick exactly one item from a list of options.</p>
+<p>One can construct a radio box by first repeatedly calling <code>add_list_item()</code> with a <code>&amp;str</code>
+description of the items to select, and then calling <code>get_radiobutton()</code> with a <code>&amp;str</code> of
+the prompt. The returned value will be the <code>&amp;str</code> description of the selected item.</p>
+<p>Note that upon completion of the radio box, the list of items is automatically cleared
+in preparation for another invocation of <code>modals</code>.</p>
+<pre><code class="language-Rust">const RADIO_TEST: [&amp;'static str; 4] = [
+    &quot;zebra&quot;,
+    &quot;cow&quot;,
+    &quot;horse&quot;,
+    &quot;cat&quot;,
+];
+
+for item in RADIO_TEST {
+    modals.add_list_item(item).expect(&quot;couldn't build radio item list&quot;);
+}
+match modals.get_radiobutton(&quot;Pick an animal&quot;) {
+    Ok(animal) =&gt; log::info!(&quot;{} was picked&quot;, animal),
+    _ =&gt; log::error!(&quot;get_radiobutton failed&quot;),
+}
+</code></pre>
+<h2><a class="header" href="#check-box" id="check-box">Check Box</a></h2>
+<p>A check box is a mechanism to present a user with a list of several options, of which
+they can select none, some, or all of them.</p>
+<p>The usage is nearly identical to the Radio Box above, except that the return value
+is a <code>Vec::&lt;String&gt;</code>. The <code>Vec</code> will be empty if no elements are selected.</p>
+<pre><code class="language-Rust">const CHECKBOX_TEST: [&amp;'static str; 5] = [
+    &quot;happy&quot;,
+    &quot;😃&quot;,
+    &quot;安&quot;,
+    &quot;peaceful&quot;,
+    &quot;...something else!&quot;,
+];
+
+for item in CHECKBOX_TEST {
+    modals.add_list_item(item).expect(&quot;couldn't build checkbox list&quot;);
+}
+match modals.get_checkbox(&quot;You can have it all:&quot;) {
+    Ok(things) =&gt; {
+        log::info!(&quot;The user picked {} things:&quot;, things.len());
+        for thing in things {
+            log::info!(&quot;{}&quot;, thing);
+        }
+    },
+    _ =&gt; log::error!(&quot;get_checkbox failed&quot;),
+}
+</code></pre>
 
                     </main>
 
