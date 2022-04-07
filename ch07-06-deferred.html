@@ -177,21 +177,14 @@
 <p>Future versions of Xous may or may not implement a <code>Drop</code> method which automatically returns <code>scalar</code> messages when they go out of scope, this is a topic of active discussion. However, as is the case with all the other idioms, the pattern is different from <code>scalar</code> and <code>memory</code> types, so, regardless, they will be treated with separate examples.</p>
 <h2><a class="header" href="#scalar-pattern" id="scalar-pattern">Scalar Pattern</a></h2>
 <p>This is very close to the thing that's actually implemented for synchronizing all the servers during a suspend/resume event.</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     WaitUntilReady,
     TheBigEvent,
     // ... and other ops
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -204,12 +197,8 @@ impl MyService {
         ).map(|_| ())
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut waiting = Vec::&lt;MessageSender&gt;::new();
@@ -236,13 +225,9 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h2><a class="header" href="#memory-pattern" id="memory-pattern">Memory Pattern</a></h2>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     GetDeferredData,
     Event,
@@ -253,12 +238,8 @@ pub struct DeferredData {
     pub spec: u32,
     pub description: xous_ipc::String::&lt;128&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -275,12 +256,8 @@ impl MyService {
         Ok(String::new(response.description.as_str().unwrap_or(&quot;UTF-8 error&quot;)))
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     // if you are sure there will never be multiple deferred messages, you can just use an
@@ -328,8 +305,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 
                     </main>
 

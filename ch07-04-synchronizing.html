@@ -175,20 +175,13 @@
 <li>Caller blocks until the callee returns</li>
 <li>Callee may return up to 2 <code>u32</code>-sized values</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     LightsSync,
     // ... and other ops
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -217,12 +210,8 @@ impl MyService {
         }
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     loop {
@@ -247,8 +236,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h2><a class="header" href="#memory-pattern" id="memory-pattern">Memory Pattern</a></h2>
 <p>A memory synchronizing call has the following characterisics:</p>
 <ul>
@@ -259,10 +247,7 @@ fn xmain() -&gt; ! {
 <p>This example also shows how to do a memory message without <code>rkyv</code>. This is useful
 for situations that can't have an <code>rkyv</code> dependency, or if you just prefer to do
 things in a low-level fashion.</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
     PushDataRkyv,
@@ -282,12 +267,8 @@ pub struct CompoundData {
 pub struct RawData {
     raw: [u8; 4096],
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -362,12 +343,8 @@ impl MyService {
         }
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut storage = Vec::&lt;CompoundData&gt;::new();
@@ -414,8 +391,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 
                     </main>
 

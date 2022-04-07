@@ -902,25 +902,17 @@ $
 <h2><a class="header" href="#discovered-names" id="discovered-names">Discovered Names</a></h2>
 <p>All other servers have their names registered as a 64-byte free-from <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a crytpographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the &quot;well known&quot; names, because the chance that the TRNG would output the string <code>b&quot;xous-name-server&quot;</code> by chance is vanishingly small.</p>
 <p>When registering a server, one might invoke a call like this:</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>    let xns = xous_names::XousNames::new().unwrap();
+<pre><code class="language-rust noplayground">    let xns = xous_names::XousNames::new().unwrap();
     let net_sid = xns
         .register_name(api::SERVER_NAME_NET, None)
         .expect(&quot;can't register server&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>or this:</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>    let xns = xous_names::XousNames::new().unwrap();
+<pre><code class="language-rust noplayground">    let xns = xous_names::XousNames::new().unwrap();
     let keys_sid = xns
         .register_name(api::SERVER_NAME_KEYS, Some(3))
         .expect(&quot;can't register server&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>Generally, the server name is defined as a string within the <code>api.rs</code> section, so that other crates can refer to it via the API. In the case of the <code>net</code> crate, the maximum connection limit is <code>None</code>, which means that any processes may connect to the <code>net</code> crate. In the case of the <code>root keys</code> crate, the number of connections to it is limited to 3 by the <code>Some(3)</code> argument.</p>
 <p>In this case, the first three processes that attempt to connect to the <code>root keys</code> crate are handed out it's 128-bit server ID. Later processes that attempt to connect will be denied. This is a &quot;trust on first use&quot; model similar to how SSH maps host public keys to IP addresses.</p>
 <p>Generally, sensitive servers like <code>root keys</code> are encapsulated by other processes that act as firewalls to it. So, if there were a hypothetical need to dole out derived keys from the <code>root keys</code> set, a second <code>derived keys</code> server might be created which can accept any number of connections, and one more connection would be added to the <code>root keys</code> connection count for the <code>derived keys</code> server. The <code>derived keys</code> server would thus act as a firewall to the <code>root keys</code> server.</p>
@@ -965,7 +957,7 @@ $
 </ul>
 <p>Note that none of these are mandatory -- for example, a pure client-side library like our AES implementation has only a <code>lib.rs</code>; and, an application that offers no services and has only a main function would have only a <code>main.rs</code>.</p>
 <p>Below is an example of what these files might look like in a very minimal server implementation.</p>
-<pre><code class="language-Rust">// inside lib.rs
+<pre><code class="language-Rust noplayground">// inside lib.rs
 pub mod api;
 pub use api::*;
 use xous::{CID, send_message};
@@ -996,7 +988,7 @@ impl Drop for MyService {
     }
 }
 </code></pre>
-<pre><code class="language-Rust">// inside api.rs
+<pre><code class="language-Rust noplayground">// inside api.rs
 pub(crate) const SERVER_NAME_MYSERVICE: &amp;str     = &quot;_Any descriptive and unique name under 64 chars_&quot;;
 
 #[derive(num_derive::FromPrimitive, num_derive::ToPrimitive, Debug)]
@@ -1008,7 +1000,7 @@ pub(crate) enum Opcode {
     Quit,
 }
 </code></pre>
-<pre><code class="language-Rust">// inside main.rs
+<pre><code class="language-Rust noplayground">// inside main.rs
 #![cfg_attr(target_os = &quot;none&quot;, no_main)]
 
 mod api;
@@ -1065,20 +1057,13 @@ fn xmain() -&gt; ! {
 </ul>
 </li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     Lights,
     // ... and other ops
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1095,12 +1080,8 @@ impl MyService {
         ).map(|_|())
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     loop {
@@ -1121,8 +1102,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h2><a class="header" href="#memory-pattern" id="memory-pattern">Memory Pattern</a></h2>
 <p>A memory non-synchronizing call has the following characterisics:</p>
 <ul>
@@ -1136,10 +1116,7 @@ fn xmain() -&gt; ! {
 </ul>
 </li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
     PushDataRkyv,
@@ -1158,12 +1135,8 @@ pub struct CompoundData {
     pub len: u16,
     pub description: xous_ipc::String::&lt;128&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1190,12 +1163,8 @@ impl MyService {
         buf.send(self.conn, Opcode::PushDataRkyv.to_u32().unwrap()).map(|_| ())
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut storage = Vec::&lt;CompoundData&gt;::new();
@@ -1222,8 +1191,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h1><a class="header" href="#synchronizing" id="synchronizing">Synchronizing</a></h1>
 <h2><a class="header" href="#scalar-pattern-1" id="scalar-pattern-1">Scalar Pattern</a></h2>
 <p>A scalar synchronizing call has the following characterisics:</p>
@@ -1232,20 +1200,13 @@ fn xmain() -&gt; ! {
 <li>Caller blocks until the callee returns</li>
 <li>Callee may return up to 2 <code>u32</code>-sized values</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     LightsSync,
     // ... and other ops
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1274,12 +1235,8 @@ impl MyService {
         }
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     loop {
@@ -1304,8 +1261,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h2><a class="header" href="#memory-pattern-1" id="memory-pattern-1">Memory Pattern</a></h2>
 <p>A memory synchronizing call has the following characterisics:</p>
 <ul>
@@ -1316,10 +1272,7 @@ fn xmain() -&gt; ! {
 <p>This example also shows how to do a memory message without <code>rkyv</code>. This is useful
 for situations that can't have an <code>rkyv</code> dependency, or if you just prefer to do
 things in a low-level fashion.</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
     PushDataRkyv,
@@ -1339,12 +1292,8 @@ pub struct CompoundData {
 pub struct RawData {
     raw: [u8; 4096],
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1419,12 +1368,8 @@ impl MyService {
         }
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut storage = Vec::&lt;CompoundData&gt;::new();
@@ -1471,8 +1416,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h1><a class="header" href="#asynchronous-idioms-or-push-notifications" id="asynchronous-idioms-or-push-notifications">Asynchronous Idioms or &quot;Push Notifications&quot;</a></h1>
 <p>Push notifications are used when we want to be alerted of a truly unpredictable, asynchronous event that can happen at any time.</p>
 <p>One of the main challenges of push notifications is not disclosing your <code>SID</code> to the notifying server. Remember, anyone with your <code>SID</code> can invoke any method on your server, including more sensitive ones.</p>
@@ -1483,10 +1427,7 @@ fn xmain() -&gt; ! {
 <li>An extra &quot;bounce&quot; required for asynchronous notifications</li>
 </ul>
 <p>The example below is taken from the <code>NetManager</code>'s wifi state change subscription service, and trimmed down to the core bits.</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// inside api.rs
+<pre><code class="language-rust noplayground">// inside api.rs
 // used for managing susbscriptions
 #[derive(Debug, Archive, Serialize, Deserialize, Copy, Clone)]
 pub(crate) struct WifiStateSubscription {
@@ -1529,12 +1470,8 @@ pub(crate) enum Opcode {
     Quit,
 }
 
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// inside lib.rs
+</code></pre>
+<pre><code class="language-rust noplayground">// inside lib.rs
 pub struct NetManager {
     netconn: NetConn,
     wifi_state_cid: Option&lt;CID&gt;,
@@ -1617,12 +1554,8 @@ impl NetManager {
         Ok(())
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main-side code
+</code></pre>
+<pre><code class="language-rust noplayground">// main-side code
 #[xous::xous_main]
 fn xmain() -&gt; ! {
     // ... other stuff ...
@@ -1665,8 +1598,7 @@ fn xmain() -&gt; ! {
         }
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h1><a class="header" href="#deferred-response" id="deferred-response">Deferred Response</a></h1>
 <p>Deferred response is a variant of synchronous messaging. In this case, the caller blocks, but the callee is free to process new messages (typically to help compute results that evnetually unblock the caller).</p>
 <p>As of Xous 0.9.7, the trick to deferred response is different between <code>scalar</code> and <code>memory</code> messages.</p>
@@ -1677,21 +1609,14 @@ fn xmain() -&gt; ! {
 <p>Future versions of Xous may or may not implement a <code>Drop</code> method which automatically returns <code>scalar</code> messages when they go out of scope, this is a topic of active discussion. However, as is the case with all the other idioms, the pattern is different from <code>scalar</code> and <code>memory</code> types, so, regardless, they will be treated with separate examples.</p>
 <h2><a class="header" href="#scalar-pattern-2" id="scalar-pattern-2">Scalar Pattern</a></h2>
 <p>This is very close to the thing that's actually implemented for synchronizing all the servers during a suspend/resume event.</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     WaitUntilReady,
     TheBigEvent,
     // ... and other ops
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1704,12 +1629,8 @@ impl MyService {
         ).map(|_| ())
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut waiting = Vec::&lt;MessageSender&gt;::new();
@@ -1736,13 +1657,9 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h2><a class="header" href="#memory-pattern-2" id="memory-pattern-2">Memory Pattern</a></h2>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     GetDeferredData,
     Event,
@@ -1753,12 +1670,8 @@ pub struct DeferredData {
     pub spec: u32,
     pub description: xous_ipc::String::&lt;128&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1775,12 +1688,8 @@ impl MyService {
         Ok(String::new(response.description.as_str().unwrap_or(&quot;UTF-8 error&quot;)))
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     // if you are sure there will never be multiple deferred messages, you can just use an
@@ -1828,8 +1737,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h1><a class="header" href="#graphics-toolkit" id="graphics-toolkit">Graphics Toolkit</a></h1>
 <p>The Xous UX stack consists of three levels:</p>
 <ol>

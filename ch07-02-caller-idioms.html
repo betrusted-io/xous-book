@@ -206,7 +206,7 @@
 </ul>
 <p>Note that none of these are mandatory -- for example, a pure client-side library like our AES implementation has only a <code>lib.rs</code>; and, an application that offers no services and has only a main function would have only a <code>main.rs</code>.</p>
 <p>Below is an example of what these files might look like in a very minimal server implementation.</p>
-<pre><code class="language-Rust">// inside lib.rs
+<pre><code class="language-Rust noplayground">// inside lib.rs
 pub mod api;
 pub use api::*;
 use xous::{CID, send_message};
@@ -237,7 +237,7 @@ impl Drop for MyService {
     }
 }
 </code></pre>
-<pre><code class="language-Rust">// inside api.rs
+<pre><code class="language-Rust noplayground">// inside api.rs
 pub(crate) const SERVER_NAME_MYSERVICE: &amp;str     = &quot;_Any descriptive and unique name under 64 chars_&quot;;
 
 #[derive(num_derive::FromPrimitive, num_derive::ToPrimitive, Debug)]
@@ -249,7 +249,7 @@ pub(crate) enum Opcode {
     Quit,
 }
 </code></pre>
-<pre><code class="language-Rust">// inside main.rs
+<pre><code class="language-Rust noplayground">// inside main.rs
 #![cfg_attr(target_os = &quot;none&quot;, no_main)]
 
 mod api;

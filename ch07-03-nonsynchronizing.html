@@ -181,20 +181,13 @@
 </ul>
 </li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     Lights,
     // ... and other ops
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -211,12 +204,8 @@ impl MyService {
         ).map(|_|())
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     loop {
@@ -237,8 +226,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h2><a class="header" href="#memory-pattern" id="memory-pattern">Memory Pattern</a></h2>
 <p>A memory non-synchronizing call has the following characterisics:</p>
 <ul>
@@ -252,10 +240,7 @@ fn xmain() -&gt; ! {
 </ul>
 </li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
     PushDataRkyv,
@@ -274,12 +259,8 @@ pub struct CompoundData {
     pub len: u16,
     pub description: xous_ipc::String::&lt;128&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// lib.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -306,12 +287,8 @@ impl MyService {
         buf.send(self.conn, Opcode::PushDataRkyv.to_u32().unwrap()).map(|_| ())
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// main.rs:
+</code></pre>
+<pre><code class="language-rust noplayground">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut storage = Vec::&lt;CompoundData&gt;::new();
@@ -338,8 +315,7 @@ fn xmain() -&gt; ! {
     }
     // ... postamble
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 
                     </main>
 

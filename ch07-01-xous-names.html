@@ -186,25 +186,17 @@
 <h2><a class="header" href="#discovered-names" id="discovered-names">Discovered Names</a></h2>
 <p>All other servers have their names registered as a 64-byte free-from <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a crytpographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the &quot;well known&quot; names, because the chance that the TRNG would output the string <code>b&quot;xous-name-server&quot;</code> by chance is vanishingly small.</p>
 <p>When registering a server, one might invoke a call like this:</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>    let xns = xous_names::XousNames::new().unwrap();
+<pre><code class="language-rust noplayground">    let xns = xous_names::XousNames::new().unwrap();
     let net_sid = xns
         .register_name(api::SERVER_NAME_NET, None)
         .expect(&quot;can't register server&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>or this:</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>    let xns = xous_names::XousNames::new().unwrap();
+<pre><code class="language-rust noplayground">    let xns = xous_names::XousNames::new().unwrap();
     let keys_sid = xns
         .register_name(api::SERVER_NAME_KEYS, Some(3))
         .expect(&quot;can't register server&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>Generally, the server name is defined as a string within the <code>api.rs</code> section, so that other crates can refer to it via the API. In the case of the <code>net</code> crate, the maximum connection limit is <code>None</code>, which means that any processes may connect to the <code>net</code> crate. In the case of the <code>root keys</code> crate, the number of connections to it is limited to 3 by the <code>Some(3)</code> argument.</p>
 <p>In this case, the first three processes that attempt to connect to the <code>root keys</code> crate are handed out it's 128-bit server ID. Later processes that attempt to connect will be denied. This is a &quot;trust on first use&quot; model similar to how SSH maps host public keys to IP addresses.</p>
 <p>Generally, sensitive servers like <code>root keys</code> are encapsulated by other processes that act as firewalls to it. So, if there were a hypothetical need to dole out derived keys from the <code>root keys</code> set, a second <code>derived keys</code> server might be created which can accept any number of connections, and one more connection would be added to the <code>root keys</code> connection count for the <code>derived keys</code> server. The <code>derived keys</code> server would thus act as a firewall to the <code>root keys</code> server.</p>
