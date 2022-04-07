@@ -29,7 +29,7 @@ All other servers have their names registered as a 64-byte free-from `u8` array,
 
 When registering a server, one might invoke a call like this:
 
-```rust
+```rust,noplayground
     let xns = xous_names::XousNames::new().unwrap();
     let net_sid = xns
         .register_name(api::SERVER_NAME_NET, None)
@@ -38,7 +38,7 @@ When registering a server, one might invoke a call like this:
 
 or this:
 
-```rust
+```rust,noplayground
     let xns = xous_names::XousNames::new().unwrap();
     let keys_sid = xns
         .register_name(api::SERVER_NAME_KEYS, Some(3))

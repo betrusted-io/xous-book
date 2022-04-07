@@ -9,7 +9,7 @@ A scalar non-synchronizing call has the following characterisics:
   - Side effects may happen at an arbitrary time later
   - Messages are guaranteed to arrive in order
 
-```rust
+```rust,noplayground
 // api.rs
 pub(crate) enum Opcode {
     Lights,
@@ -17,7 +17,7 @@ pub(crate) enum Opcode {
 }
 ```
 
-```rust
+```rust,noplayground
 // lib.rs:
 impl MyService {
     // ... new(), etc.
@@ -37,7 +37,7 @@ impl MyService {
 }
 ```
 
-```rust
+```rust,noplayground
 // main.rs:
 fn xmain() -> ! {
     // ... preamble
@@ -71,7 +71,7 @@ A memory non-synchronizing call has the following characterisics:
   - Side effects may happen at an arbitrary time later
   - Messages are guaranteed to arrive in order
 
-```rust
+```rust,noplayground
 // api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
@@ -93,7 +93,7 @@ pub struct CompoundData {
 }
 ```
 
-```rust
+```rust,noplayground
 // lib.rs:
 impl MyService {
     // ... new(), etc.
@@ -123,7 +123,7 @@ impl MyService {
 }
 ```
 
-```rust
+```rust,noplayground
 // main.rs:
 fn xmain() -> ! {
     // ... preamble

@@ -7,7 +7,7 @@ A scalar synchronizing call has the following characterisics:
 - Caller blocks until the callee returns
 - Callee may return up to 2 `u32`-sized values
 
-```rust
+```rust,noplayground
 // api.rs
 pub(crate) enum Opcode {
     LightsSync,
@@ -15,7 +15,7 @@ pub(crate) enum Opcode {
 }
 ```
 
-```rust
+```rust,noplayground
 // lib.rs:
 impl MyService {
     // ... new(), etc.
@@ -47,7 +47,7 @@ impl MyService {
 }
 ```
 
-```rust
+```rust,noplayground
 // main.rs:
 fn xmain() -> ! {
     // ... preamble
@@ -86,7 +86,7 @@ This example also shows how to do a memory message without `rkyv`. This is usefu
 for situations that can't have an `rkyv` dependency, or if you just prefer to do
 things in a low-level fashion.
 
-```rust
+```rust,noplayground
 // api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
@@ -109,7 +109,7 @@ pub struct RawData {
 }
 ```
 
-```rust
+```rust,noplayground
 // lib.rs:
 impl MyService {
     // ... new(), etc.
@@ -187,7 +187,7 @@ impl MyService {
 }
 ```
 
-```rust
+```rust,noplayground
 // main.rs:
 fn xmain() -> ! {
     // ... preamble
