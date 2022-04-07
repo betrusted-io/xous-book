@@ -2,6 +2,8 @@
 
 Messages form the basis of interprocess communication on Xous. A process exists in isolation and can only communicate to the outside world by sending messages. The limited API provided by the kernel means that almost all interactions are provided by userspace Servers, which must be communicated with using Messages.
 
+![overview of message passing](images/messaging-arch.png)
+
 ## Connecting to and Disconnecting from Servers
 
 To connect to a server you must supply it an `Server ID`. A `Server ID` is a 16-byte value of some sort that is shared in a universal namespace. If you know a Server's `Server ID` then you can connect to that Server.

@@ -1,7 +1,6 @@
 # The Xous Operating System
 
 [The Xous Operating System](title-page.md)
-[Foreword](foreword.md)
 [Introduction](ch00-00-introduction.md)
 
 ## Getting started
@@ -13,6 +12,7 @@
     - [Hello, Hardware!](ch01-04-hello-hardware.md)
 
 - [Server Architecture](ch02-00-server-architecture.md)
+    - [Synchronization](ch02-04-synchronization.md)
 
 - [Introducing the Kernel](ch03-00-introducing-the-kernel.md)
     - [Memory Layout](ch03-01-memory-layout.md)
@@ -32,6 +32,7 @@
     - [Image Creation](ch06-02-create-image.md)
 
 - [Messages](ch07-00-messages.md)
+    - [Caller Idioms](ch07-02-caller-idioms.md) includes examples of non-synchronizing, synchronous, asynchronous, and deferred callback implementations.
 
 - [Graphics Toolkit](ch08-00-graphics.md)
     - [Modals](ch08-01-modals.md)
