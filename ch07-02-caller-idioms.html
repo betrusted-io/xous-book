@@ -1,0 +1,363 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Caller Idioms - The Xous Operating System</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">The Xous Operating System</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-renode.html"><strong aria-hidden="true">1.2.</strong> Hello, Renode!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-platform-definition.html"><strong aria-hidden="true">4.1.</strong> Platform Definition</a></li><li class="chapter-item expanded "><a href="ch04-02-renode-startup-script.html"><strong aria-hidden="true">4.2.</strong> Renode Startup Script</a></li><li class="chapter-item expanded "><a href="ch04-03-python-extensions.html"><strong aria-hidden="true">4.3.</strong> Python Extensions</a></li><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.4.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.1.</strong> Image Creation</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html" class="active"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Xous Operating System</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#caller-idioms" id="caller-idioms">Caller Idioms</a></h1>
+<p>There are two flavors of messages in Xous: <code>scalar</code> or <code>memory</code> messages. <code>scalar</code> messages are pass-by-register and have a limited size, but are very fast. <code>memory</code> messages are pass-by-memory, and can be large, but are slower.</p>
+<p>There are (so far) four common types of caller patterns used in Xous:</p>
+<ol>
+<li>Non-synchronizing: these are &quot;fire and forget&quot; messages that don't block(*) and have no synchronization guarantee.</li>
+<li>Synchronous: these block and wait for a response from the callee. The callee can do nothing else until this message is handled.</li>
+<li>Asynchronous: these don't block, and expect a response at some time later via a &quot;push notification&quot;.</li>
+<li>Deferred-response: these block the caller, but the callee is not allowed to block.</li>
+</ol>
+<p>Type (1) is implemented using <code>send</code> on <code>memory</code> messages, or vanilla <code>scalar</code> messages on <code>scalar</code> types.</p>
+<p>The remaining types will involve a <code>lend</code> or <code>lend_mut</code> on <code>memory</code> messages, or <code>blocking_scalar</code> on <code>scalar</code> types.</p>
+<p>Before diving in, it is helpful to review the <a href="ch07-00-messages.html">messaging architecture</a> of Xous:</p>
+<p><img src="images/messaging-arch.png" alt="overview of message flow" /></p>
+<p>Each server consists at its core of an event loop. While event loops are allowed to be non-blocking, this is an edge case and in general all event loops are blocking: when an event loop blocks, it is de-scheduled and consumes zero CPU resources, allowing us to stop the CPU clock and save power.</p>
+<p>An incoming message will wake up the process, at which point the process shall decode and process the message. From here, the process may issue messages to other servers. Memory <code>send</code> and Scalar <code>scalar</code> messages will not stop the execution flow; the outgoing messages are simply dropped in the destination queue and life goes on. However, blocking message types <code>lend</code>, <code>lend_mut</code>, and <code>blocking_scalar</code> will cause the message to be dropped in the destination queue, and the current process yields the remainder of its quanta to the destination thread. The blocked process will remain stopped at that point of execution, until the blocking message types are &quot;returned&quot;. At this point the blocked process marked for execution. Execution will resume either on a time-based pre-emption boundary, or possibly earlier if the returning process completes its task before its quanta is up and enters a blocking state (that is, waiting on a new incoming message, or a response to a new outgoing blocking message).</p>
+<p>:zap: Key Concept :zap:</p>
+<p>Memory messages implicitly return to callers on <code>Drop</code>. Thus, there is no explicit &quot;return&quot; call in Xous for memory messages. Thus, one must use Rust's borrow checker to schedule the return. Specifically:</p>
+<ul>
+<li>Synchronous messages return as soon as the current message goes out of scope, e.g., at the bottom of the event loop.</li>
+<li>Deferred-response is implemented by binding the current message to an <code>Option&lt;MessageEnvelope&gt;</code> type that is external to the main event loop.
+<ul>
+<li>By sticking the message into a <code>Some()</code>, the message is not allowed to go out of scope, the <code>Drop</code> is never called, and thus the caller blocks.</li>
+<li>However, the callee is free to continue on with its processing.</li>
+<li>A return is triggered by calling <code>take()</code> on the enclosing <code>Option</code>. This moves the message out of the <code>Option</code> and into the current scope, where the message can now be modified with a return value. Once that operation ends, the message goes out of scope, <code>Drop</code> is called, and likewise, data is returned to the caller</li>
+</ul>
+</li>
+</ul>
+<p>:warning: IPC Interoperability :warning:</p>
+<p>In many places Xous offers <code>usize</code> as arguments for IPC calls. This has a platform-dependent size, and in fact, the size can be different between caller and callee if you're passing messages between disparate hosts (which is actually a thing that is allowed on Xous).</p>
+<p>For maximum compatibility, the recommendation is to restrict all IPC implementations to a <code>u32</code>-in-<code>usize</code>, unless you never intend to run on a 32-bit platform. <strong>Note</strong>: the target Precursor hardware is a 32-bit platform.</p>
+<h2><a class="header" href="#basic-template" id="basic-template">Basic Template</a></h2>
+<p>With this overview, we can now give an example of each of the four types of messages. In general, we assume that services are organized into at least three files:</p>
+<ul>
+<li><code>lib.rs</code> -- the caller-side API that formats native Rust data into IPC messages</li>
+<li><code>main.rs</code> the server-side API that unpacks IPC messages and acts on them</li>
+<li><code>api.rs</code> -- data structures &amp; definitions shared between caller and callee</li>
+</ul>
+<p>Note that none of these are mandatory -- for example, a pure client-side library like our AES implementation has only a <code>lib.rs</code>; and, an application that offers no services and has only a main function would have only a <code>main.rs</code>.</p>
+<p>Below is an example of what these files might look like in a very minimal server implementation.</p>
+<pre><code class="language-Rust">// inside lib.rs
+pub mod api;
+pub use api::*;
+use xous::{CID, send_message};
+use num_traits::*;
+use core::sync::atomic::{AtomicU32, Ordering};
+static REFCOUNT: AtomicU32 = AtomicU32::new(0);
+
+pub struct MyService {
+    conn: CID,
+}
+impl MyService {
+    pub fn new() -&gt; Self {
+        let xns = xous_names::XousNames::new().expect(&quot;couldn't connect to XousNames&quot;);
+        REFCOUNT.fetch_add(1, Ordering::Relaxed);
+        let conn = xns.request_connection_blocking(api::SERVER_NAME_MYSERVICE).expect(&quot;Can't connect to MyService&quot;);
+        MyService {
+            conn
+        }
+    }
+    // ------ library methods to be discussed in detail below ------
+}
+/// Automatic disconnect on dropping the final instance of this connection
+impl Drop for MyService {
+    fn drop(&amp;mut self) {
+        if REFCOUNT.fetch_sub(1, Ordering::Relaxed) == 1 {
+            unsafe{xous::disconnect(self.conn).unwrap();}
+        }
+    }
+}
+</code></pre>
+<pre><code class="language-Rust">// inside api.rs
+pub(crate) const SERVER_NAME_MYSERVICE: &amp;str     = &quot;_Any descriptive and unique name under 64 chars_&quot;;
+
+#[derive(num_derive::FromPrimitive, num_derive::ToPrimitive, Debug)]
+pub(crate) enum Opcode {
+    /// Define various operations here
+    DoNonSync,
+    // ------ API opcodes to be discussed in detail below ------
+    /// Exits the server
+    Quit,
+}
+</code></pre>
+<pre><code class="language-Rust">// inside main.rs
+#![cfg_attr(target_os = &quot;none&quot;, no_main)]
+
+mod api;
+use api::*;
+use num_traits::*;
+
+#[xous::xous_main]
+fn xmain() -&gt; ! {
+    log_server::init_wait().unwrap();
+    log::set_max_level(log::LevelFilter::Info);
+    log::info!(&quot;my PID is {}&quot;, xous::process::id());
+
+    let xns = xous_names::XousNames::new().unwrap();
+    let sid = xns.register_name(api::SERVER_NAME_MYSERVER, None).expect(&quot;can't register server&quot;);
+    loop {
+        let msg = xous::receive_message(sid).unwrap();
+        match FromPrimitive::from_usize(msg.body.id()) {
+            Some(Opcode::DoNonSync) =&gt; xous::msg_scalar_unpack!(msg, _, _, _, _, {
+                // do stuff here
+            }),
+            // ------ options to be discussed in detail below ------
+            Some(Opcode::Quit) =&gt; {
+                xous::return_scalar(msg.sender, 1).expect(&quot;couldn't ack quit&quot;);
+                break;
+            },
+            None =&gt; log::error!(&quot;couldn't convert opcode: {:?}&quot;, msg),
+        }
+    }
+    // clean up our program
+    xns.unregister_server(sid).unwrap();
+    xous::destroy_server(sid).unwrap();
+    xous::terminate_process(0)
+}
+
+</code></pre>
+<p>With the above template in mind, click on the following for examples of each of the four patterns, broken down into each of <code>Scalar</code> and <code>Memory</code> types when applicable.</p>
+<ul>
+<li><a href="ch07-03-nonsynchronizing.html">Non-synchronizing</a></li>
+<li><a href="ch07-04-synchronizing.html">Synchronous</a>. Includes an example of how to use raw messages (instead of <code>rkyv</code>) for serializing data.</li>
+<li><a href="ch07-05-asynchronous.html">Asynchronous</a> or &quot;push notifications&quot;</li>
+<li><a href="ch07-06-deferred.html">Deferred response</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="ch07-01-xous-names.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="ch07-03-nonsynchronizing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="ch07-01-xous-names.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="ch07-03-nonsynchronizing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

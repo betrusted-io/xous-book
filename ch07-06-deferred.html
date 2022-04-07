@@ -1,0 +1,401 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Deferred Response - The Xous Operating System</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">The Xous Operating System</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-renode.html"><strong aria-hidden="true">1.2.</strong> Hello, Renode!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-platform-definition.html"><strong aria-hidden="true">4.1.</strong> Platform Definition</a></li><li class="chapter-item expanded "><a href="ch04-02-renode-startup-script.html"><strong aria-hidden="true">4.2.</strong> Renode Startup Script</a></li><li class="chapter-item expanded "><a href="ch04-03-python-extensions.html"><strong aria-hidden="true">4.3.</strong> Python Extensions</a></li><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.4.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.1.</strong> Image Creation</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html" class="active"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Xous Operating System</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#deferred-response" id="deferred-response">Deferred Response</a></h1>
+<p>Deferred response is a variant of synchronous messaging. In this case, the caller blocks, but the callee is free to process new messages (typically to help compute results that evnetually unblock the caller).</p>
+<p>As of Xous 0.9.7, the trick to deferred response is different between <code>scalar</code> and <code>memory</code> messages.</p>
+<ul>
+<li>For <code>scalar</code> messages, one needs to store the <code>msg.sender</code> field (a <code>usize</code>) and delay the <code>xous::return_scalar(sender, value)</code> call until the appropriate time.</li>
+<li>For <code>memory</code> messages, one needs to store the entire <code>MessageEnvelope</code>, so that it does not go out of scope. <code>memory</code> messages automatically call the appropriate syscall (<code>return_memory_offset_valid</code> for <code>lend</code> and <code>lend_mut</code>, <code>unmap_memory</code> for <code>send</code>) in their <code>Drop</code> trait implementation.</li>
+</ul>
+<p>Future versions of Xous may or may not implement a <code>Drop</code> method which automatically returns <code>scalar</code> messages when they go out of scope, this is a topic of active discussion. However, as is the case with all the other idioms, the pattern is different from <code>scalar</code> and <code>memory</code> types, so, regardless, they will be treated with separate examples.</p>
+<h2><a class="header" href="#scalar-pattern" id="scalar-pattern">Scalar Pattern</a></h2>
+<p>This is very close to the thing that's actually implemented for synchronizing all the servers during a suspend/resume event.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// api.rs
+pub(crate) enum Opcode {
+    WaitUntilReady,
+    TheBigEvent,
+    // ... and other ops
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// lib.rs:
+impl MyService {
+    // ... new(), etc.
+
+    /// This will wait until the main loop decides it's ready to unblock us.
+    pub fn wait_until_ready(&amp;self) -&gt; Result&lt;(), xous::Error&gt; {
+        send_message(self.conn,
+            Message::new_blocking_scalar(Opcode::WaitUntilReady.to_usize().unwrap()),
+                0, 0, 0, 0
+            )
+        ).map(|_| ())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// main.rs:
+fn xmain() -&gt; ! {
+    // ... preamble
+    let mut waiting = Vec::&lt;MessageSender&gt;::new();
+    loop {
+        let msg = xous::receive_message(sid).unwrap();
+        match FromPrimitive::from_usize(msg.body.id()) {
+            Some(Opcode::WaitUntilReady) =&gt; xous::msg_blocking_scalar_unpack!(msg, _, _, _, _, {
+                // store the message sender;
+                // the sender continues to block because `xous::return_scalar()` has not been called
+                waiting.push(msg.sender);
+                // execution continues on here
+            }),
+            // .. this loop is still available to do things, even though the callers are blocked ..
+            // stuff happens until something triggers TheBigEvent:
+            Some(Opcode::TheBigEvent) =&gt; {
+                for sender in waiting.drain(..) {
+                    // the argument is arbitrary. `return_scalar2` can also be used.
+                    xous::return_scalar(sender, 1).expect(&quot;couldn't unblock sender&quot;);
+                }
+                // All the waiting processes are now unblocked.
+            }
+            // .. other match statements
+        }
+    }
+    // ... postamble
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2><a class="header" href="#memory-pattern" id="memory-pattern">Memory Pattern</a></h2>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// api.rs
+pub(crate) enum Opcode {
+    GetDeferredData,
+    Event,
+    // ... and other ops
+}
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]
+pub struct DeferredData {
+    pub spec: u32,
+    pub description: xous_ipc::String::&lt;128&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// lib.rs:
+impl MyService {
+    // ... new(), etc.
+
+    pub fn get_data_blocking(&amp;self, spec: u32) -&gt; Result&lt;String, xous::Error&gt; {
+        let mut rec = DeferredData {
+            spec,
+            description: xous_ipc::String::new(),
+        };
+
+        let mut buf = Buffer::into_buf(rec).or(Err(xous::Error::InternalError))?;
+        buf.lend_mut(self.conn, Opcode::GetDeferredData.to_u32().unwrap()).map(|_| ())?;
+
+        let response = buf.as_flat::&lt;DeferredData, _&gt;().unwrap();
+        Ok(String::new(response.description.as_str().unwrap_or(&quot;UTF-8 error&quot;)))
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// main.rs:
+fn xmain() -&gt; ! {
+    // ... preamble
+    // if you are sure there will never be multiple deferred messages, you can just use an
+    // Option&lt;MessageEnvelope&gt; and .take() to remove it from scope, instead of Vec and .drain()
+    let mut storage = Vec::&lt;xous::MessageEnvelope&gt;::new();
+    let mut spec: u32 = 0;
+    loop {
+        let mut msg = xous::receive_message(sid).unwrap();
+        match FromPrimitive::from_usize(msg.body.id()) {
+            /// This will get processed whenever the server gets scheduled, which has no strict
+            /// relationship to the caller's state. However, messages are guaranteed
+            /// to be processed in-order.
+            Some(Opcode::GetDeferredData) =&gt; {
+                spec += {
+                    // any incoming arguments are processed in a block like this to ensure
+                    // that the `msg` has no ownership interference with `spec`.
+                    let buffer = unsafe {
+                        Buffer::from_memory_message(msg.body.memory_message().unwrap())
+                    };
+                    let data = buffer.to_original::&lt;DeferredData, _&gt;().unwrap();
+                    data.spec
+                };
+                storage.push(msg);
+                // `msg` is now pushed into the scope of `storage`, which prevents `Drop`
+                // from being called, thus continuing to block the caller.
+            },
+            // ... other processing happens, perhaps guided by the value in `spec`
+            Some(Opcode::Event) =&gt; {
+                let result = DeferredData {
+                    spec: 0,
+                    description: xous_ipc::String::from_str(&quot;something happened!&quot;),
+                };
+                // `drain()` takes `msg` back out of the scope of `storage`, and
+                // unless it is bound to another variable outside of this scope,
+                // it will Drop and unblock the caller at the end of this block.
+                for mut sender in storage.drain(..) {
+                    let mut response = unsafe {
+                        Buffer::from_memory_message_mut(sender.body.memory_message_mut().unwrap())
+                    };
+                    response.replace(result).unwrap();
+                }
+            }
+            // .. other match statements
+        }
+    }
+    // ... postamble
+}
+<span class="boring">}
+</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="ch07-05-asynchronous.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="ch08-00-graphics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="ch07-05-asynchronous.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="ch08-00-graphics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
