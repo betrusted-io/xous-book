@@ -6,10 +6,8 @@
 ## Getting started
 
 - [Getting Started](ch01-00-getting-started.md)
-    - [Installation](ch01-01-installation.md)
     - [Hello, World!](ch01-02-hello-world.md)
     - [Hello, Renode!](ch01-03-hello-renode.md)
-    - [Hello, Hardware!](ch01-04-hello-hardware.md)
 
 - [Server Architecture](ch02-00-server-architecture.md)
     - [Synchronization](ch02-04-synchronization.md)
@@ -32,7 +30,12 @@
     - [Image Creation](ch06-02-create-image.md)
 
 - [Messages](ch07-00-messages.md)
+    - [Xous Names](ch07-01-xous-names.md) how to discover and connect with services in Xous
     - [Caller Idioms](ch07-02-caller-idioms.md) includes examples of non-synchronizing, synchronous, asynchronous, and deferred callback implementations.
+       - [Non-synchronizing](ch07-03-nonsynchronizing.md)
+       - [Synchronous](ch07-04-synchronizing.md)
+       - [Asynchronous](ch07-05-asynchronous.md)
+       - [Deferred Response](ch07-06-deferred.md)
 
 - [Graphics Toolkit](ch08-00-graphics.md)
     - [Modals](ch08-01-modals.md)

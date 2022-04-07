@@ -136,7 +136,7 @@ fn xmain() -> ! {
 
 With the above template in mind, click on the following for examples of each of the four patterns, broken down into each of `Scalar` and `Memory` types when applicable.
 
-- [Non-synchronizing](ch07-02-nonsynchronizing.md)
-- [Synchronous](ch07-02-synchronizing.md). Includes an example of how to use raw messages (instead of `rkyv`) for serializing data.
-- [Asynchronous](ch07-02-asynchronous.md) or "push notifications"
-- [Deferred response](ch07-02-deferred.md)
+- [Non-synchronizing](ch07-03-nonsynchronizing.md)
+- [Synchronous](ch07-04-synchronizing.md). Includes an example of how to use raw messages (instead of `rkyv`) for serializing data.
+- [Asynchronous](ch07-05-asynchronous.md) or "push notifications"
+- [Deferred response](ch07-06-deferred.md)
