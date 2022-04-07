@@ -176,8 +176,8 @@ installed.</p>
 <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
 <p>This book is a work in progress. Many chapters are placeholders and will appear blank.</p>
 <p>The book is written for two audiences: kernel maintainers, and application developers.</p>
-<p>Chapters <a href="ch02-00-server-architecture.html">2</a>, <a href="ch03-00-introducing-the-kernel.html">3</a>, and <a href="ch05-00-system-startup.html">5</a> are primarily for kernel maintainers.</p>
-<p>Chapters <a href="ch01-00-getting-started.html">1</a>, <a href="ch04-00-renode-emulation.html">4</a>, <a href="ch06-00-build-system-overview.html">6</a>, <a href="ch07-00-messages.html">7</a> and <a href="ch08-00-graphics.html">8</a> are more appropriate for application developers.</p>
+<p>Chapters <a href="ch02-00-server-architecture.html">2 (Server Architecture)</a>, <a href="ch03-00-introducing-the-kernel.html">3 (Introducing the Kernel)</a>, and <a href="ch05-00-system-startup.html">5 (System Startup)</a> are primarily for kernel maintainers and system programmers.</p>
+<p>Chapters <a href="ch01-00-getting-started.html">1 (Getting Started)</a>, <a href="ch04-00-renode-emulation.html">4 (Renode Emulation)</a>, <a href="ch06-00-build-system-overview.html">6 (Build System Overview)</a>, <a href="ch07-00-messages.html">7 (Messages)</a> and <a href="ch08-00-graphics.html">8 (Graphics)</a> are more appropriate for application developers.</p>
 <h1><a class="header" href="#getting-started" id="getting-started">Getting Started</a></h1>
 <p>The <a href="https://github.com/betrusted-io/betrusted-wiki/wiki">wiki</a> is going to be the most up-to-date source of information for getting started, as it is still a topic in flux.</p>
 <p>Below are some excerpts from the Wiki, but some links may be out of date.</p>
@@ -566,6 +566,11 @@ private bool enabled = true;
 <p>The Xous operating system is set up by the loader, which is responsible for unpacking data into RAM and setting up processes. It is covered in the <a href="ch05-02-loader.html">Xous Loader</a> section.</p>
 <p>The loader reads a binary stream of data located in a tagged format that is discussed in the <a href="ch05-01-arguments.html">Arguments Structure</a> section. This arguments structure defines features such as the memory layout, system configuration, and initial process data.</p>
 <p>Programs are loaded in flattened foramts called <code>MiniELF</code>, which is documented in the <a href="ch05-03-minielf.html">MiniELF Format</a> section.</p>
+<p>You may also find the following links of interest:</p>
+<ul>
+<li><a href="https://github.com/betrusted-io/betrusted-wiki/wiki/How-Does-Precursor-Get-to-the-Reset-Vector%3F">What happens before boot?</a> fills in the details of everything that happens before the first instruction gets run.</li>
+<li>&quot;<a href="https://github.com/betrusted-io/betrusted-wiki/wiki/Secure-Boot-and-KEYROM-Layout">Secure Boot</a>&quot; and key ROM layout</li>
+</ul>
 <h1><a class="header" href="#system-arguments" id="system-arguments">System Arguments</a></h1>
 <p>The loader and kernel use a tagged format for defining system arguments. This tagged structure is designed to be small, and only describes data. The structure does not include any executable data. Instead, it contains references to this data that may be located immediately after the structure on a storage medium.</p>
 <p>The tagged structure defines a prefix that is tagged by an 8-byte structure:</p>
