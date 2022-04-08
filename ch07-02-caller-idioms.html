@@ -182,7 +182,7 @@
 <p><img src="images/messaging-arch.png" alt="overview of message flow" /></p>
 <p>Each server consists at its core of an event loop. While event loops are allowed to be non-blocking, this is an edge case and in general all event loops are blocking: when an event loop blocks, it is de-scheduled and consumes zero CPU resources, allowing us to stop the CPU clock and save power.</p>
 <p>An incoming message will wake up the process, at which point the process shall decode and process the message. From here, the process may issue messages to other servers. Memory <code>send</code> and Scalar <code>scalar</code> messages will not stop the execution flow; the outgoing messages are simply placed in the destination queue and life goes on. However, blocking message types <code>lend</code>, <code>lend_mut</code>, and <code>blocking_scalar</code> will cause the message to be placed in the destination queue, and the current thread yields the remainder of its quanta to the destination thread. The blocked thread will remain stopped at that point of execution until the blocking message types are &quot;returned&quot;. At this point the blocked thread is re-queued for execution. Execution will resume either on a time-based pre-emption boundary, or possibly earlier if the returning process completes its task before its quanta is up and enters a blocking state (that is, waiting on a new incoming message, or a response to a new outgoing blocking message).</p>
-<p>:zap: Key Concept :zap:</p>
+<p>⚡ Key Concept ⚡</p>
 <p>Memory messages implicitly return to callers on <code>Drop</code>. Thus, there is no explicit &quot;return&quot; call in Xous for memory messages. Thus, one must use Rust's borrow checker to schedule the return. Specifically:</p>
 <ul>
 <li>Synchronous messages return as soon as the current message goes out of scope, e.g., at the bottom of the event loop.</li>
@@ -194,7 +194,7 @@
 </ul>
 </li>
 </ul>
-<p>:warning: IPC Interoperability :warning:</p>
+<p>⚠️ IPC Interoperability ⚠️</p>
 <p>In many places Xous offers <code>usize</code> as arguments for IPC calls. This has a platform-dependent size, and in fact, the size can be different between caller and callee if you're passing messages between disparate hosts (which is actually a thing that is allowed on Xous).</p>
 <p>For maximum compatibility, the recommendation is to restrict all IPC implementations to a <code>u32</code>-in-<code>usize</code>, unless you never intend to run on a 32-bit platform. <strong>Note</strong>: the target Precursor hardware is a 32-bit platform.</p>
 <h2><a class="header" href="#basic-template" id="basic-template">Basic Template</a></h2>
