@@ -911,13 +911,13 @@ $
 <h2><a class="header" href="#discovered-names" id="discovered-names">Discovered Names</a></h2>
 <p>All other servers have their names registered as a 64-byte free-from <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a crytpographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the &quot;well known&quot; names, because the chance that the TRNG would output the string <code>b&quot;xous-name-server&quot;</code> by chance is vanishingly small.</p>
 <p>When registering a server, one might invoke a call like this:</p>
-<pre><code class="language-rust noplayground">    let xns = xous_names::XousNames::new().unwrap();
+<pre><code class="language-rust noplayground ignore">    let xns = xous_names::XousNames::new().unwrap();
     let net_sid = xns
         .register_name(api::SERVER_NAME_NET, None)
         .expect(&quot;can't register server&quot;);
 </code></pre>
 <p>or this:</p>
-<pre><code class="language-rust noplayground">    let xns = xous_names::XousNames::new().unwrap();
+<pre><code class="language-rust noplayground ignore">    let xns = xous_names::XousNames::new().unwrap();
     let keys_sid = xns
         .register_name(api::SERVER_NAME_KEYS, Some(3))
         .expect(&quot;can't register server&quot;);
@@ -966,7 +966,7 @@ $
 </ul>
 <p>Note that none of these are mandatory -- for example, a pure client-side library like our AES implementation has only a <code>lib.rs</code>; and, an application that offers no services and has only a main function would have only a <code>main.rs</code>.</p>
 <p>Below is an example of what these files might look like in a very minimal server implementation.</p>
-<pre><code class="language-Rust noplayground">// inside lib.rs
+<pre><code class="language-rust noplayground ignore">// inside lib.rs
 pub mod api;
 pub use api::*;
 use xous::{CID, send_message};
@@ -997,7 +997,7 @@ impl Drop for MyService {
     }
 }
 </code></pre>
-<pre><code class="language-Rust noplayground">// inside api.rs
+<pre><code class="language-rust noplayground ignore">// inside api.rs
 pub(crate) const SERVER_NAME_MYSERVICE: &amp;str     = &quot;_Any descriptive and unique name under 64 chars_&quot;;
 
 #[derive(num_derive::FromPrimitive, num_derive::ToPrimitive, Debug)]
@@ -1009,7 +1009,7 @@ pub(crate) enum Opcode {
     Quit,
 }
 </code></pre>
-<pre><code class="language-Rust noplayground">// inside main.rs
+<pre><code class="language-rust noplayground ignore">// inside main.rs
 #![cfg_attr(target_os = &quot;none&quot;, no_main)]
 
 mod api;
@@ -1215,7 +1215,7 @@ pub(crate) enum Opcode {
     // ... and other ops
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// lib.rs:
+<pre><code class="language-rust noplayground ignore">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1245,7 +1245,7 @@ impl MyService {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main.rs:
+<pre><code class="language-rust noplayground ignore">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     loop {
@@ -1281,7 +1281,7 @@ fn xmain() -&gt; ! {
 <p>This example also shows how to do a memory message without <code>rkyv</code>. This is useful
 for situations that can't have an <code>rkyv</code> dependency, or if you just prefer to do
 things in a low-level fashion.</p>
-<pre><code class="language-rust noplayground">// api.rs
+<pre><code class="language-rust noplayground ignore">// api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
     PushDataRkyv,
@@ -1302,7 +1302,7 @@ pub struct RawData {
     raw: [u8; 4096],
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// lib.rs:
+<pre><code class="language-rust noplayground ignore">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1378,7 +1378,7 @@ impl MyService {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main.rs:
+<pre><code class="language-rust noplayground ignore">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut storage = Vec::&lt;CompoundData&gt;::new();
@@ -1436,7 +1436,7 @@ fn xmain() -&gt; ! {
 <li>An extra &quot;bounce&quot; required for asynchronous notifications</li>
 </ul>
 <p>The example below is taken from the <code>NetManager</code>'s wifi state change subscription service, and trimmed down to the core bits.</p>
-<pre><code class="language-rust noplayground">// inside api.rs
+<pre><code class="language-rust noplayground ignore">// inside api.rs
 // used for managing susbscriptions
 #[derive(Debug, Archive, Serialize, Deserialize, Copy, Clone)]
 pub(crate) struct WifiStateSubscription {
@@ -1480,7 +1480,7 @@ pub(crate) enum Opcode {
 }
 
 </code></pre>
-<pre><code class="language-rust noplayground">// inside lib.rs
+<pre><code class="language-rust noplayground ignore">// inside lib.rs
 pub struct NetManager {
     netconn: NetConn,
     wifi_state_cid: Option&lt;CID&gt;,
@@ -1564,7 +1564,7 @@ impl NetManager {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main-side code
+<pre><code class="language-rust noplayground ignore">// main-side code
 #[xous::xous_main]
 fn xmain() -&gt; ! {
     // ... other stuff ...
@@ -1618,7 +1618,7 @@ fn xmain() -&gt; ! {
 <p>Future versions of Xous may or may not implement a <code>Drop</code> method which automatically returns <code>scalar</code> messages when they go out of scope, this is a topic of active discussion. However, as is the case with all the other idioms, the pattern is different from <code>scalar</code> and <code>memory</code> types, so, regardless, they will be treated with separate examples.</p>
 <h2><a class="header" href="#scalar-pattern-2" id="scalar-pattern-2">Scalar Pattern</a></h2>
 <p>This is very close to the thing that's actually implemented for synchronizing all the servers during a suspend/resume event.</p>
-<pre><code class="language-rust noplayground ignore">// api.rs
+<pre><code class="language-rust noplayground">// api.rs
 pub(crate) enum Opcode {
     WaitUntilReady,
     TheBigEvent,
@@ -1783,12 +1783,12 @@ fn xmain() -&gt; ! {
 <pre><code class="language-toml">modals = {path = &quot;../../services/modals&quot;}
 </code></pre>
 <p>In all of the examples, you will need this pre-amble to create the <code>modals</code> object. The object can be re-used as many times as you like.</p>
-<pre><code class="language-Rust">// connect to the modals object through the name resolver
+<pre><code class="language-rust noplayground ignore">// connect to the modals object through the name resolver
 let xns = XousNames::new().unwrap();
 let modals = modals::Modals::new(&amp;xns).unwrap();
 </code></pre>
 <h2><a class="header" href="#static-notification" id="static-notification">Static Notification</a></h2>
-<pre><code class="language-Rust">modals.show_notification(&quot;This is a test!&quot;).expect(&quot;notification failed&quot;);
+<pre><code class="language-rust noplayground ignore">modals.show_notification(&quot;This is a test!&quot;).expect(&quot;notification failed&quot;);
 </code></pre>
 <p>This will pop up a notification that says &quot;This is a test!&quot;. Execution blocks at this line until the user pressses any key to acknowledge the notification.</p>
 <h2><a class="header" href="#progress-bar" id="progress-bar">Progress bar</a></h2>
@@ -1802,7 +1802,7 @@ let modals = modals::Modals::new(&amp;xns).unwrap();
 <p><code>start</code> should be less than <code>end</code>, and <code>current</code> should be between <code>start</code> and <code>end</code>, inclusive.</p>
 <p>Once the bar is created, you can update its progress using the <code>update_progress()</code> method. It takes a number that represents the current progress between the start and end ordinal.</p>
 <p>The progress bar is closed by calling the <code>finish_progress()</code> method.</p>
-<pre><code class="language-Rust">// the ticktimer is used just to introduce a delay in this example. Normally, you'd do something computationally useful instead of just waiting.
+<pre><code class="language-rust noplayground ignore">// the ticktimer is used just to introduce a delay in this example. Normally, you'd do something computationally useful instead of just waiting.
 let tt = ticktimer_server::Ticktimer::new().unwrap();
 
 let start = 1;
@@ -1840,7 +1840,7 @@ dialog with <code>dynamic_notification_close()</code>.</li>
 <li><code>validator_op</code>: An <code>Option&lt;u32&gt;</code>. When <code>Some()</code>, the argument inside is passed to the validator to indicate which type of text is being validated.</li>
 </ul>
 <p>The idea behind the <code>validator_op</code> is that you could create an <code>Enum</code> type that specifies the type of text you're entering, and you would pass the <code>u32</code> version of that <code>Enum</code> to the <code>get_text()</code> call so that a single <code>validator</code> function can be used to check multiple types of text entry.</p>
-<pre><code class="language-Rust">// you can also use the num_derive crate to have bi-directional transformation of the enum
+<pre><code class="language-rust noplayground ignore">// you can also use the num_derive crate to have bi-directional transformation of the enum
 enum ValidatorOp {
     Int2 = 0,
     Int = 1,
@@ -1892,7 +1892,7 @@ description of the items to select, and then calling <code>get_radiobutton()</co
 the prompt. The returned value will be the <code>&amp;str</code> description of the selected item.</p>
 <p>Note that upon completion of the radio box, the list of items is automatically cleared
 in preparation for another invocation of <code>modals</code>.</p>
-<pre><code class="language-Rust">const RADIO_TEST: [&amp;'static str; 4] = [
+<pre><code class="language-rust noplayground ignore">const RADIO_TEST: [&amp;'static str; 4] = [
     &quot;zebra&quot;,
     &quot;cow&quot;,
     &quot;horse&quot;,
@@ -1912,7 +1912,7 @@ match modals.get_radiobutton(&quot;Pick an animal&quot;) {
 they can select none, some, or all of them.</p>
 <p>The usage is nearly identical to the Radio Box above, except that the return value
 is a <code>Vec::&lt;String&gt;</code>. The <code>Vec</code> will be empty if no elements are selected.</p>
-<pre><code class="language-Rust">const CHECKBOX_TEST: [&amp;'static str; 5] = [
+<pre><code class="language-rust noplayground ignore">const CHECKBOX_TEST: [&amp;'static str; 5] = [
     &quot;happy&quot;,
     &quot;😃&quot;,
     &quot;安&quot;,

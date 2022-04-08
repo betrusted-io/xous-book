@@ -185,12 +185,12 @@
 <pre><code class="language-toml">modals = {path = &quot;../../services/modals&quot;}
 </code></pre>
 <p>In all of the examples, you will need this pre-amble to create the <code>modals</code> object. The object can be re-used as many times as you like.</p>
-<pre><code class="language-Rust">// connect to the modals object through the name resolver
+<pre><code class="language-rust noplayground ignore">// connect to the modals object through the name resolver
 let xns = XousNames::new().unwrap();
 let modals = modals::Modals::new(&amp;xns).unwrap();
 </code></pre>
 <h2><a class="header" href="#static-notification" id="static-notification">Static Notification</a></h2>
-<pre><code class="language-Rust">modals.show_notification(&quot;This is a test!&quot;).expect(&quot;notification failed&quot;);
+<pre><code class="language-rust noplayground ignore">modals.show_notification(&quot;This is a test!&quot;).expect(&quot;notification failed&quot;);
 </code></pre>
 <p>This will pop up a notification that says &quot;This is a test!&quot;. Execution blocks at this line until the user pressses any key to acknowledge the notification.</p>
 <h2><a class="header" href="#progress-bar" id="progress-bar">Progress bar</a></h2>
@@ -204,7 +204,7 @@ let modals = modals::Modals::new(&amp;xns).unwrap();
 <p><code>start</code> should be less than <code>end</code>, and <code>current</code> should be between <code>start</code> and <code>end</code>, inclusive.</p>
 <p>Once the bar is created, you can update its progress using the <code>update_progress()</code> method. It takes a number that represents the current progress between the start and end ordinal.</p>
 <p>The progress bar is closed by calling the <code>finish_progress()</code> method.</p>
-<pre><code class="language-Rust">// the ticktimer is used just to introduce a delay in this example. Normally, you'd do something computationally useful instead of just waiting.
+<pre><code class="language-rust noplayground ignore">// the ticktimer is used just to introduce a delay in this example. Normally, you'd do something computationally useful instead of just waiting.
 let tt = ticktimer_server::Ticktimer::new().unwrap();
 
 let start = 1;
@@ -242,7 +242,7 @@ dialog with <code>dynamic_notification_close()</code>.</li>
 <li><code>validator_op</code>: An <code>Option&lt;u32&gt;</code>. When <code>Some()</code>, the argument inside is passed to the validator to indicate which type of text is being validated.</li>
 </ul>
 <p>The idea behind the <code>validator_op</code> is that you could create an <code>Enum</code> type that specifies the type of text you're entering, and you would pass the <code>u32</code> version of that <code>Enum</code> to the <code>get_text()</code> call so that a single <code>validator</code> function can be used to check multiple types of text entry.</p>
-<pre><code class="language-Rust">// you can also use the num_derive crate to have bi-directional transformation of the enum
+<pre><code class="language-rust noplayground ignore">// you can also use the num_derive crate to have bi-directional transformation of the enum
 enum ValidatorOp {
     Int2 = 0,
     Int = 1,
@@ -294,7 +294,7 @@ description of the items to select, and then calling <code>get_radiobutton()</co
 the prompt. The returned value will be the <code>&amp;str</code> description of the selected item.</p>
 <p>Note that upon completion of the radio box, the list of items is automatically cleared
 in preparation for another invocation of <code>modals</code>.</p>
-<pre><code class="language-Rust">const RADIO_TEST: [&amp;'static str; 4] = [
+<pre><code class="language-rust noplayground ignore">const RADIO_TEST: [&amp;'static str; 4] = [
     &quot;zebra&quot;,
     &quot;cow&quot;,
     &quot;horse&quot;,
@@ -314,7 +314,7 @@ match modals.get_radiobutton(&quot;Pick an animal&quot;) {
 they can select none, some, or all of them.</p>
 <p>The usage is nearly identical to the Radio Box above, except that the return value
 is a <code>Vec::&lt;String&gt;</code>. The <code>Vec</code> will be empty if no elements are selected.</p>
-<pre><code class="language-Rust">const CHECKBOX_TEST: [&amp;'static str; 5] = [
+<pre><code class="language-rust noplayground ignore">const CHECKBOX_TEST: [&amp;'static str; 5] = [
     &quot;happy&quot;,
     &quot;😃&quot;,
     &quot;安&quot;,
