@@ -21,7 +21,7 @@ Each server consists at its core of an event loop. While event loops are allowed
 
 An incoming message will wake up the process, at which point the process shall decode and process the message. From here, the process may issue messages to other servers. Memory `send` and Scalar `scalar` messages will not stop the execution flow; the outgoing messages are simply placed in the destination queue and life goes on. However, blocking message types `lend`, `lend_mut`, and `blocking_scalar` will cause the message to be placed in the destination queue, and the current thread yields the remainder of its quanta to the destination thread. The blocked thread will remain stopped at that point of execution until the blocking message types are "returned". At this point the blocked thread is re-queued for execution. Execution will resume either on a time-based pre-emption boundary, or possibly earlier if the returning process completes its task before its quanta is up and enters a blocking state (that is, waiting on a new incoming message, or a response to a new outgoing blocking message).
 
-:zap: Key Concept :zap:
+⚡ Key Concept ⚡
 
 Memory messages implicitly return to callers on `Drop`. Thus, there is no explicit "return" call in Xous for memory messages. Thus, one must use Rust's borrow checker to schedule the return. Specifically:
 
@@ -31,7 +31,7 @@ Memory messages implicitly return to callers on `Drop`. Thus, there is no explic
    - However, the callee is free to continue on with its processing.
    - A return is triggered by calling `take()` on the enclosing `Option`. This moves the message out of the `Option` and into the current scope, where the message can now be modified with a return value. Once that operation ends, the message goes out of scope, `Drop` is called, and likewise, data is returned to the caller
 
-:warning: IPC Interoperability :warning:
+⚠️ IPC Interoperability ⚠️
 
 In many places Xous offers `usize` as arguments for IPC calls. This has a platform-dependent size, and in fact, the size can be different between caller and callee if you're passing messages between disparate hosts (which is actually a thing that is allowed on Xous).
 
