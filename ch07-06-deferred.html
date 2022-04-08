@@ -177,14 +177,14 @@
 <p>Future versions of Xous may or may not implement a <code>Drop</code> method which automatically returns <code>scalar</code> messages when they go out of scope, this is a topic of active discussion. However, as is the case with all the other idioms, the pattern is different from <code>scalar</code> and <code>memory</code> types, so, regardless, they will be treated with separate examples.</p>
 <h2><a class="header" href="#scalar-pattern" id="scalar-pattern">Scalar Pattern</a></h2>
 <p>This is very close to the thing that's actually implemented for synchronizing all the servers during a suspend/resume event.</p>
-<pre><code class="language-rust noplayground">// api.rs
+<pre><code class="language-rust noplayground ignore">// api.rs
 pub(crate) enum Opcode {
     WaitUntilReady,
     TheBigEvent,
     // ... and other ops
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// lib.rs:
+<pre><code class="language-rust noplayground ignore">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -198,7 +198,7 @@ impl MyService {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main.rs:
+<pre><code class="language-rust noplayground ignore">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut waiting = Vec::&lt;MessageSender&gt;::new();
@@ -227,7 +227,7 @@ fn xmain() -&gt; ! {
 }
 </code></pre>
 <h2><a class="header" href="#memory-pattern" id="memory-pattern">Memory Pattern</a></h2>
-<pre><code class="language-rust noplayground">// api.rs
+<pre><code class="language-rust noplayground ignore">// api.rs
 pub(crate) enum Opcode {
     GetDeferredData,
     Event,
@@ -239,7 +239,7 @@ pub struct DeferredData {
     pub description: xous_ipc::String::&lt;128&gt;,
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// lib.rs:
+<pre><code class="language-rust noplayground ignore">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -257,7 +257,7 @@ impl MyService {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main.rs:
+<pre><code class="language-rust noplayground ignore">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     // if you are sure there will never be multiple deferred messages, you can just use an

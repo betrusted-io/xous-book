@@ -266,58 +266,67 @@ installed.</p>
 <h1><a class="header" href="#server-architecture" id="server-architecture">Server Architecture</a></h1>
 <p>WIP documentation on kernel-side server architecture details. This chapter is for kernel implementers, and not application programmers.</p>
 <p>See <a href="ch07-02-caller-idioms.html">caller idioms</a> and <a href="ch07-00-messages.html">messages</a> for details on how to use servers in application programs.</p>
-<p>Mutex: m</p>
-<ul>
-<li>Mutex unlocked: 0</li>
-<li>Mutex locked: 0b01</li>
-<li>Mutex locked with waiters: 0b11</li>
-</ul>
-<h2><a class="header" href="#fast-path" id="fast-path">Fast path</a></h2>
-<table><thead><tr><th>m value before</th><th>m value after</th><th>Thread 1</th><th>Thread 2</th><th>Action</th></tr></thead><tbody>
-<tr><td>0</td><td>1</td><td>m c+= 1 == 1</td><td></td><td>Increment Mutex. It is now 1, therefore it was unlocked and is now locked.</td></tr>
-<tr><td>1</td><td>0</td><td>m l= 1 == 1</td><td></td><td>Set Mutex to 0. It was 1, therefore it was locked without contention.</td></tr>
-<tr><td>0</td><td>0</td><td>[Leave]</td><td>[Enter]</td><td></td></tr>
-<tr><td>0</td><td>1</td><td></td><td>m c+= 1 == 1</td><td></td></tr>
-<tr><td>1</td><td>0</td><td></td><td>m c-= 1 == 1</td><td></td></tr>
-</tbody></table>
-<h2><a class="header" href="#one-thread-contention" id="one-thread-contention">One thread contention</a></h2>
-<table><thead><tr><th>m value before</th><th>m value after</th><th>Thread 1</th><th>Thread 2</th><th>Action</th></tr></thead><tbody>
-<tr><td>0</td><td>1</td><td>m c+= 1 == 1</td><td></td><td>Increment Mutex. It is now 1, therefore it was unlocked and is now locked.</td></tr>
-<tr><td>1</td><td>1</td><td>[Leave]</td><td>[Enter]</td><td>System context switch.</td></tr>
-<tr><td>1</td><td>2</td><td></td><td>m c+= 1 == 2</td><td>Increment Mutex. It was locked. Enter the slow path. Send a message BlockingScalar(LockMutex, &amp;m) to Mutex server.</td></tr>
-<tr><td>1</td><td>2</td><td>[Enter]</td><td>[Leave]</td><td></td></tr>
-<tr><td>2</td><td>0</td><td>m l= 0 == 2</td><td></td><td>Set Mutext to 0. It was 2 (not 1), therefore the slow path was taken. Send a message Scalar(UnlockMutex, &amp;m) to Mutex server.</td></tr>
-<tr><td>0</td><td>0</td><td>[Leave]</td><td>[Enter]</td><td>Mutex server responds to Thread 2's LockMutex call and resumes Thread 2.</td></tr>
-<tr><td>0</td><td>1</td><td></td><td>m c+= 1 == 1</td><td>Increment Mutex. It is now 1, therefore it was unlocked and is now locked.</td></tr>
-<tr><td>1</td><td>0</td><td></td><td>m c-= 1 == 1</td><td></td></tr>
-</tbody></table>
-<h2><a class="header" href="#one-thread-contention-mid-switch" id="one-thread-contention-mid-switch">One thread contention mid-switch</a></h2>
-<table><thead><tr><th>m value before</th><th>m value after</th><th>Thread 1</th><th>Thread 2</th><th>Action</th></tr></thead><tbody>
-<tr><td>0</td><td>1</td><td>m c+= 1 == 1</td><td></td><td>Increment Mutex. It is now 1, therefore it was unlocked and is now locked.</td></tr>
-<tr><td>1</td><td>1</td><td>[Leave]</td><td>[Enter]</td><td>System context switch.</td></tr>
-<tr><td>1</td><td>2</td><td></td><td>m c+= 1 == 2</td><td>Increment Mutex. It was locked.</td></tr>
-<tr><td>1</td><td>2</td><td>[Enter]</td><td>[Leave]</td><td>System happens to switch contexts immediately.</td></tr>
-<tr><td>2</td><td>0</td><td>m l= 0 == 2</td><td></td><td>Set Mutext to 0. It was 2 (not 1), therefore the slow path was taken. Send a message Scalar(UnlockMutex, &amp;m) to Mutex server.</td></tr>
-<tr><td>0</td><td>0</td><td>[Leave]</td><td>[Enter]</td><td>Send a message BlockingScalar(LockMutex, &amp;m) to Mutex server. Mutex server makes a note that the next <code>LockMutex(&amp;m)</code> call should return immediately.</td></tr>
-<tr><td>0</td><td>0</td><td></td><td>[Leave]</td><td></td></tr>
-<tr><td>0</td><td>0</td><td></td><td>[Enter]</td><td>Mutex server responds to Thread 2's LockMutex call and resumes Thread 2.</td></tr>
-<tr><td>0</td><td>1</td><td></td><td>m c+= 1 == 1</td><td>Increment Mutex. It is now 1, therefore it was unlocked and is now locked.</td></tr>
-<tr><td>1</td><td>0</td><td></td><td>m c-= 1 == 1</td><td></td></tr>
-</tbody></table>
-<h2><a class="header" href="#one-thread-contention-mid-switch-1" id="one-thread-contention-mid-switch-1">One thread contention mid-switch</a></h2>
-<table><thead><tr><th>m value before</th><th>m value after</th><th>Thread 1</th><th>Thread 2</th><th>Action</th></tr></thead><tbody>
-<tr><td>0</td><td>1</td><td>m c+= 1 == 1</td><td></td><td>Increment Mutex. It is now 1, therefore it was unlocked and is now locked.</td></tr>
-<tr><td>1</td><td>1</td><td>[Leave]</td><td>[Enter]</td><td>System context switch.</td></tr>
-<tr><td>1</td><td>2</td><td></td><td>m c+= 1 == 2</td><td>Increment Mutex. It was locked.</td></tr>
-<tr><td>1</td><td>2</td><td>[Enter]</td><td>[Leave]</td><td>System happens to switch contexts immediately.</td></tr>
-<tr><td>2</td><td>0</td><td>m l= 0 == 2</td><td></td><td>Set Mutext to 0. It was 2 (not 1), therefore the slow path was taken. Send a message Scalar(UnlockMutex, &amp;m) to Mutex server.</td></tr>
-<tr><td>0</td><td>0</td><td>[Leave]</td><td>[Enter]</td><td>Send a message BlockingScalar(LockMutex, &amp;m) to Mutex server. Mutex server makes a note that the next <code>LockMutex(&amp;m)</code> call should return immediately.</td></tr>
-<tr><td>0</td><td>0</td><td></td><td>[Leave]</td><td></td></tr>
-<tr><td>0</td><td>0</td><td></td><td>[Enter]</td><td>Mutex server responds to Thread 2's LockMutex call and resumes Thread 2.</td></tr>
-<tr><td>0</td><td>0</td><td>[Enter]</td><td>[Leave]</td><td>System happens to switch contexts immediately.</td></tr>
-<tr><td>0</td><td>1</td><td>m c+= 1 == 1</td><td></td><td>Increment Mutex. It is now 1, therefore it was unlocked and is now locked.</td></tr>
-<tr><td>1</td><td>1</td><td>[Leave]</td><td>[Enter]</td><td>System context switch.</td></tr>
-</tbody></table>
+<h1><a class="header" href="#synchronization-primitives" id="synchronization-primitives">Synchronization Primitives</a></h1>
+<p>Synchronization primitives are provided via the Ticktimer Server. This includes mutexes, process sleeping, and condvars.</p>
+<h2><a class="header" href="#thread-sleeping" id="thread-sleeping">Thread Sleeping</a></h2>
+<p>Thread sleeping is a primitive that is implemented by the ticktimer
+server.</p>
+<p>This takes advantage of the fact that a sender will suspend a thread
+until a <code>BlockingScalar</code> message is responded to.</p>
+<p>In order to suspend a thread, simply send a <code>BlockingScalar</code> message
+to the ticktimer server with an <code>id</code> of <code>1</code> and an <code>arg1</code> indicating
+the number of milliseconds to sleep.</p>
+<p>If you need  to sleep for more than 49 days, simply send multiple messages.</p>
+<h2><a class="header" href="#mutex" id="mutex">Mutex</a></h2>
+<p>Mutexes allow for multiple threads to safely access the same data.
+Xous Mutexes have two paths: A fast path, and a slow path. Non-contended
+Mutexes traverse the fast path and will not need a context switch.
+Contended Mutexes will automatically fall back to the slow path.</p>
+<p>The core of a Mutex is a single <code>AtomicUsize</code>. This value is 0 when
+the Mutex is unlocked, and nonzero when it is locked.</p>
+<h3><a class="header" href="#mutex-locking" id="mutex-locking">Mutex: Locking</a></h3>
+<p>Locking a Mutex involves a simple <code>try_lock()</code> operation. In this
+operation, atomic instructions are used to replace the value <code>0</code>
+with the value <code>1</code>, failing if this is the case.</p>
+<pre><code class="language-rust noplayground ignore">pub unsafe fn try_lock(&amp;self) -&gt; bool {
+    self.locked.compare_exchange(0, 1, SeqCst, SeqCst).is_ok()
+}
+</code></pre>
+<p>If the Mutex is locked, then the current thread will call <code>yield_slice()</code>
+which hands execution to another thread in the current process in the hope
+that the other thread will release its mutex.</p>
+<p>This currently occurs three times.</p>
+<p>If the lock still cannot be locked, then it is &quot;poisoned&quot;. Instead of
+swapping <code>0</code> for <code>1</code>, the thread does an atomic Add of <code>1</code> to the current
+value. If the resulting value is <code>1</code> then the lock was successfully
+obtained and execution may continue as normal.</p>
+<p>However, if the value is not <code>1</code> then the process falls back to the Slow Path. This involves sending a <code>BlockingScalar</code> to the ticktimer
+server with an <code>id</code> of <code>6</code> and <code>arg1</code> set to the address of the Mutex.</p>
+<h3><a class="header" href="#mutex-unlocking" id="mutex-unlocking">Mutex: Unlocking</a></h3>
+<p>Unlocking a Mutex on the Fast Path simply involves subtracting <code>1</code> from
+the Mutex. If the previous value was <code>1</code> then there were no other
+threads waiting on the Mutex.</p>
+<p>Otherwise, send a <code>BlockingScalar</code> to the ticktimer server with
+an <code>id</code> of <code>7</code> and <code>arg1</code> set to the address of the Mutex.</p>
+<h2><a class="header" href="#condvar" id="condvar">Condvar</a></h2>
+<p>Condvar is Rust's name for &quot;conditional variables&quot;. Broadly speaking,
+they are instances where one thread takes an area of memory and says
+&quot;Wake me up sometime in the future.&quot; A different thread can then say
+&quot;Wake up one other thread that's waiting on this object.&quot; Or it
+can say &quot;Wake up all other threads that are waiting on this object.&quot;</p>
+<h3><a class="header" href="#condvar-waiting-for-a-condition" id="condvar-waiting-for-a-condition">Condvar: Waiting for a Condition</a></h3>
+<p>To suspend a thread until a condition occurs, or until a timeout hits,
+allocate an area of memory for the condvar. Then send a <code>BlockingScalar</code>
+message to the ticktimer server with an <code>id</code> of <code>8</code>. Set <code>arg1</code> to the
+address of the condvar.</p>
+<p>In order to add a timeout, set <code>arg2</code> to the number of milliseconds to
+wait for. Times longer than 49 days are not supported, so multiple
+calls will be required. If no timeout is required, pass <code>0</code> for <code>arg2</code>.</p>
+<h3><a class="header" href="#condvar-signaling-wakeups" id="condvar-signaling-wakeups">Condvar: Signaling Wakeups</a></h3>
+<p>To wake up another thread, send a <code>BlockingScalar</code> message to the ticktimer
+server with an <code>id</code> of <code>9</code>, and set <code>arg1</code> to the address of the condvar.
+<code>arg2</code> should contain the number of blocked threads to wake up.
+In order to wake only one thread, pass <code>1</code>.</p>
 <h1><a class="header" href="#introducing-the-kernel" id="introducing-the-kernel">Introducing the Kernel</a></h1>
 <h1><a class="header" href="#memory-management-in-xous" id="memory-management-in-xous">Memory Management in Xous</a></h1>
 <p>Memory is allocated with the <code>MapMemory</code> syscall. This call accepts four arguments:</p>
@@ -1609,14 +1618,14 @@ fn xmain() -&gt; ! {
 <p>Future versions of Xous may or may not implement a <code>Drop</code> method which automatically returns <code>scalar</code> messages when they go out of scope, this is a topic of active discussion. However, as is the case with all the other idioms, the pattern is different from <code>scalar</code> and <code>memory</code> types, so, regardless, they will be treated with separate examples.</p>
 <h2><a class="header" href="#scalar-pattern-2" id="scalar-pattern-2">Scalar Pattern</a></h2>
 <p>This is very close to the thing that's actually implemented for synchronizing all the servers during a suspend/resume event.</p>
-<pre><code class="language-rust noplayground">// api.rs
+<pre><code class="language-rust noplayground ignore">// api.rs
 pub(crate) enum Opcode {
     WaitUntilReady,
     TheBigEvent,
     // ... and other ops
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// lib.rs:
+<pre><code class="language-rust noplayground ignore">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1630,7 +1639,7 @@ impl MyService {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main.rs:
+<pre><code class="language-rust noplayground ignore">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut waiting = Vec::&lt;MessageSender&gt;::new();
@@ -1659,7 +1668,7 @@ fn xmain() -&gt; ! {
 }
 </code></pre>
 <h2><a class="header" href="#memory-pattern-2" id="memory-pattern-2">Memory Pattern</a></h2>
-<pre><code class="language-rust noplayground">// api.rs
+<pre><code class="language-rust noplayground ignore">// api.rs
 pub(crate) enum Opcode {
     GetDeferredData,
     Event,
@@ -1671,7 +1680,7 @@ pub struct DeferredData {
     pub description: xous_ipc::String::&lt;128&gt;,
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// lib.rs:
+<pre><code class="language-rust noplayground ignore">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1689,7 +1698,7 @@ impl MyService {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main.rs:
+<pre><code class="language-rust noplayground ignore">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     // if you are sure there will never be multiple deferred messages, you can just use an
