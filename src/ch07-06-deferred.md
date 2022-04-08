@@ -13,7 +13,7 @@ Future versions of Xous may or may not implement a `Drop` method which automatic
 
 This is very close to the thing that's actually implemented for synchronizing all the servers during a suspend/resume event.
 
-```rust,noplayground
+```rust,noplayground,ignore
 // api.rs
 pub(crate) enum Opcode {
     WaitUntilReady,
@@ -22,7 +22,7 @@ pub(crate) enum Opcode {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // lib.rs:
 impl MyService {
     // ... new(), etc.
@@ -38,7 +38,7 @@ impl MyService {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // main.rs:
 fn xmain() -> ! {
     // ... preamble
@@ -70,7 +70,7 @@ fn xmain() -> ! {
 
 ## Memory Pattern
 
-```rust,noplayground
+```rust,noplayground,ignore
 // api.rs
 pub(crate) enum Opcode {
     GetDeferredData,
@@ -84,7 +84,7 @@ pub struct DeferredData {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // lib.rs:
 impl MyService {
     // ... new(), etc.
@@ -104,7 +104,7 @@ impl MyService {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // main.rs:
 fn xmain() -> ! {
     // ... preamble
