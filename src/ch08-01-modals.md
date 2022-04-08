@@ -18,7 +18,7 @@ modals = {path = "../../services/modals"}
 
 In all of the examples, you will need this pre-amble to create the `modals` object. The object can be re-used as many times as you like.
 
-```Rust
+```rust,noplayground,ignore
 // connect to the modals object through the name resolver
 let xns = XousNames::new().unwrap();
 let modals = modals::Modals::new(&xns).unwrap();
@@ -26,7 +26,7 @@ let modals = modals::Modals::new(&xns).unwrap();
 
 ## Static Notification
 
-```Rust
+```rust,noplayground,ignore
 modals.show_notification("This is a test!").expect("notification failed");
 ```
 
@@ -46,7 +46,7 @@ Once the bar is created, you can update its progress using the `update_progress(
 
 The progress bar is closed by calling the `finish_progress()` method.
 
-```Rust
+```rust,noplayground,ignore
 // the ticktimer is used just to introduce a delay in this example. Normally, you'd do something computationally useful instead of just waiting.
 let tt = ticktimer_server::Ticktimer::new().unwrap();
 
@@ -90,7 +90,7 @@ One can request text entry using the `get_text()` method. This takes the followi
 
 The idea behind the `validator_op` is that you could create an `Enum` type that specifies the type of text you're entering, and you would pass the `u32` version of that `Enum` to the `get_text()` call so that a single `validator` function can be used to check multiple types of text entry.
 
-```Rust
+```rust,noplayground,ignore
 // you can also use the num_derive crate to have bi-directional transformation of the enum
 enum ValidatorOp {
     Int2 = 0,
@@ -147,7 +147,7 @@ the prompt. The returned value will be the `&str` description of the selected it
 Note that upon completion of the radio box, the list of items is automatically cleared
 in preparation for another invocation of `modals`.
 
-```Rust
+```rust,noplayground,ignore
 const RADIO_TEST: [&'static str; 4] = [
     "zebra",
     "cow",
@@ -171,7 +171,7 @@ they can select none, some, or all of them.
 The usage is nearly identical to the Radio Box above, except that the return value
 is a `Vec::<String>`. The `Vec` will be empty if no elements are selected.
 
-```Rust
+```rust,noplayground,ignore
 const CHECKBOX_TEST: [&'static str; 5] = [
     "happy",
     "😃",

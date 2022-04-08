@@ -15,7 +15,7 @@ pub(crate) enum Opcode {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // lib.rs:
 impl MyService {
     // ... new(), etc.
@@ -47,7 +47,7 @@ impl MyService {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // main.rs:
 fn xmain() -> ! {
     // ... preamble
@@ -86,7 +86,7 @@ This example also shows how to do a memory message without `rkyv`. This is usefu
 for situations that can't have an `rkyv` dependency, or if you just prefer to do
 things in a low-level fashion.
 
-```rust,noplayground
+```rust,noplayground,ignore
 // api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
@@ -109,7 +109,7 @@ pub struct RawData {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // lib.rs:
 impl MyService {
     // ... new(), etc.
@@ -187,7 +187,7 @@ impl MyService {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // main.rs:
 fn xmain() -> ! {
     // ... preamble

@@ -49,7 +49,7 @@ Note that none of these are mandatory -- for example, a pure client-side library
 
 Below is an example of what these files might look like in a very minimal server implementation.
 
-```Rust,noplayground
+```rust,noplayground,ignore
 // inside lib.rs
 pub mod api;
 pub use api::*;
@@ -82,7 +82,7 @@ impl Drop for MyService {
 }
 ```
 
-```Rust,noplayground
+```rust,noplayground,ignore
 // inside api.rs
 pub(crate) const SERVER_NAME_MYSERVICE: &str     = "_Any descriptive and unique name under 64 chars_";
 
@@ -96,7 +96,7 @@ pub(crate) enum Opcode {
 }
 ```
 
-```Rust,noplayground
+```rust,noplayground,ignore
 // inside main.rs
 #![cfg_attr(target_os = "none", no_main)]
 

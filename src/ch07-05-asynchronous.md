@@ -12,7 +12,7 @@ This pattern has the following properties:
 
 The example below is taken from the `NetManager`'s wifi state change subscription service, and trimmed down to the core bits.
 
-```rust,noplayground
+```rust,noplayground,ignore
 // inside api.rs
 // used for managing susbscriptions
 #[derive(Debug, Archive, Serialize, Deserialize, Copy, Clone)]
@@ -57,7 +57,7 @@ pub(crate) enum Opcode {
 }
 
 ```
-```rust,noplayground
+```rust,noplayground,ignore
 // inside lib.rs
 pub struct NetManager {
     netconn: NetConn,
@@ -143,7 +143,7 @@ impl NetManager {
 }
 ```
 
-```rust,noplayground
+```rust,noplayground,ignore
 // main-side code
 #[xous::xous_main]
 fn xmain() -> ! {

@@ -13,7 +13,7 @@ Future versions of Xous may or may not implement a `Drop` method which automatic
 
 This is very close to the thing that's actually implemented for synchronizing all the servers during a suspend/resume event.
 
-```rust,noplayground,ignore
+```rust,noplayground
 // api.rs
 pub(crate) enum Opcode {
     WaitUntilReady,
