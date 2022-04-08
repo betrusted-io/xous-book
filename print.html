@@ -1072,7 +1072,7 @@ pub(crate) enum Opcode {
     // ... and other ops
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// lib.rs:
+<pre><code class="language-rust noplayground ignore">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1090,7 +1090,7 @@ impl MyService {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main.rs:
+<pre><code class="language-rust noplayground ignore">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     loop {
@@ -1125,7 +1125,7 @@ fn xmain() -&gt; ! {
 </ul>
 </li>
 </ul>
-<pre><code class="language-rust noplayground">// api.rs
+<pre><code class="language-rust noplayground ignore">// api.rs
 pub(crate) enum Opcode {
     // use `rkyv` to serialize a memory message and send
     PushDataRkyv,
@@ -1145,7 +1145,7 @@ pub struct CompoundData {
     pub description: xous_ipc::String::&lt;128&gt;,
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// lib.rs:
+<pre><code class="language-rust noplayground ignore">// lib.rs:
 impl MyService {
     // ... new(), etc.
 
@@ -1173,7 +1173,7 @@ impl MyService {
     }
 }
 </code></pre>
-<pre><code class="language-rust noplayground">// main.rs:
+<pre><code class="language-rust noplayground ignore">// main.rs:
 fn xmain() -&gt; ! {
     // ... preamble
     let mut storage = Vec::&lt;CompoundData&gt;::new();
