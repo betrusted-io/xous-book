@@ -101,9 +101,21 @@ pub struct CompoundData {
     pub len: u16,
     pub description: xous_ipc::String::<128>,
 }
-/// The minimum size serialized is always one page (4096 bytes). Even if we made this smaller,
-/// a full 4096 bytes are always allocated and cleared. `rkyv` simply hides this detail. So,
-/// for raw implementations let's just expose this directly.
+/// For a memory structure to be remapped between processes, it must be page-aligned,
+/// and the mapped region will always round up to the neareest page boundary.
+///
+/// Therefore, the minimum size serialized is always one page (4096 bytes). Even if
+/// we made this smaller, a full 4096 bytes are always allocated and cleared.
+/// The `rkyv`+Buffer method hides the details of page alignment.
+///
+/// When serializing data manually, you need to guarantee the page alignment property.
+/// One way to do this is to request a memory page using `xous::syscall::map_memory()`.
+/// This is an explicit way to create a page of memory, and you must also unmap it
+/// once you are done. Another way to do it is to allocate it on the stack, but, in
+/// order to guarantee mapability, the structure has to be decorated with
+/// `#[repr(C, align(4096))]`. This example uses stack allocation, and thus we create
+/// a page-sized, page-aligned RawData structure as below.
+#[repr(C, align(4096))]
 pub struct RawData {
     raw: [u8; 4096],
 }
@@ -155,6 +167,8 @@ impl MyService {
         for (&s, d) in data.iter().zip(request.raw.iter_mut()) {
             *d = s;
         }
+	// we need to guarantee that RawData is a page-aligned, page-sized stack allocation.
+	// See comment on the data structure for more information.
         let buf = unsafe {
             xous::MemoryRange::new(
                 &mut request as *mut RawData as usize,
