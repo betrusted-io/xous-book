@@ -932,7 +932,7 @@ $
 <p>There are (so far) four common types of caller patterns used in Xous:</p>
 <ol>
 <li>Non-synchronizing: these are &quot;fire and forget&quot; messages that don't block(*) and have no synchronization guarantee.</li>
-<li>Synchronous: these block and wait for a response from the callee. The callee can do nothing else until this message is handled.</li>
+<li>Synchronous: these block and wait for a response from the callee. The caller can do nothing else until this message is handled.</li>
 <li>Asynchronous: these don't block, and expect a response at some time later via a &quot;push notification&quot;.</li>
 <li>Deferred-response: these block the caller, but the callee is not allowed to block.</li>
 </ol>
