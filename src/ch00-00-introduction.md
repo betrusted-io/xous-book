@@ -11,3 +11,10 @@ Chapters [1 (Getting Started)](ch01-00-getting-started.md), [4 (Renode Emulation
 ----------------
 
 **Xous** is a collection of small, single purpose **Servers** which respond to **Messages**. The xous **Kernel** delivers Messages to Servers, allocates processing time to Servers, and transfers memory ownership from one Server to another. Every xous Server contains a central loop that receives a Message, matches the Message **Opcode**, and runs the corresponding rust code. When the operation is completed, the Server waits to receive the next Message at the top of the loop, and processing capacity is released to other Servers. Every service available in xous is implemented as a Server. Every user application in xous is implemented as a Server.
+
+There are only three "well known" Servers which are always available to receive Messages, and run the requested Opcode:
+- The `xous-name-server` maintains a list of all registered Servers by name, and guards a randomised 16bit **Server ID** for each of the Servers. The xous-name-server arbitrates the flow of Messages between Servers.
+- The `ticktime-server` provides time related services.
+- The `xous-log-server` provides logging services.
+
+The remaining servers are not "well known" - meaning that the `xous-name-server` must be consulted to obtain a Connection ID in order to send a Message to the Server. Such Servers include `aes` `com` `dns` `gam` `jtag` `keyboard` `llio` `modals` `net` `pddb` `trng`.
