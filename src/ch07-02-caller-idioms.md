@@ -5,7 +5,7 @@ There are two flavors of messages in Xous: `scalar` or `memory` messages. `scala
 There are (so far) four common types of caller patterns used in Xous:
 
 1. Non-synchronizing: these are "fire and forget" messages that don't block(*) and have no synchronization guarantee.
-2. Synchronous: these block and wait for a response from the callee. The callee can do nothing else until this message is handled.
+2. Synchronous: these block and wait for a response from the callee. The caller can do nothing else until this message is handled.
 3. Asynchronous: these don't block, and expect a response at some time later via a "push notification".
 4. Deferred-response: these block the caller, but the callee is not allowed to block.
 
