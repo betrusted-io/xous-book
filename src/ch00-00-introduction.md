@@ -17,7 +17,7 @@ There are only three "well known" Servers which are always available to receive 
 - The `ticktime-server` provides time related services.
 - The `xous-log-server` provides logging services.
 
-The remaining servers are not "well known" - meaning that the `xous-name-server` must be consulted to obtain a Connection ID in order to send a Message to the Server. Such Servers include `aes` `com` `dns` `gam` `jtag` `keyboard` `llio` `modals` `net` `pddb` `trng`.
+The remaining servers are not "well known" - meaning that the `xous-name-server` must be consulted to obtain a Connection ID in order to send the Server a Message. Such Servers include `aes` `com` `dns` `gam` `jtag` `keyboard` `llio` `modals` `net` `pddb` `trng`.
 
 Every **Message** contains a **Connection ID** and an **Opcode**. The Connection ID is a "delivery address" for the recipient Server, and the Opcode specifies a particular operation provided by the recipient Server. There are two flavours of messages in xous:
 - **Scalar messages** are very simple and very fast. Scalar messages can transmit only 4 u32 sized arguments.
