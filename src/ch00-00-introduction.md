@@ -22,3 +22,11 @@ The remaining servers are not "well known" - meaning that the `xous-name-server`
 Every **Message** contains a **Connection ID** and an **Opcode**. The Connection ID is a "delivery address" for the recipient Server, and the Opcode specifies a particular operation provided by the recipient Server. There are two flavours of messages in xous:
 - **Scalar messages** are very simple and very fast. Scalar messages can transmit only 4 u32 sized arguments.
 - **Memory messages** can contain larger structures, but they are slower. A struct sent in a Memory Message must implement `#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]` so that it can be serialized into a buffer by the sender and deserialized by the recipient
+
+The most simple Server communication involves a **non-synchronizing** "fire and forget" style of Messaging. The Sender sends a Message and continues processsing immediately. The Recipient will receive the Message when it arrives, and process the Opcode accordingly. End of story. The ownership of the Message memory passes from the Sender to the Recipient and is Dropped by the Recipient. While there will be a delay before the Message is received - the sequence is assured.
+
+Alternatively, A Server can send a **synchronous** Message, and wait (block) until the Recipient completes the operation and responds. In this arrangement, the Message memory is merely lent to the Recipient (read-only or read-write) and returned to the Sender on completion. While the sender Server "blocks", its processing quanta is not wasted, but also "lent" to the Recipient Server to complete the request.
+
+**asynchronous** Message flow is also possible. The Sender will send a non-syncronous Message and include it's own Connection ID as a "return address". The Recipient Server will complete the operation, and then send a non-syncronous Message in reply to the Connection ID of the Sender.
+
+A Server may also send a synchronous Message and wait for a **deferred-response**. This setup is needed when the recipient Server cannot forumulate a reply within a single Opcode cycle. Rather, the recipient Server must "park" the request and continue to process subsequent Messages until the original request can be satisfied.
