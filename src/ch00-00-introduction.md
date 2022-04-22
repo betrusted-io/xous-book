@@ -12,7 +12,7 @@ Chapters [1 (Getting Started)](ch01-00-getting-started.md), [4 (Renode Emulation
 
 ## Architecture
 
-**Xous** is a collection of small, single purpose **Servers** which respond to **Messages**. The Xous **Kernel** delivers Messages to Servers, allocates processing time to Servers, and transfers memory ownership from one Server to another. Every xous Server contains a central loop that receives a Message, matches the Message **Opcode**, and runs the corresponding rust code. When the operation is completed, the Server waits to receive the next Message at the top of the loop, and processing capacity is released to other Servers. Every service available in xous is implemented as a Server. Every user application in xous is implemented as a Server.
+**Xous** is a collection of small, single purpose **Servers** which respond to **Messages**. The Xous **Kernel** delivers Messages to Servers, allocates processing time to Servers, and transfers memory ownership from one Server to another. Every Xous Server contains a central loop that receives a Message, matches the Message **Opcode**, and runs the corresponding rust code. When the operation is completed, the Server waits to receive the next Message at the top of the loop, and processing capacity is released to other Servers. Every service available in Xous is implemented as a Server. Every user application in Xous is implemented as a Server.
 
 Architecturally, Xous is most similar to [QNX](https://www.qnx.com/developers/docs/6.4.1/neutrino/getting_started/s1_msg.html), another microkernel message-passing OS.
 
@@ -28,7 +28,7 @@ The remaining servers are not "well known" - meaning that the `xous-name-server`
 
 ### Messages, aka IPC
 
-Every **Message** contains a **Connection ID** and an **Opcode**. The Connection ID is a "delivery address" for the recipient Server, and the Opcode specifies a particular operation provided by the recipient Server. There are two flavours of messages in xous:
+Every **Message** contains a **Connection ID** and an **Opcode**. The Connection ID is a "delivery address" for the recipient Server, and the Opcode specifies a particular operation provided by the recipient Server. There are two flavours of messages in Xous:
 
 - **Scalar messages** are very simple and very fast. Scalar messages can transmit only 4 u32 sized arguments.
 - **Memory messages** can contain larger structures, but they are slower. They "transmit" page-sized (4096-byte) memory chunks.

@@ -8,7 +8,7 @@ Other servers may have sensitive API calls. Their 128-bit IDs are treated as a s
 
 In order to discover their ID, these servers register their ID in `xous-names`, along with a 64-byte `server name` which is a unique plaintext description of the server, and a `MaxConnections` which is the maximum number of processes allowed to connect to the registered server.
 
-![overview of xous names](images/xous-names.png)
+![overview of Xous names](images/xous-names.png)
 
 ## Well-Known Names
 
