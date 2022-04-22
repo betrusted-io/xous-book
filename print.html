@@ -180,7 +180,7 @@ installed.</p>
 <p>Chapters <a href="ch01-00-getting-started.html">1 (Getting Started)</a>, <a href="ch04-00-renode-emulation.html">4 (Renode Emulation)</a>, <a href="ch06-00-build-system-overview.html">6 (Build System Overview)</a>, <a href="ch07-00-messages.html">7 (Messages)</a> and <a href="ch08-00-graphics.html">8 (Graphics)</a> are more appropriate for application developers.</p>
 <hr />
 <h2><a class="header" href="#architecture" id="architecture">Architecture</a></h2>
-<p><strong>Xous</strong> is a collection of small, single purpose <strong>Servers</strong> which respond to <strong>Messages</strong>. The Xous <strong>Kernel</strong> delivers Messages to Servers, allocates processing time to Servers, and transfers memory ownership from one Server to another. Every xous Server contains a central loop that receives a Message, matches the Message <strong>Opcode</strong>, and runs the corresponding rust code. When the operation is completed, the Server waits to receive the next Message at the top of the loop, and processing capacity is released to other Servers. Every service available in xous is implemented as a Server. Every user application in xous is implemented as a Server.</p>
+<p><strong>Xous</strong> is a collection of small, single purpose <strong>Servers</strong> which respond to <strong>Messages</strong>. The Xous <strong>Kernel</strong> delivers Messages to Servers, allocates processing time to Servers, and transfers memory ownership from one Server to another. Every Xous Server contains a central loop that receives a Message, matches the Message <strong>Opcode</strong>, and runs the corresponding rust code. When the operation is completed, the Server waits to receive the next Message at the top of the loop, and processing capacity is released to other Servers. Every service available in Xous is implemented as a Server. Every user application in Xous is implemented as a Server.</p>
 <p>Architecturally, Xous is most similar to <a href="https://www.qnx.com/developers/docs/6.4.1/neutrino/getting_started/s1_msg.html">QNX</a>, another microkernel message-passing OS.</p>
 <h3><a class="header" href="#servers" id="servers">Servers</a></h3>
 <p>There are only a few &quot;well known&quot; Servers which are always available to receive Messages, and run the requested Opcode:</p>
@@ -192,7 +192,7 @@ installed.</p>
 </ul>
 <p>The remaining servers are not &quot;well known&quot; - meaning that the <code>xous-name-server</code> must be consulted to obtain a Connection ID in order to send the Server a Message. Such Servers include <code>aes</code> <code>com</code> <code>dns</code> <code>gam</code> <code>jtag</code> <code>keyboard</code> <code>llio</code> <code>modals</code> <code>net</code> <code>pddb</code> <code>trng</code>.</p>
 <h3><a class="header" href="#messages-aka-ipc" id="messages-aka-ipc">Messages, aka IPC</a></h3>
-<p>Every <strong>Message</strong> contains a <strong>Connection ID</strong> and an <strong>Opcode</strong>. The Connection ID is a &quot;delivery address&quot; for the recipient Server, and the Opcode specifies a particular operation provided by the recipient Server. There are two flavours of messages in xous:</p>
+<p>Every <strong>Message</strong> contains a <strong>Connection ID</strong> and an <strong>Opcode</strong>. The Connection ID is a &quot;delivery address&quot; for the recipient Server, and the Opcode specifies a particular operation provided by the recipient Server. There are two flavours of messages in Xous:</p>
 <ul>
 <li><strong>Scalar messages</strong> are very simple and very fast. Scalar messages can transmit only 4 u32 sized arguments.</li>
 <li><strong>Memory messages</strong> can contain larger structures, but they are slower. They &quot;transmit&quot; page-sized (4096-byte) memory chunks.</li>
@@ -1029,7 +1029,7 @@ $
 <p>Some servers have &quot;well-known names&quot;. These servers are designed to accept any number of connections and all of its APIs are considered safe for public use.</p>
 <p>Other servers may have sensitive API calls. Their 128-bit IDs are treated as a secret.</p>
 <p>In order to discover their ID, these servers register their ID in <code>xous-names</code>, along with a 64-byte <code>server name</code> which is a unique plaintext description of the server, and a <code>MaxConnections</code> which is the maximum number of processes allowed to connect to the registered server.</p>
-<p><img src="images/xous-names.png" alt="overview of xous names" /></p>
+<p><img src="images/xous-names.png" alt="overview of Xous names" /></p>
 <h2><a class="header" href="#well-known-names" id="well-known-names">Well-Known Names</a></h2>
 <p>A few servers have well-known names:</p>
 <ul>
