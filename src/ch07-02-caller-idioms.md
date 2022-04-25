@@ -140,3 +140,4 @@ With the above template in mind, click on the following for examples of each of 
 - [Synchronous](ch07-04-synchronizing.md). Includes an example of how to use raw messages (instead of `rkyv`) for serializing data.
 - [Asynchronous](ch07-05-asynchronous.md) or "push notifications"
 - [Deferred response](ch07-06-deferred.md)
+- [Forwarding messages](ch07-07-forwarding.md)
