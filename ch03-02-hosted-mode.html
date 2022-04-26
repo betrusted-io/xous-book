@@ -233,28 +233,35 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 <p>Messages function normally in Hosted mode, however they are more expensive than on real hardware. Because messages get sent via the network, the entire contents of a Memory message must be sent across the wire.</p>
 <p>Eight 32-bit values are sent, and these may be followed by any data in case there is a Memory message.</p>
 <table><thead><tr><th>Offset (Bytes)</th><th>Usage (Calling)</th></tr></thead><tbody>
-<tr><td>0</td><td>Syscall Number</td></tr>
-<tr><td>4</td><td>Arg 1</td></tr>
-<tr><td>8</td><td>Arg 2</td></tr>
-<tr><td>12</td><td>Arg 3</td></tr>
-<tr><td>16</td><td>Arg 4</td></tr>
-<tr><td>20</td><td>Arg 5</td></tr>
-<tr><td>24</td><td>Arg 6</td></tr>
-<tr><td>28</td><td>Arg 7</td></tr>
-<tr><td>32</td><td>Contents of any buffer pointed to by args</td></tr>
+<tr><td>0</td><td>Source thread ID</td></tr>
+<tr><td>4</td><td>Syscall Number</td></tr>
+<tr><td>8</td><td>Arg 1</td></tr>
+<tr><td>12</td><td>Arg 2</td></tr>
+<tr><td>16</td><td>Arg 3</td></tr>
+<tr><td>20</td><td>Arg 4</td></tr>
+<tr><td>24</td><td>Arg 5</td></tr>
+<tr><td>28</td><td>Arg 6</td></tr>
+<tr><td>32</td><td>Arg 7</td></tr>
+<tr><td>36</td><td>Contents of any buffer pointed to by args</td></tr>
 </tbody></table>
 <p>The process should expect a return, and should block until it gets a response. When it gets a response, a memory buffer may be required that is the same size as the buffer that was sent. The contents of this buffer will be appended to the network packet in the same manner as the calling buffer. If the message is a Borrow, then this data will be the same as the data that was sent. If it is a MutableBorrow, then the server may manipulate this data before it returns.</p>
 <table><thead><tr><th>Offset (Bytes)</th><th>Usage (Return)</th></tr></thead><tbody>
-<tr><td>0</td><td>Return type tag</td></tr>
-<tr><td>4</td><td>Arg 1</td></tr>
-<tr><td>8</td><td>Arg 2</td></tr>
-<tr><td>12</td><td>Arg 3</td></tr>
-<tr><td>16</td><td>Arg 4</td></tr>
-<tr><td>20</td><td>Arg 5</td></tr>
-<tr><td>24</td><td>Arg 6</td></tr>
-<tr><td>28</td><td>Arg 7</td></tr>
-<tr><td>32</td><td>Contents of any returned buffer</td></tr>
+<tr><td>0</td><td>Target thread ID</td></tr>
+<tr><td>4</td><td>Return type tag</td></tr>
+<tr><td>8</td><td>Arg 1</td></tr>
+<tr><td>12</td><td>Arg 2</td></tr>
+<tr><td>16</td><td>Arg 3</td></tr>
+<tr><td>20</td><td>Arg 4</td></tr>
+<tr><td>24</td><td>Arg 5</td></tr>
+<tr><td>28</td><td>Arg 6</td></tr>
+<tr><td>32</td><td>Arg 7</td></tr>
+<tr><td>36</td><td>Contents of any returned buffer</td></tr>
 </tbody></table>
+<h2><a class="header" href="#threading" id="threading">Threading</a></h2>
+<p>All Xous syscalls go to the kernel, however certain syscalls are simply stubs. One example of this is threading, where the kernel has no way of actually launching a thread.</p>
+<p>The application is responsible for creating new threads, and may do so either by &quot;sending&quot; a <code>CreateThread</code> call to the kernel or by creating a native thread using <code>std::Thread::spawn()</code>.</p>
+<p>When launching a thread with <code>CreateThread</code>, the kernel will allocate a nwe &quot;Xous TID&quot; and return that to the application. The application will then launch its new thread and set the local <code>THREAD_ID</code> variable to this ID. This ID will be used as part of the header when sending syscalls to the kernel, and will be used to delegate responses to their waiting threads.</p>
+<p>If an application calls <code>std::Thread::spawn()</code> then it will not have a <code>THREAD_ID</code> set. When the thread attempts to send a syscall, hosted mode will notice that <code>THREAD_ID</code> is None. When this occurs, Hosted mode will create a &quot;fake&quot; thread ID (starting at TID 65536) and call <code>SysCall::CreateThread(ThreadInit {})</code> to register this new ID. Then all subsequent calls will use this fake thread ID.</p>
 
                     </main>
 
