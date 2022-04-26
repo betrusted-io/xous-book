@@ -91,28 +91,39 @@ Eight 32-bit values are sent, and these may be followed by any data in case ther
 
 | Offset (Bytes) | Usage (Calling)                           |
 | -------------- | ----------------------------------------- |
-| 0              | Syscall Number                            |
-| 4              | Arg 1                                     |
-| 8              | Arg 2                                     |
-| 12             | Arg 3                                     |
-| 16             | Arg 4                                     |
-| 20             | Arg 5                                     |
-| 24             | Arg 6                                     |
-| 28             | Arg 7                                     |
-| 32             | Contents of any buffer pointed to by args |
+| 0              | Source thread ID                          |
+| 4              | Syscall Number                            |
+| 8              | Arg 1                                     |
+| 12             | Arg 2                                     |
+| 16             | Arg 3                                     |
+| 20             | Arg 4                                     |
+| 24             | Arg 5                                     |
+| 28             | Arg 6                                     |
+| 32             | Arg 7                                     |
+| 36             | Contents of any buffer pointed to by args |
 
 The process should expect a return, and should block until it gets a response. When it gets a response, a memory buffer may be required that is the same size as the buffer that was sent. The contents of this buffer will be appended to the network packet in the same manner as the calling buffer. If the message is a Borrow, then this data will be the same as the data that was sent. If it is a MutableBorrow, then the server may manipulate this data before it returns.
 
 | Offset (Bytes) | Usage (Return)                  |
 | -------------- | ------------------------------- |
-| 0              | Return type tag                 |
-| 4              | Arg 1                           |
-| 8              | Arg 2                           |
-| 12             | Arg 3                           |
-| 16             | Arg 4                           |
-| 20             | Arg 5                           |
-| 24             | Arg 6                           |
-| 28             | Arg 7                           |
-| 32             | Contents of any returned buffer |
+| 0              | Target thread ID                |
+| 4              | Return type tag                 |
+| 8              | Arg 1                           |
+| 12             | Arg 2                           |
+| 16             | Arg 3                           |
+| 20             | Arg 4                           |
+| 24             | Arg 5                           |
+| 28             | Arg 6                           |
+| 32             | Arg 7                           |
+| 36             | Contents of any returned buffer |
 
 
+## Threading
+
+All Xous syscalls go to the kernel, however certain syscalls are simply stubs. One example of this is threading, where the kernel has no way of actually launching a thread.
+
+The application is responsible for creating new threads, and may do so either by "sending" a `CreateThread` call to the kernel or by creating a native thread using `std::Thread::spawn()`.
+
+When launching a thread with `CreateThread`, the kernel will allocate a nwe "Xous TID" and return that to the application. The application will then launch its new thread and set the local `THREAD_ID` variable to this ID. This ID will be used as part of the header when sending syscalls to the kernel, and will be used to delegate responses to their waiting threads.
+
+If an application calls `std::Thread::spawn()` then it will not have a `THREAD_ID` set. When the thread attempts to send a syscall, hosted mode will notice that `THREAD_ID` is None. When this occurs, Hosted mode will create a "fake" thread ID (starting at TID 65536) and call `SysCall::CreateThread(ThreadInit {})` to register this new ID. Then all subsequent calls will use this fake thread ID.
