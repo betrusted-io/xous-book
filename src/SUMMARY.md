@@ -15,6 +15,7 @@
 - [Introducing the Kernel](ch03-00-introducing-the-kernel.md)
     - [Memory Layout](ch03-01-memory-layout.md)
     - [Hosted Mode](ch03-02-hosted-mode.md)
+    - [Process Creation](ch03-03-process-creation.md)
 
 - [Renode Emulation](ch04-00-renode-emulation.md)
     - [Platform Definition](ch04-01-platform-definition.md)
