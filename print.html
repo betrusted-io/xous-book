@@ -531,10 +531,7 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 <p>Test mode is a special case. Tests don't want to depend on files in the filesystem, particularly as multiple tests are running at the same time. To work around this, processes are created as threads. This is a special case intended to support heavily-parallel machines that can run all thread tests simultaneously, and is not normally used.</p>
 <h2><a class="header" href="#creating-processes-on-native-hardware-eg-risc-v" id="creating-processes-on-native-hardware-eg-risc-v">Creating Processes on Native Hardware (e.g. RISC-V)</a></h2>
 <p>Process creation on real hardware requires a minimum of six pieces of information. These are all defined in the <code>ProcessInit</code> struct, which gets passed directly to the kernel:</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub struct ProcessInit {
+<pre><code class="language-rust noplayground ignore">pub struct ProcessInit {
     // 0,1 -- Stack Base, Stack Size
     pub stack: crate::MemoryRange,
     // 2,3 -- Text Start, Text Size
@@ -544,18 +541,14 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
     // 5 -- Entrypoint (must be within .text)
     pub start: crate::MemoryAddress,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>The <code>stack</code> defaults to 128 kB growing downwards from <code>0x8000_0000</code>.</p>
 <p><code>text</code> refers to a region of memory <strong>INSIDE YOUR PROGRAM</strong> that will be detached and moved to the child process. This memory will form the initialization routine for the child process, and should contain no <code>.bss</code> or <code>.data</code> sections, unless it also contains code to allocate and set up those sections.</p>
 <p><code>text_destination</code> describes the offset where <code>text</code> will be copied. This address is determined by the link address of your initialization program. </p>
 <p>The <code>start</code> is the address where the program counter will start. This is the address of your program's entrypoint. It must reside within the allocated text section, beginning at <code>text_destination</code>.</p>
 <h3><a class="header" href="#native-hardware-entrypoint" id="native-hardware-entrypoint">Native Hardware Entrypoint</a></h3>
 <p>The entrypoint for native hardware takes four arguments. When combined, these four arguments form a Server ID that can be used for sending additional data from the parent process to the child. An example loader program might look like the following:</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub extern &quot;C&quot; fn init(a1: u32, a2: u32, a3: u32, a4: u32) -&gt; ! {
+<pre><code class="language-rust noplayground ignore">pub extern &quot;C&quot; fn init(a1: u32, a2: u32, a3: u32, a4: u32) -&gt; ! {
     let server = xous::SID::from_u32(a1, a2, a3, a4);
     while let Ok(xous::Result::Message(envelope)) =
         xous::rsyscall(xous::SysCall::ReceiveMessage(server))
@@ -570,8 +563,7 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
     }
     panic!(&quot;parent exited&quot;);
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>This compiles down to a very efficient program that can be used to load a larger program into the new address space. Memory is written using the <code>WriteMemory</code> opcode to load new pages into the nacent process, and <code>FinishStartup</code> is used to shut down the server and jump to the new process entrypoint.</p>
 <h3><a class="header" href="#limitations-of-created-processes" id="limitations-of-created-processes">Limitations of Created Processes</a></h3>
 <p><strong>NOTE:</strong> The following is subject to fixes in the kernel, and do not currently apply. This information is presented here in order to explain oddities observed when these features are implemented.</p>
