@@ -18,7 +18,7 @@ Test mode is a special case. Tests don't want to depend on files in the filesyst
 
 Process creation on real hardware requires a minimum of six pieces of information. These are all defined in the `ProcessInit` struct, which gets passed directly to the kernel:
 
-```rust
+```rust,noplayground,ignore
 pub struct ProcessInit {
     // 0,1 -- Stack Base, Stack Size
     pub stack: crate::MemoryRange,
@@ -43,7 +43,7 @@ The `start` is the address where the program counter will start. This is the add
 
 The entrypoint for native hardware takes four arguments. When combined, these four arguments form a Server ID that can be used for sending additional data from the parent process to the child. An example loader program might look like the following:
 
-```rust
+```rust,noplayground,ignore
 pub extern "C" fn init(a1: u32, a2: u32, a3: u32, a4: u32) -> ! {
     let server = xous::SID::from_u32(a1, a2, a3, a4);
     while let Ok(xous::Result::Message(envelope)) =
