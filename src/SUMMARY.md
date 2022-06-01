@@ -29,6 +29,7 @@
     - [MiniELF Format](ch05-03-minielf.md)
 
 - [Build System](ch06-00-build-system-overview.md)
+    - [Testing Crates](ch06-01-testing-crates.md)
     - [Image Creation](ch06-02-create-image.md)
 
 - [Messages](ch07-00-messages.md)
