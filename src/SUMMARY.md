@@ -43,3 +43,4 @@
 
 - [Graphics Toolkit](ch08-00-graphics.md)
     - [Modals](ch08-01-modals.md)
+    - [Menus](ch08-02-menus.md)
