@@ -1,6 +1,5 @@
 # The Xous Operating System
 
-[The Xous Operating System](title-page.md)
 [Introduction](ch00-00-introduction.md)
 
 ## Getting started
