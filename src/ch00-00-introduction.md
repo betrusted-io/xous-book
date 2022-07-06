@@ -1,6 +1,12 @@
 # Introduction
 
-This book is a work in progress. Many chapters are placeholders and will appear blank.
+Xous is a microkernel operating system with processes, threads, and
+messages. It is designed to have an extremely small kernel that
+delegates as much as possible to userspace. This book describes
+the operating system kernel as well as the services that support
+normal operating system behavior.
+
+As this book is a work in progress, some chapters are placeholders and will appear blank.
 
 The book is written for two audiences: kernel maintainers, and application developers.
 
