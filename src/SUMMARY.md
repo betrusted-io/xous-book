@@ -43,3 +43,12 @@
 - [Graphics Toolkit](ch08-00-graphics.md)
     - [Modals](ch08-01-modals.md)
     - [Menus](ch08-02-menus.md)
+
+- [Plausibly Deniable DataBase (PDDB)](ch09-00-pddb-overview.md)
+  - [Basis Internal Structure](ch09-01-basis.md)
+  - [Key Derivation](ch09-02-rootkeys.md)
+  - [Native API](ch09-03-api-native.md)
+  - [std API](ch09-04-api-std.md)
+  - [Testing and CI](ch09-05-testing.md)
+  - [Backups](ch09-06-backups.md)
+  - [Security and Deniability](ch09-07-discussion.md)
