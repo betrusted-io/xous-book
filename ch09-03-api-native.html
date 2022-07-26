@@ -1,0 +1,384 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Native API - The Xous Operating System</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-renode.html"><strong aria-hidden="true">1.2.</strong> Hello, Renode!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li><li class="chapter-item expanded "><a href="ch03-02-hosted-mode.html"><strong aria-hidden="true">3.2.</strong> Hosted Mode</a></li><li class="chapter-item expanded "><a href="ch03-03-process-creation.html"><strong aria-hidden="true">3.3.</strong> Process Creation</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-platform-definition.html"><strong aria-hidden="true">4.1.</strong> Platform Definition</a></li><li class="chapter-item expanded "><a href="ch04-02-renode-startup-script.html"><strong aria-hidden="true">4.2.</strong> Renode Startup Script</a></li><li class="chapter-item expanded "><a href="ch04-03-python-extensions.html"><strong aria-hidden="true">4.3.</strong> Python Extensions</a></li><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.4.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-testing-crates.html"><strong aria-hidden="true">6.1.</strong> Testing Crates</a></li><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.2.</strong> Image Creation</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li><li class="chapter-item expanded "><a href="ch07-07-forwarding.html"><strong aria-hidden="true">7.2.5.</strong> Forwarding</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li><li class="chapter-item expanded "><a href="ch08-02-menus.html"><strong aria-hidden="true">8.2.</strong> Menus</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-pddb-overview.html"><strong aria-hidden="true">9.</strong> Plausibly Deniable DataBase (PDDB)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-basis.html"><strong aria-hidden="true">9.1.</strong> Basis Internal Structure</a></li><li class="chapter-item expanded "><a href="ch09-02-rootkeys.html"><strong aria-hidden="true">9.2.</strong> Key Derivation</a></li><li class="chapter-item expanded "><a href="ch09-03-api-native.html" class="active"><strong aria-hidden="true">9.3.</strong> Native API</a></li><li class="chapter-item expanded "><a href="ch09-04-api-std.html"><strong aria-hidden="true">9.4.</strong> std API</a></li><li class="chapter-item expanded "><a href="ch09-05-testing.html"><strong aria-hidden="true">9.5.</strong> Testing and CI</a></li><li class="chapter-item expanded "><a href="ch09-06-backups.html"><strong aria-hidden="true">9.6.</strong> Backups</a></li><li class="chapter-item expanded "><a href="ch09-07-discussion.html"><strong aria-hidden="true">9.7.</strong> Security and Deniability</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Xous Operating System</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#native-api" id="native-api">Native API</a></h1>
+<p>The &quot;native&quot; API for the PDDB is a set of <code>xous</code>-specific calls that one can use to manage and access the PDDB.</p>
+<p>All of the native API method signatures can be found in <a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs"><code>lib.rs</code></a> and the <a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/frontend/pddbkey.rs">frontend</a> module. Proper Rustdoc for these is on the list of things to do. This chapter treats the native API at an abstract level, with a focus on code examples rather than 100% coverage of every feature.</p>
+<h2><a class="header" href="#the-pddb-object" id="the-pddb-object">The <code>Pddb</code> Object</a></h2>
+<p>Any native access to the PDDB goes through the <code>Pddb</code> object. You will need to add the <code>pddb</code> service to your <code>Cargo.toml</code> file, and then create a PDDB object like such:</p>
+<pre><code class="language-rust noplayground ignore">let pddb = pddb::Pddb::new();
+</code></pre>
+<p>The method you'll use the most is the <code>.get()</code> method on the <code>Pddb</code> object. It has a signature like this:</p>
+<pre><code class="language-rust noplayground ignore">pub fn get(
+    &amp;self,
+    dict_name: &amp;str,
+    key_name: &amp;str,
+    basis_name: Option&lt;&amp;str&gt;,
+    create_dict: bool,
+    create_key: bool,
+    alloc_hint: Option&lt;usize&gt;,
+    key_changed_cb: Option&lt;impl Fn() + 'static + Send&gt;
+) -&gt; Result&lt;PddbKey&gt;
+</code></pre>
+<p><code>dict_name</code> and <code>key_name</code> are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the <code>:</code> character as that is the path separator. Dictionary names can be up to 111 bytes long, and key names up to 95 bytes long.</p>
+<p><code>basis_name</code> is an optional Basis name, that can be any valid UTF-8 string that avoids <code>:</code>. Basis names can be up to 64 bytes long. If <code>basis_name</code> is <code>None</code>, then the Basis to use will be computed as follows:</p>
+<ul>
+<li>If the key exists in any Basis, the most recently open Basis is accessed for that key.</li>
+<li>If the key does not exist, then either it returns an error (depending on the flags), or it creates the key in the most recently opened Basis.</li>
+</ul>
+<p>The System basis (available at <code>pddb::PDDB_DEFAULT_SYSTEM_BASIS</code>) is the fall-back as it is always mounted. Administrative operations, especially ones that deal with non-sensitive settings, should generally specify the system basis explicitly so that options don't mysteriously reset or disappear when secret Bases are mounted or unmounted.</p>
+<p><code>create_dict</code> specifies to create the dictionary, if it does not already exist.</p>
+<p><code>create_key</code> specifies to create the key, if it does not already exist.</p>
+<p><code>alloc_hint</code> is a hint to the system as to how much space it should allocate for the key. This parameter is only used when the key is created; later calls will ignore this. Generally, system performance will be much faster if you provide an <code>alloc_hint</code>, especially for small keys. Without the hint, the key size starts at 4 bytes, and every byte written deletes and re-allocates the key to grow to the next byte size. This is mitigated partially by buffering in the <code>Read</code> API, but if you have a sense of how big a key might be in advance, it's helpful to pass that on.</p>
+<p><code>key_changed_cb</code> is a callback meant to notify the key accessor that the key's status has changed. Typically this would be the result of someone locking or unlocking a secret Basis. As a <code>static + Send</code> closure, generally one would place a call to <code>xous::send_message()</code> inside the call, that would send a message to another server to handle this situation, similar to this:</p>
+<pre><code class="language-rust noplayground ignore">static SELF_CONN: AtomicU32 = AtomicU32::new(0); // 0 is never a valid CID
+
+pub(crate) fn basis_change() {
+    if SELF_CONN.load(Ordering::SeqCst) != 0 {
+        xous::send_message(SELF_CONN.load(Ordering::SeqCst),
+            Message::new_scalar(Opcode::BasisChange.to_usize().unwrap(), 0, 0, 0, 0)
+        ).unwrap();
+    }
+}
+
+// In the main loop, there would be some code similar to this:
+fn main () {
+    let xns = xous_names::XousNames::new().unwrap();
+    let sid = xns.register_name(&quot;_My Server_&quot;, None).unwrap();
+    let conn = xous::connect(sid).unwrap();
+    SELF_CONN.store(conn, Ordering::SeqCst);
+    // at this point SELF_CONN will be non-zero
+}
+
+// later on, a piece of code might refer to the function as follows:
+fn myfunc() {
+    let key = pddb.get(
+        &amp;dictname,
+        &amp;keyname,
+        None,
+        false, false, None,
+        Some(crate::basis_change)
+    ).unwrap();
+    // if you want the callback to be None, you must specify the type of None as follows:
+    let key2 = pddb.get(
+        &amp;dictname,
+        &amp;key2name,
+        None,
+        false, false, None,
+        None::&lt;fn()&gt;
+    ).unwrap();
+}
+</code></pre>
+<h2><a class="header" href="#access-examples" id="access-examples">Access Examples</a></h2>
+<p>The general flow for writing to the PDDB is as follows:</p>
+<ol>
+<li>Serialize your data into a <code>[u8]</code> slice</li>
+<li>Fetch the key using the <code>pddb.get()</code> method</li>
+<li>Use any <code>Write</code> trait from <code>std::io::Write</code> to write the data</li>
+<li>Sync the PDDB (highly recommended, especially at this early stage)</li>
+</ol>
+<p>The general flow for reading data from the PDDB is as follows:</p>
+<ol>
+<li>Fetch the key using the <code>pddb.get()</code> method</li>
+<li>Use any <code>Read</code> trait from <code>std::io::Read</code> to write the data</li>
+<li>Deserialize the data into a <code>[u8]</code> slice</li>
+</ol>
+<p>Below is an example of writing a key.</p>
+<pre><code class="language-rust noplayground ignore">use std::io::Write;
+
+let pddb = pddb::Pddb::new();
+let record = PasswordRecord {
+    version: VAULT_PASSWORD_REC_VERSION,
+    description,
+    username,
+    password,
+    // ... other line items
+};
+let ser = serialize_password(&amp;record);
+let guid = self.gen_guid();
+log::debug!(&quot;storing into guid: {}&quot;, guid);
+pddb.borrow().get(
+    VAULT_PASSWORD_DICT,
+    &amp;guid,
+    None, true, true,
+    Some(VAULT_ALLOC_HINT), Some(crate::basis_change)
+)
+.expect(&quot;error accessing the PDDB&quot;)
+.write(&amp;ser)
+.expect(&quot;couldn't write data&quot;);
+log::debug!(&quot;syncing...&quot;);
+pddb.borrow().sync().ok();
+</code></pre>
+<p>And below is an example of reading a key.</p>
+<pre><code class="language-rust noplayground ignore">use std::io::Read;
+
+let pddb = pddb::Pddb::new();
+let mut record = pddb.borrow().get(
+    VAULT_PASSWORD_DICT,
+    &amp;key,
+    None,
+    false, false, None,
+    Some(crate::basis_change)
+).expect(&quot;couldn't find key&quot;);
+let mut data = Vec::&lt;u8&gt;::new();
+match record.read_to_end(&amp;mut data) {
+    Ok(_len) =&gt; {
+        if let Some(pw) = deserialize_password(data) {
+            // pw now contains the deserialized data
+        } else {
+            // handle errors
+        }
+    }
+    Err(e) =&gt; // handle errors
+}
+</code></pre>
+<h2><a class="header" href="#management" id="management">Management</a></h2>
+<p>The Pddb object also has methods to help manage the PDDB, including:</p>
+<ul>
+<li><code>list_basis()</code></li>
+<li><code>create_basis()</code></li>
+<li><code>unlock_basis()</code></li>
+<li><code>lock_basis()</code></li>
+<li><code>delete_basis()</code></li>
+<li><code>delete_key()</code></li>
+<li><code>delete_dict()</code></li>
+<li><code>list_keys()</code></li>
+<li><code>list_dict()</code></li>
+<li><code>is_mounted_blocking()</code> - blocks until the PDDB is mounted</li>
+</ul>
+<p>For non-blocking queries of PDDB mount status, there is an object called <code>PddbMountPoller</code> which has a method <code>is_mounted_nonblocking()</code>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="ch09-02-rootkeys.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="ch09-04-api-std.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="ch09-02-rootkeys.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="ch09-04-api-std.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

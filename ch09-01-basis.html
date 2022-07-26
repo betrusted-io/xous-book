@@ -1,0 +1,415 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Basis Internal Structure - The Xous Operating System</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-renode.html"><strong aria-hidden="true">1.2.</strong> Hello, Renode!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li><li class="chapter-item expanded "><a href="ch03-02-hosted-mode.html"><strong aria-hidden="true">3.2.</strong> Hosted Mode</a></li><li class="chapter-item expanded "><a href="ch03-03-process-creation.html"><strong aria-hidden="true">3.3.</strong> Process Creation</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-platform-definition.html"><strong aria-hidden="true">4.1.</strong> Platform Definition</a></li><li class="chapter-item expanded "><a href="ch04-02-renode-startup-script.html"><strong aria-hidden="true">4.2.</strong> Renode Startup Script</a></li><li class="chapter-item expanded "><a href="ch04-03-python-extensions.html"><strong aria-hidden="true">4.3.</strong> Python Extensions</a></li><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.4.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-testing-crates.html"><strong aria-hidden="true">6.1.</strong> Testing Crates</a></li><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.2.</strong> Image Creation</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li><li class="chapter-item expanded "><a href="ch07-07-forwarding.html"><strong aria-hidden="true">7.2.5.</strong> Forwarding</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li><li class="chapter-item expanded "><a href="ch08-02-menus.html"><strong aria-hidden="true">8.2.</strong> Menus</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-pddb-overview.html"><strong aria-hidden="true">9.</strong> Plausibly Deniable DataBase (PDDB)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-basis.html" class="active"><strong aria-hidden="true">9.1.</strong> Basis Internal Structure</a></li><li class="chapter-item expanded "><a href="ch09-02-rootkeys.html"><strong aria-hidden="true">9.2.</strong> Key Derivation</a></li><li class="chapter-item expanded "><a href="ch09-03-api-native.html"><strong aria-hidden="true">9.3.</strong> Native API</a></li><li class="chapter-item expanded "><a href="ch09-04-api-std.html"><strong aria-hidden="true">9.4.</strong> std API</a></li><li class="chapter-item expanded "><a href="ch09-05-testing.html"><strong aria-hidden="true">9.5.</strong> Testing and CI</a></li><li class="chapter-item expanded "><a href="ch09-06-backups.html"><strong aria-hidden="true">9.6.</strong> Backups</a></li><li class="chapter-item expanded "><a href="ch09-07-discussion.html"><strong aria-hidden="true">9.7.</strong> Security and Deniability</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Xous Operating System</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#basis-internal-structure" id="basis-internal-structure">Basis Internal Structure</a></h1>
+<h2><a class="header" href="#overview" id="overview">Overview</a></h2>
+<p>From an external API standpoint, users see the PDDB as a set of dictionaries containing keys:</p>
+<p><img src="images/betrusted-pddb-architecture.png" alt="dictionary to key mapping example" /></p>
+<p>This chapter goes behind the scenes and explores the internal structure, and how the Bases are allocated to provide multiple overlay views into the simplified example above.</p>
+<h2><a class="header" href="#a-short-example" id="a-short-example">A Short Example</a></h2>
+<p>Below is a contrived example of a PDDB consisting of two dictionaries, <code>Contacts</code> and <code>Passwords</code>, and two Bases, <code>Basis A</code> and <code>Basis B</code>:</p>
+<p><img src="images/pddb-example1.png" alt="example of the PDDB with two secret bases open" /></p>
+<p>The &quot;User View&quot; of the PDDB is the union of the data contained in <code>Basis A</code> and <code>Basis B</code>.</p>
+<p>If the user were to lock <code>Basis B</code>, the &quot;User View&quot; would now lack the data contained within <code>Basis B</code>:</p>
+<p><img src="images/pddb-example2.png" alt="example of the PDDB with one secret basis locked" /></p>
+<p>Furthermore, each Basis is implemented using ciphers that have a particular characteristic, namely, <a href="https://web.cs.ucdavis.edu/%7Erogaway/papers/ad.pdf">IND$-CPA</a>: the ciphertext is indistinguishable from random noise. AES-GCM-SIV has this property (and if I'm not mistaken, provably indistingishable, but ask a cryptographer for the latest research).</p>
+<p><img src="images/pddb-basic-idea.png" alt="the role of provable indistinguishability" /></p>
+<p>Thus, when a Basis is locked, its data pages look indistinguishable from other pages in the PDDB storage area that have previously initialized with &quot;noise&quot; (more specifically, the output of a ChaCha8 CSPRNG that conditions the joint output of two TRNGs, a ring oscillator and an avalanche generator).</p>
+<p>This quality of indistinguishability from free space is the source of plausible deniability. Side channels such as free space and API-level leakage degrade the amount of plausible deniability. See the chapter on <a href="ch09-07-discussion.html">Security and Deniability</a> for an in-depth discussion on deniability attacks and mitigations.</p>
+<h2><a class="header" href="#orthogonal-virtual-page-table-structure" id="orthogonal-virtual-page-table-structure">Orthogonal Virtual Page Table Structure</a></h2>
+<h3><a class="header" href="#page-table-format" id="page-table-format">Page Table Format</a></h3>
+<p>The simplified diagram above would require a user to scan every page of storage and trial-decrypt each page to discover the full extent of user data. It also lacks an index to track what data goes where.</p>
+<p>These two problems are solved by using a classic &quot;page table&quot; mechanism to map Basis data onto the actual storage array. The virtual memory space of any given Basis is 64 bits, with pages that are 4064 bytes long (this is 4096 physical bytes less a per-page overhead for AEC-GCM-SIV + journaling)</p>
+<p>The page table itself consists of entries that are 128-bits long (sized to match the length of an AES block), that are encrypted with AES-ECB.</p>
+<p><img src="images/pddb-details.png" alt="details of the PDDB implementation" /></p>
+<p>Each page table entry is encodes the following data:</p>
+<ul>
+<li>52-bit virtual page number of the physical page corresponding to the offset of the page table, stored as a 56-bit zero-padded field.</li>
+<li>8 bits of flags</li>
+<li>32-bit nonce (see <a href="ch09-07-discussion.html#page-table-collision-leakage">discussion</a> on collisions)</li>
+<li>32 bit <code>murmur3</code> hash checksum</li>
+</ul>
+<p>AES-ECB is tricky to use. However, it is fast, and requires no dependency to adjacent blocks. A nonce is provided to frustrate known-plaintext attacks. There is a trade-off between nonce size, checksum length, and fitting everything within a single AES block. The 32-bit nonce does not provide perfect collision resistance, but the potential leakage is hypothesized to be much smaller than other known side channels in the architecture. The impact of a collision is also negligible: an attacker will know that they have discovered a ciphertext that corresponds to a valid page table entry, but they don't know to which Basis or to what address.</p>
+<p>The page table entry is also protected with a 32-bit murmur3 hash checksum that is not meant to be a cryptographic check; it is instead a fast &quot;go/no-go&quot; check on the potential validity of a page table entry. A page table entry is only considered fully valid until the corresponding data section also decrypts to the data key. The data sections are protected with a proper cryptographic-strength MAC via AES-GCM-SIV, so it's not a problem if we get occassional false-positives on the page table. In practice, false-positives turn into pages that are allocated-to-nowhere, e.g. the space never gets used to store useful data.</p>
+<p>Thus the page table entry has the following characteristics:</p>
+<ul>
+<li>Maps physical pages to virtual pages</li>
+<li>Fits in an AES block</li>
+<li>Is quick to check for definitely invalid entries, but has a low false-positive rate that can be verified with a fully cryptographic MAC.</li>
+<li>Has some protection against known-plaintext attacks; some leakage of information is expected, but is of minor consequence</li>
+</ul>
+<h3><a class="header" href="#page-table-orthogonality" id="page-table-orthogonality">Page Table Orthogonality</a></h3>
+<p>All Bases share storage for their page table entries in the same page table, and each Basis has an identical virtual address space. Collisions of Bases are avoided (that is, the Bases are orthogonal) because the 256-bit AES key used to encrypt each page table entry is different. Thus, even if the plaintext of a page table entry is identical between several Bases, each Basis has a different AES key, and thus no Basis can accidentally decrypt the page table entry of another Basis.</p>
+<p>Thus, when a Basis is &quot;mounted&quot;, the first operation is to take the <code>page table key</code> and trial-decrypt every block in the page table region. Blocks whose checksum match (along with a few other consistency properties) are populated into a <code>HashMap</code> that forms a candidate page table mapping for a given Basis. For Precursor's 98MiB PDDB, this means every time a Basis is mounted, about 25,000 AES blocks corresponding to as many pages need to be decrypted and trialed. This is a reasonably fast operation, thanks to the hardware AES engine, taking a couple of seconds total.</p>
+<h2><a class="header" href="#virtual-memory-layout" id="virtual-memory-layout">Virtual Memory Layout</a></h2>
+<p>The virtual memory layout of every Basis is identical.</p>
+<p>A <code>VPAGE</code> in Basis space is is 0xFE0 (4,064) bytes long, which is equal to a <code>PAGE</code> of 4096 minus 32 bytes of encryption + journal overhead.</p>
+<p>4064 is nice because it has convenient factors: 1, 2, 4, 8, 16, 32, 127, 254, 508, 1016, 2032, 4064.</p>
+<p>The BasisRoot is located at <code>VPAGE</code> #1 (<code>VPAGE</code> #0 is always invalid, to make <code>Option</code>s zero-cost).</p>
+<p>It contains a count of the number of valid dictionaries in the Basis. Dictionaries are found at
+fixed offsets starting at 0xFE_0000 and repeating every 0xFE_0000 intervals, with up to 16383 dictionaries
+allowed. A naive linear search is used to scan for dictionaries, starting at the lowest address,
+scanning every 0xFE_0000, until the correct number of dictionares have been discovered. A dictionary can be effectively deleted by marking its descriptor as invalid.</p>
+<p>A stride of 0xFE_0000 means that dictionary descriptors can be up to 4096 VPAGEs long. A dictionary
+descriptor consists of a <code>DictDescriptor</code> header, some bookkeeping data, plus a count of the number
+of keys in the dictionary. Following the header is a list of key descriptors. Similar to the Descriptors,
+the key descriptors are stored at a stride of 127 (or 32 per <code>VPAGE</code>); they can be deleted by being marked
+as invalid, and a linear scan is used to identify all the entries. A KeyDescriptor contains the name
+of the key, flags, its age, and pointers to the key data in virtual memory space + its length.
+This leads to a name length restriction of roughly 115 characters for keys and dictionaries, which is
+about half of what most filesystems allow, but accommodates roughly 99.99% of the use cases.</p>
+<p>Thus adding a new dictionary always consumes at least one 4k page, but you can have up to 15 keys
+in that dictionary with no extra bookkeeping cost, once the first dictionary is added.</p>
+<p>Each <code>VPAGE</code> is encrypted with AES-GCM-SIV, takes &quot;Additional Authenticating Data&quot;, or AAD. The AAD associated with the BasisRoot consist of a bytewise concatenation of:</p>
+<ul>
+<li>Basis name</li>
+<li>Version number (complicates downgrade attacks)</li>
+<li>FPGA's silicon DNA number (makes a naive raw-copy of PDDB data to another device unusable;
+but of course, the DNA ID can be forged)</li>
+</ul>
+<p>Here are some of the assumptions that went into designing the PDDB:</p>
+<ul>
+<li>Most mutability happens on the data keys themselves (keys are read/write/modify routinely).</li>
+<li>Dictionary modifications (key addition or removal) are about 20x less frequent than key mods.</li>
+<li>Basis modifications (creation/removal of dictionaries) is about 10x less frequent than dictionary .</li>
+<li>According to https://www.pdl.cmu.edu/PDL-FTP/HECStorage/Yifan_Final.pdf, 0.01% of files (1 in 10,
+require a name over 100 bytes long; 0.1% require longer than 64 bytes. There longest filename tified
+was 143 bytes long. Study surveys ~14M files on the LANL network.</li>
+<li>Same study says 99.9% of directories have under 1k files, 99.999% under 10k</li>
+</ul>
+<h3><a class="header" href="#basis-virtual-memory-layout" id="basis-virtual-memory-layout">Basis Virtual Memory Layout</a></h3>
+<table><thead><tr><th align="right">Start Address</th><th>Description</th></tr></thead><tbody>
+<tr><td align="right">0x0000_0000_0000_0000</td><td>Invalid -- <code>VPAGE</code> 0 reserved for <code>Option&lt;&gt;</code></td></tr>
+<tr><td align="right">0x0000_0000_0000_0FE0</td><td>Basis root page</td></tr>
+<tr><td align="right">0x0000_0000_00FE_0000</td><td>Dictionary[0]</td></tr>
+<tr><td align="right">+0</td><td>… Dict header (127 bytes)</td></tr>
+<tr><td align="right">+7F</td><td>…… Maybe key entry (127 bytes)</td></tr>
+<tr><td align="right">+FE</td><td>…… Maybe key entry (127 bytes)</td></tr>
+<tr><td align="right">+FD_FF02</td><td>…… Last key entry start (128k possible)</td></tr>
+<tr><td align="right">0x0000_0000_01FC_0000</td><td>Dictionary[1]</td></tr>
+<tr><td align="right">0x0000_003F_7F02_0000</td><td>Dictionary[16382]</td></tr>
+<tr><td align="right">0x0000_003F_8000_0000</td><td>Small data pool start  (~256GiB)</td></tr>
+<tr><td align="right"></td><td>… Dict[0] pool = 16MiB (4k vpages)</td></tr>
+<tr><td align="right"></td><td>…… SmallPool[0]</td></tr>
+<tr><td align="right">+FE0</td><td>…… SmallPool[1]</td></tr>
+<tr><td align="right">0x0000_003F_80FE_0000</td><td>… Dict[1] pool = 16MiB</td></tr>
+<tr><td align="right">0x0000_007E_FE04_0000</td><td>… Dict[16383] pool</td></tr>
+<tr><td align="right">0x0000_007E_FF02_0000</td><td>Unused</td></tr>
+<tr><td align="right">0x0000_007F_0000_0000</td><td>Medium data pool start</td></tr>
+<tr><td align="right"></td><td>… TBD</td></tr>
+<tr><td align="right">0x0000_FE00_0000_0000</td><td>Large data pool start  (~16mm TiB)</td></tr>
+<tr><td align="right"></td><td>…… Demand-allocated, bump-pointer; currently no defrag</td></tr>
+<tr><td align="right"></td><td></td></tr>
+</tbody></table>
+<h3><a class="header" href="#memory-pools" id="memory-pools">Memory Pools</a></h3>
+<p>Key data is split into three categories of sizes: small, medium, and large; but the implementation
+currently only handles small and large keys. The thresholds are subject to tuning, but
+roughly speaking, small data are keys &lt;4k bytes; large keys are everything else.</p>
+<p>Large keys are the simplest - each key starts at a <code>VPAGE</code>-aligned address, and allocates
+up from there. Any unused amount is wasted, but with a ~32k threshold you'll have no worse
+than 12.5% unused space, probably closer to ~7%-ish if all your data hovered around the threshold.
+The allocation is a simple pointer that just keeps going up. De-allocated space is never defragmented,
+and we just rely on the space being &quot;huge&quot; to save us.</p>
+<p>Small keys are kept in <code>VPAGE</code>-sized pools of data, and compacted together in RAM. The initial, naive
+implementation simply keeps all small keys in a <code>HashMap</code> in RAM, and when it comes time to sync them
+to disk, they are sorted by update count, and written to disk in ascending order.</p>
+<p>Medium keys have a TBD implementation, and are currently directed to the large pool for now.</p>
+<h3><a class="header" href="#size-limits" id="size-limits">Size Limits</a></h3>
+<p>The biggest key the PDDB can handle, at least in this version, 32GiB. No, this is not
+web scale, but it's big enough to hold a typical blu-ray movie as a single key.</p>
+<p>One can adjust this constant up or down, and the trade-off is, you get more or less total number of large keys allocated over the life of the filesystem. This is because we simply &quot;increment a pointer&quot; when a new large key is added to create the next virtual memory spot for the large file, meaning each key get allocated a full 32GiB of virtual memory space for it to grow into.</p>
+<p>At 32GiB, you can create a lifetime total of about 200 million keys (this includes keys you've previously deleted, until we create a mechanism for sweeping through the memory space and tracking de-allocations).</p>
+<p>Note that a &quot;large&quot; keys includes anything over 4kiB, so if you create a 5kiB file, it can potentially grow to 32 GiB without bumping into the next large file.</p>
+<p>This is a very &quot;lazy&quot; way to deal with large files. Given that the PDDB is initially designed for a 32-bit device with only 128MiB of memory and a read/write lifetime of 100k cycles for the FLASH, 200 million file allocations is probably greater than the lifetime of the device itself. If the PDDB migrates to a larger handphone-style application, I think it'll probably still hold up OK with 200 million total large file allocations over the device lifetime and a limit of 32GiB. That's about 73k files created per day for 10 years, or about 50 files per minute -- roughly one new file per second for 10 years straight before the PDDB runs out of virtual memory space.</p>
+<p>A web server creating a &gt;4k temporary log file for every client that hit and then deleting it
+would probably crush this limit in months. So don't use the PDDB to back a high volume web server.
+But it's probably OK for a consumer electronics device with a typical lifetime of less than 10 years.</p>
+<p>If you really think you want larger files and also more write life, you'd need to implement an in-memory
+&quot;free&quot; file allocator, but honestly, this is not something I think we need to burn resources on for
+the initial target of the PDDB (that is, a 100MiB device with 100k read/write endurance lifetime).
+Anyways, the code is written so one can just slide this constant up or down and change the behavior
+of the system; it's recommended you reformat when you do that but I /think/ it should actually be OK
+if you made a change &quot;on the fly&quot;, because the bump allocator only cares about the size of data it intends to allocate, and disregards everything in the past.</p>
+<p>Also note that in practice, a file size is limited to 4GiB on a 32-bit Precursor device anyways
+because the <code>usize</code> type isn't big enough. Recompiling for a 64-bit target, however, should give
+you access to the full 32GiB file size limit.</p>
+<h3><a class="header" href="#ram-pressure" id="ram-pressure">RAM Pressure</a></h3>
+<p>The PDDB retains in RAM a page table for every Basis. There are about 25,000 potential pages on a Precursor device, and there are no duplicate pages between Bases; thus, it's estimated that the page table structure may take about 500kiB of space at its largest.</p>
+<p>In addition to the page tables, the PDDB agressively caches all &quot;small&quot; keys. The current implementation assumes that any small key is always &quot;hot&quot; in cache, and the disk is just a write-through backing store in case power is lost. In practice, the heap size limit of the PDDB server is about 2MiB, so, the system should crash if one starts to push around a megabyte total of small key data. That's about 256 exactly 4k-sized keys, but typically small keys are very small, about 32 bytes, so the practical limit is probably closer to 10k-20k 32-byte keys.</p>
+<p>Large keys consume about one 4k-page per key, regardless of the key size. Large keys only retrieve their data when requested, and will keep only the most recently accessed page in RAM, regardless of the size of the large key. Thus one could store a several-megabyte file in a large key, and not worry about blowing out the cache.</p>
+<p>However, because the large key cache is so simple, it has performance problems, especially for situations where one plans to access large key data randomly, or in the worst case, they are accessing bytes that happen to cross a page boundary -- every time you cross the boundary, the old page is forgotten, and the new page is read in.</p>
+<p>The caching mechanism can be improved down the road, but, at the moment for an application like <code>vault</code>, the current implementation should be more than adequate to handle hundreds of password records.</p>
+<h3><a class="header" href="#the-make-before-break-mbbb-structure" id="the-make-before-break-mbbb-structure">The &quot;Make Before Break&quot; (MBBB) Structure</a></h3>
+<p>In order to protect against data loss in case of an untimely power outage, several pages of FLASH is devoted to the &quot;make before break&quot; feature. The core problem is that a single erase page of the page table contains records for 256 page table entres. If there is a power outage while updating one of the entries, all of the other 255 entries are also lost.</p>
+<p>Thus, the MBBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.</p>
+<p>Initially, the MBBB area is blank (all <code>FF</code>'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBBB (the randomness is for wear-levelling, not security) <em>with</em> the changes applied, and then the page containing the page table entry is erased.</p>
+<p>When the next page table entry needs to be updated, the MBBB page table image is then written to the blank slot in the page table, and the process repeats.</p>
+<p>There is no mechanism to record where the MBBB page is:</p>
+<ul>
+<li>The MBBB area is only consulted if a blank page is found in the page table</li>
+<li>&quot;Blankness&quot; of an area is determined by only consulting the first 16 bytes and checking if they are 0xFF. If it is, the entire page is considered blank.</li>
+<li>The MBBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBBB page.</li>
+</ul>
+<h2><a class="header" href="#free-space" id="free-space">Free Space</a></h2>
+<p>Plausible deniability is all about reducing the number of side channels that can leak information about the existence or non-existence of secret data. The amount of free space in the PDDB is a potent side channel. If the true amount of free space could be known, an adversary can use that to deduce the existence or non-existence of additional secrets within the PDDB beyond the ones revealed to the adversary.</p>
+<p>The PDDB's solution to this is to create a cache of free space that represents a defined fraction of the total true free space. The parameters are tunable, but in v0.9.9 the default parameters are to allocate 50% +/- 10% of the true free space toward the free space cache, known as the FSCB (&quot;Fast Space Cache Buffer&quot;). The +/-10% is a fudge factor that is determined by the TRNG. Thus, the situation for free space in the PDDB looks a bit like the schematic shown below, where the pink areas are &quot;maybe noise? maybe data?&quot; and the gray areas are &quot;definitely free space&quot; (the actual situation is much more fragmented, this is just a cartoon).</p>
+<p><img src="images/pddb-freespace.png" alt="schematic of free space handling in the PDDB" /></p>
+<p>An adversary can thus query the FSCB and know that, for example, a device may currently have about 20% of the total capacity as free space. However, they cannot say for sure that this means that the device is 80% full -- it could also be that the device is 30% full, and the FSCB was never refilled after the initial format; or perhaps any number of states in between.</p>
+<p>Note that the FSCB size is also decremented not just for new data that is written, but also in the case that old records are updated. Thus even a device with a very small amount of data stored, but is heavily used, can eventually bring the FSCB to 0%.</p>
+<p>In the case that the FSCB is exhausted, the user is greeted with a prompt that warns them that the FSCB has been exhausted, and in order to proceed without data loss, every secret Basis must be enumerated (that is, its name and password must be presented to unlock it; the distinction between enumeration and unlocking is that enumeration simply counts the pages used without attempting to mount any filesystem structures). A user can bail out of enumeration, causing the operation that triggered the FSCB refill to fail with an out-of-memory error.</p>
+<p>The actual FSCB refill itself enumerates every page in every Basis into a single &quot;master&quot; record, known as the <code>FastSpace</code> record, and then randomly selects pages out of the unused pages until the FSCB is full. The system consumes entries out of the FSCB in random order. This also accomplishes wear-levelling, since its ordering is randomized in the FSCB.</p>
+<p>When pages are consumed from the FSCB, they journaled to a blank (<code>0xFF</code>) using incremental-writing techniques, to reduce read/write stress on the FSCB area (note that a page of FLASH does not have to be erased if you are only writing into sections that have all <code>0xFF</code> in it). Thus the total amount free space available is determined first by reading the master FSCB record, and then subtracting the journal entries.</p>
+<p>The incremental updates are known as <code>SpaceUpdate</code> records.</p>
+<p>Free space, <code>FastSpace</code> and <code>SpaceUpdate</code> records are differentiated by examining the first 32 bytes of a page:</p>
+<ul>
+<li>If bytes 0-31 are 0xFF, the page must be blank</li>
+<li>If any of bytes 0-15 are not 0xFF, the page must be the start of a <code>FastSpace</code> master record (these can span multiple consecutive pages)</li>
+<li>If all bytes of 0-15 are 0xFF, and any bytes of 16-31 are not 0xFF, then the page marks the starte of <code>SpaceUpdate</code> records. A <code>SpaceUpdate</code> record is identical to that of a page table entry, but with the flags set differently to indicate the life cycle of that space. From that page until the end of the <code>FastSpace</code> area, <code>SpaceUpdate</code> records may be written. The number of records can thus vary, but it is always at least 1.</li>
+</ul>
+<p>The <code>SpaceUpdate</code> records are interpreted sequentially, from the lowest address to the highest address encountered. Only the latest record matters. Thus, a single page could be allocated, de-allocated, and re-allocated in sequence, and that journal of events would be written to the <code>SpaceUpdate</code> record.</p>
+<p>When the <code>SpaceUpdate</code> record fills up the FSCB area (or it bumps into the existing FSCB), the records are automatically compacted; the FSCB is reduced by any allocated space at that time, the <code>SpaceUpdate</code> area is cleared, and a new random location is picked for the FSCB to wear-level the FSCB area. This all happens without user intervention or awareness, except for the fact that the triggering operation might take a bit longer than usual.</p>
+<h2><a class="header" href="#physical-layout" id="physical-layout">Physical Layout</a></h2>
+<p>The physical layout of the PDDB is as follows, from lowest to highest address:</p>
+<ul>
+<li>Page tables</li>
+<li>Static crypto data (one page)</li>
+<li>MBBB area (10 pages)</li>
+<li>FSCB (16 pages)</li>
+<li>Data pages (1:1 map to page table entries)</li>
+</ul>
+<p>In the case that you're looking at a backup image, a single page of memory is pre-pended to the PDDB area that contains the root key block plus some versioning data, encrypted with the BIP-39 backup key using AES-GCM-SIV with key commitment.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="ch09-00-pddb-overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="ch09-02-rootkeys.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="ch09-00-pddb-overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="ch09-02-rootkeys.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
