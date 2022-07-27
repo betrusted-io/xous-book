@@ -211,19 +211,19 @@ There is no mechanism to record where the MBBB page is:
 
 Plausible deniability is all about reducing the number of side channels that can leak information about the existence or non-existence of secret data. The amount of free space in the PDDB is a potent side channel. If the true amount of free space could be known, an adversary can use that to deduce the existence or non-existence of additional secrets within the PDDB beyond the ones revealed to the adversary.
 
-The PDDB's solution to this is to create a cache of free space that represents a defined fraction of the total true free space. The parameters are tunable, but in v0.9.9 the default parameters are to allocate 50% +/- 10% of the true free space toward the free space cache, known as the FSCB ("Fast Space Cache Buffer"). The +/-10% is a fudge factor that is determined by the TRNG. Thus, the situation for free space in the PDDB looks a bit like the schematic shown below, where the pink areas are "maybe noise? maybe data?" and the gray areas are "definitely free space" (the actual situation is much more fragmented, this is just a cartoon).
+The PDDB's solution to this is to create a cache of free space that represents a defined fraction of the total true free space. The parameters are tunable, but in v0.9.9 the default parameters are to allocate up to 50% +/- 10% of the smaller of the true free space or the capacity of the FSCB toward the free space cache, known as the FSCB ("Fast Space Cache Buffer"). Most of the time, the capacity of the FSCB (about 508 pages, or 2% of Precursor hardware capacity) is the limit of the trackable space. The +/-10% is a fudge factor that is determined by the TRNG.
+
+Thus, the situation for free space in the PDDB looks a bit like the schematic shown below, where the pink areas are "maybe noise? maybe data?" and the gray areas are "definitely free space" (the actual situation is much more fragmented, this is just a cartoon).
 
 ![schematic of free space handling in the PDDB](images/pddb-freespace.png)
 
-An adversary can thus query the FSCB and know that, for example, a device may currently have about 20% of the total capacity as free space. However, they cannot say for sure that this means that the device is 80% full -- it could also be that the device is 30% full, and the FSCB was never refilled after the initial format; or perhaps any number of states in between.
-
-Note that the FSCB size is also decremented not just for new data that is written, but also in the case that old records are updated. Thus even a device with a very small amount of data stored, but is heavily used, can eventually bring the FSCB to 0%.
+An adversary can thus query the FSCB and know that, for example, a device may currently have about 2% of the total capacity as free space. However, they cannot say for sure that this means that the device is 98% full -- it could be that the device is brand new and has nothing allocated, but the free space has just hit the limit of the FSCB capacity.
 
 In the case that the FSCB is exhausted, the user is greeted with a prompt that warns them that the FSCB has been exhausted, and in order to proceed without data loss, every secret Basis must be enumerated (that is, its name and password must be presented to unlock it; the distinction between enumeration and unlocking is that enumeration simply counts the pages used without attempting to mount any filesystem structures). A user can bail out of enumeration, causing the operation that triggered the FSCB refill to fail with an out-of-memory error.
 
 The actual FSCB refill itself enumerates every page in every Basis into a single "master" record, known as the `FastSpace` record, and then randomly selects pages out of the unused pages until the FSCB is full. The system consumes entries out of the FSCB in random order. This also accomplishes wear-levelling, since its ordering is randomized in the FSCB.
 
-When pages are consumed from the FSCB, they journaled to a blank (`0xFF`) using incremental-writing techniques, to reduce read/write stress on the FSCB area (note that a page of FLASH does not have to be erased if you are only writing into sections that have all `0xFF` in it). Thus the total amount free space available is determined first by reading the master FSCB record, and then subtracting the journal entries.
+When pages are consumed from the FSCB, they journaled to a blank (`0xFF`) sector using incremental-writing techniques, to reduce read/write stress on the FSCB area (note that a page of FLASH does not have to be erased if you are only writing into sections that have all `0xFF` in it). Thus the total amount free space available is determined first by reading the master FSCB record, and then subtracting the impact of journal entries.
 
 The incremental updates are known as `SpaceUpdate` records.
 
@@ -236,6 +236,8 @@ Free space, `FastSpace` and `SpaceUpdate` records are differentiated by examinin
 The `SpaceUpdate` records are interpreted sequentially, from the lowest address to the highest address encountered. Only the latest record matters. Thus, a single page could be allocated, de-allocated, and re-allocated in sequence, and that journal of events would be written to the `SpaceUpdate` record.
 
 When the `SpaceUpdate` record fills up the FSCB area (or it bumps into the existing FSCB), the records are automatically compacted; the FSCB is reduced by any allocated space at that time, the `SpaceUpdate` area is cleared, and a new random location is picked for the FSCB to wear-level the FSCB area. This all happens without user intervention or awareness, except for the fact that the triggering operation might take a bit longer than usual.
+
+Note that the `SpaceUpdate` journal does leak information about the most recent few hundred block allocations. While it is periodically flushed, this leakage could leave a "paper trail" about the allocation of blocks that can lead to a loss of deniability. In order to counter this, a user can manually run `pddb flush` to flush the journal. This doesn't require enumerating any Bases, because this only clears a journal of operations on known free spcae, and does not attempt to allocate any new free space. Note: there is a patch slated for v0.9.10 that automatically calls flush once every 24 hours of uptime.
 
 ## Physical Layout
 
