@@ -158,16 +158,16 @@ match record.read_to_end(&mut data) {
 
 The Pddb object also has methods to help manage the PDDB, including:
 
-- `list_basis(..)`
-- `create_basis(..)`
-- `unlock_basis(..)`
-- `lock_basis(..)`
-- `delete_basis(..)`
-- `delete_key(..)`
-- `delete_dict(..)`
-- `list_keys(..)`
-- `list_dict(..)`
-- `is_mounted_blocking(..)` - blocks until the PDDB is mounted
+- [`list_basis(..)`](https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L163)
+- [`create_basis(..)`](https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L208)
+- [`unlock_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L230)
+- [`lock_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L252)
+- [`delete_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L274)
+- [`delete_key(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L386)
+- [`delete_dict(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L435)
+- [`list_keys(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L498)
+- [`list_dict(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L560)
+- [`is_mounted_blocking(..)`](https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L143) - blocks until the PDDB is mounted
 
-For non-blocking queries of PDDB mount status, there is an object called `PddbMountPoller` which has a method `is_mounted_nonblocking()`.
+For non-blocking queries of PDDB mount status, there is an object called `PddbMountPoller` which has a method [`is_mounted_nonblocking()`](https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L44).
 
