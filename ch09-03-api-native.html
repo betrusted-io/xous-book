@@ -301,16 +301,16 @@ match record.read_to_end(&amp;mut data) {
 <h2><a class="header" href="#management" id="management">Management</a></h2>
 <p>The Pddb object also has methods to help manage the PDDB, including:</p>
 <ul>
-<li><code>list_basis()</code></li>
-<li><code>create_basis()</code></li>
-<li><code>unlock_basis()</code></li>
-<li><code>lock_basis()</code></li>
-<li><code>delete_basis()</code></li>
-<li><code>delete_key()</code></li>
-<li><code>delete_dict()</code></li>
-<li><code>list_keys()</code></li>
-<li><code>list_dict()</code></li>
-<li><code>is_mounted_blocking()</code> - blocks until the PDDB is mounted</li>
+<li><code>list_basis(..)</code></li>
+<li><code>create_basis(..)</code></li>
+<li><code>unlock_basis(..)</code></li>
+<li><code>lock_basis(..)</code></li>
+<li><code>delete_basis(..)</code></li>
+<li><code>delete_key(..)</code></li>
+<li><code>delete_dict(..)</code></li>
+<li><code>list_keys(..)</code></li>
+<li><code>list_dict(..)</code></li>
+<li><code>is_mounted_blocking(..)</code> - blocks until the PDDB is mounted</li>
 </ul>
 <p>For non-blocking queries of PDDB mount status, there is an object called <code>PddbMountPoller</code> which has a method <code>is_mounted_nonblocking()</code>.</p>
 
