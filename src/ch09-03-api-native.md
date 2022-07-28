@@ -158,16 +158,16 @@ match record.read_to_end(&mut data) {
 
 The Pddb object also has methods to help manage the PDDB, including:
 
-- `list_basis()`
-- `create_basis()`
-- `unlock_basis()`
-- `lock_basis()`
-- `delete_basis()`
-- `delete_key()`
-- `delete_dict()`
-- `list_keys()`
-- `list_dict()`
-- `is_mounted_blocking()` - blocks until the PDDB is mounted
+- `list_basis(..)`
+- `create_basis(..)`
+- `unlock_basis(..)`
+- `lock_basis(..)`
+- `delete_basis(..)`
+- `delete_key(..)`
+- `delete_dict(..)`
+- `list_keys(..)`
+- `list_dict(..)`
+- `is_mounted_blocking(..)` - blocks until the PDDB is mounted
 
 For non-blocking queries of PDDB mount status, there is an object called `PddbMountPoller` which has a method `is_mounted_nonblocking()`.
 
