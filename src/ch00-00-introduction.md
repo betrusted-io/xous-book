@@ -14,6 +14,8 @@ Chapters [2 (Server Architecture)](ch02-00-server-architecture.md), [3 (Introduc
 
 Chapters [1 (Getting Started)](ch01-00-getting-started.md), [4 (Renode Emulation)](ch04-00-renode-emulation.md), [6 (Build System Overview)](ch06-00-build-system-overview.md), [7 (Messages)](ch07-00-messages.md) and [8 (Graphics)](ch08-00-graphics.md) are more appropriate for application developers.
 
+Chapter [9 (PDDB)](ch09-00-pddb-overview.md) covers the Plausibly Deniable DataBase, and has sub-sections for both kernel and application developers.
+
 ----------------
 
 ## Architecture
