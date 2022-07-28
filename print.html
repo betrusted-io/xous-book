@@ -2762,18 +2762,18 @@ match record.read_to_end(&amp;mut data) {
 <h2><a class="header" href="#management" id="management">Management</a></h2>
 <p>The Pddb object also has methods to help manage the PDDB, including:</p>
 <ul>
-<li><code>list_basis(..)</code></li>
-<li><code>create_basis(..)</code></li>
-<li><code>unlock_basis(..)</code></li>
-<li><code>lock_basis(..)</code></li>
-<li><code>delete_basis(..)</code></li>
-<li><code>delete_key(..)</code></li>
-<li><code>delete_dict(..)</code></li>
-<li><code>list_keys(..)</code></li>
-<li><code>list_dict(..)</code></li>
-<li><code>is_mounted_blocking(..)</code> - blocks until the PDDB is mounted</li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L163"><code>list_basis(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L208"><code>create_basis(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L230"><code>unlock_basis(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L252"><code>lock_basis(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L274"><code>delete_basis(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L386"><code>delete_key(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L435"><code>delete_dict(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L498"><code>list_keys(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L560"><code>list_dict(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L143"><code>is_mounted_blocking(..)</code></a> - blocks until the PDDB is mounted</li>
 </ul>
-<p>For non-blocking queries of PDDB mount status, there is an object called <code>PddbMountPoller</code> which has a method <code>is_mounted_nonblocking()</code>.</p>
+<p>For non-blocking queries of PDDB mount status, there is an object called <code>PddbMountPoller</code> which has a method <a href="https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L44"><code>is_mounted_nonblocking()</code></a>.</p>
 <h1><a class="header" href="#std-api" id="std-api"><code>std</code> API</a></h1>
 <p>⚠ The <code>std</code> API is only accurate on real hardware and Renode emulation. <code>std</code> on hosted mode will use the <code>std</code> implementation of the host.</p>
 <p>The PDDB is also accessible from <code>std::fs::File</code>, as <a href="https://xobs.io/experimental-rust-filesystem-and-path-support-for-xous/">described here</a>:</p>
