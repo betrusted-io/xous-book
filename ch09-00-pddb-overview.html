@@ -168,8 +168,8 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#the-plausibly-deniable-database-pddb-overview" id="the-plausibly-deniable-database-pddb-overview">The Plausibly Deniable DataBase (PDDB) Overview</a></h1>
-<p>From the standpoint of Xous, the Plausibly Deniable DataBase (PDDB) is the filesystem layer on top of a raw disk. It plays the role that <code>FAT</code> or <code>ext4</code> might play in other OSes, combined with <code>LUKS</code> or <code>VeraCrypt</code>.</p>
-<p>The PDDB can be accessed either through a native API, or through Rust's <code>std::fs::File</code> layer. <code>std::fs::File</code> enables applications that are &quot;naive&quot; to deniability to run. However, deniability-aware applications would use native API calls to create a more seamless user experience.</p>
+<p>The Plausibly Deniable DataBase (<a href="https://www.bunniestudios.com/blog/?p=6307">PDDB</a>) is Xous' filesystem abstraction. It plays the role that a filesystem like <code>FAT</code> or <code>ext4</code> might play in other OSes, combined with full disk encryption like <code>LUKS</code> or <code>VeraCrypt</code>. It also features &quot;plausible deniability&quot;, which aims to make it difficult to prove &quot;beyond a reasonable doubt&quot; that additional secrets exist on the disk, even in the face of forensic evidence.</p>
+<p>The PDDB can be accessed through a native API, or through Rust's <code>std::fs::File</code> layer. <code>std::fs::File</code> enables applications and libraries that are &quot;naive&quot; to deniability to run. Applications are free to mix-and-match between native and <code>std::fs::File</code> calls, and in most cases will deliver a less confusing and safer user experience if they are written with deniability built into the user work flow.</p>
 <p><img src="images/betrusted-pddb-architecture.png" alt="dictionary to key mapping example" /></p>
 <p>The PDDB is structured as a <code>key:value</code> store divided into <code>dictionaries</code> that features multiple overlay views. Each overlay view is called a <code>Basis</code> (plural Bases). A Basis has the following properties:</p>
 <ul>
@@ -185,7 +185,17 @@
 <li>When a Basis is locked, its data is indistinguishable from free space and hence plausibly deniable.</li>
 <li>A Basis is unlocked by a name and password combo. If either are lost or forgotten, the Basis is equivalent to having been deleted.</li>
 </ul>
-<p>The PDDB documentation is structured into several chapters. Please browse them using the bookmarks on the left hand side.</p>
+<p>One may also see the use of the term &quot;enumerated&quot; instead of &quot;unlocked&quot; in reference to a Basis. &quot;Enumeration&quot; refers to when the used space of a Basis is disclosed, but none of the core data structures are mounted. Typically the encryption keys are zeroized after enumeration. &quot;Unlocking&quot; refers to when the Basis is fully mounted, and its decryption keys and dictionary root records are cached in memory until the Basis is locked.</p>
+<p>The PDDB documentation is structured into several chapters.</p>
+<ul>
+<li><a href="ch09-01-basis.html">Basis Internal Structure</a> does a deep-dive into the internal mechanics of the PDDB</li>
+<li><a href="ch09-02-rootkeys.html">Key Derivation</a> outlines how the keys that secure the PDDB are derived</li>
+<li><a href="ch09-03-api-native.html">Native API</a> is targeted at application developers who want to use native API calls</li>
+<li><a href="ch09-04-api-std.html">Std API</a> is targeted at application developers who want to use <code>std::fs::File</code> calls</li>
+<li><a href="ch09-05-testing.html">Testing</a> is targeted at kernel developers tracking down bugs in the PDDB</li>
+<li><a href="ch09-06-backups.html">Backups</a> touches on how to extract data from backups made using the backup tool</li>
+<li><a href="ch09-07-discussion.html">Discussion</a> covers issues affecting the security and deniability of the PDDB</li>
+</ul>
 
                     </main>
 
