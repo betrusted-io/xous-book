@@ -64,6 +64,9 @@ thread::spawn(
             // but in this case, we have exactly one thing, so:
 
             // do something useful here
+
+            // indicate that we got our thing done
+            xous::return_scalar(msg.sender, retval).unwrap();
         }
     }
 );
@@ -73,11 +76,12 @@ xous::send_message(conn,
     Message::new_blocking_scalar(0 /* this is the opcode field */,
     0, 0, 0, 0) // up to 4 "scalar" arguments can be sent as well
 ).unwrap();
-// The above call would yield the remaining quantum of time for this thread,
-// dispatch into the child thread, it would receive the message, do "something useful"
-// and immediately return to the top of the loop where it calls `receive_message`,
-// which would ostensibly block, causing the thread to be de-scheduled and consume zero
-// CPU cycles.
 ```
 
-Thus, Xous is carefully coded such that everything blocks if it's not being used, using the idiom above. So in general, if the CPU load bar is pegged to 100% and nothing is "going on" (perhaps just a spin-wait), it's considered a bug.
+The above `send_message()` would yield the remaining quantum of time for the parent thread, and dispatch into the child thread. The child would receive the message, do "something useful" and return a value to the caller. Assuming there was still time left in the quantum, this `return_scalar` would return execution back to the parent thread!
+
+If the message was not blocking, the parent thread would continue executing until its quantum is completed, and then the child thread would handle the message only then. Assuming the child  thread can handle the response very quickly, it would yield the remainder of its quantum once it completed doing "something useful" and it returned to the top of its loop where it calls `receive_message()`, and found its input queue to be empty.
+
+Thus, Xous is carefully coded such that everything blocks if it's not being used, using the idiom above. Crates like `crossbeam` are implemented using `condvar` which intenally uses servers and messages to ensure that blocking waits are efficient.
+
+So, in general, if the CPU load bar is pegged to 100% and nothing is "going on" (perhaps just a spin-wait), it's considered a bug.
