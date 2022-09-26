@@ -25,7 +25,7 @@ Application programers will never need to know this name, because it is encapsul
 
 ## Discovered Names
 
-All other servers have their names registered as a 64-byte free-from `u8` array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a crytpographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the "well known" names, because the chance that the TRNG would output the string `b"xous-name-server"` by chance is vanishingly small.
+All other servers have their names registered as a 64-byte free-from `u8` array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a cryptographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the "well known" names, because the chance that the TRNG would output the string `b"xous-name-server"` by chance is vanishingly small.
 
 When registering a server, one might invoke a call like this:
 

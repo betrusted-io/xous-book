@@ -49,7 +49,7 @@ A canonical path looks like:
 * `:Home Wifi` -- A basis named "Home Wifi"
 * `:.System:` -- A basis named ".System"
 * `wlan.networks` -- A dict named "wlan.networks" in the default basis
-* `wlan.networks:recent` -- A dict named "wlan.networks:recent", which may be considered a path, in the default basis. This also desecribes a key called "recent" in the dict "wlan.networks", depending on whether
+* `wlan.networks:recent` -- A dict named "wlan.networks:recent", which may be considered a path, in the default basis. This also describes a key called "recent" in the dict "wlan.networks", depending on whether
 * `:.System:wlan.networks` -- A dict named "wlan.networks" in the basis ".System"
 * `:.System:wlan.networks:recent` -- a fully-qualified path, describing a key "recent" in the dict "wlan.networks" in the basis ".System". Also describes a dict "wlan.networks:recent" in the basis ".System" when
 * `:` -- The root, which lists every basis. Files cannot be created here. "Directories" can be
