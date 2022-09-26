@@ -95,7 +95,7 @@ The Arguments structure may be in RAM, but it may be located in some other area 
 
 Each process, plus the kernel, is then copied into RAM.
 
-This is complex due to how memory data is laid out. For example, some sections are labeld NOCOPY, and indicate data such as `.bss` where there is no actual data to copy, it must simply be zeroed out.
+This is complex due to how memory data is laid out. For example, some sections are labeled NOCOPY, and indicate data such as `.bss` where there is no actual data to copy, it must simply be zeroed out.
 
 ### Setting page ownership
 

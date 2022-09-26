@@ -1,6 +1,6 @@
 # Forwarding Messages
 
-Because server IDs are used to protect APIs, there arises occassions where
+Because server IDs are used to protect APIs, there arises occasions where
 servers need to be firewalled: a private server within a crate may implement
 a range of powerful and dangerous APIs, of which only a small portion should
 be revealed to external callers.

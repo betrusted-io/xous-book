@@ -11,7 +11,7 @@ Here are some vectors that can reduce the deniability of the PDDB:
 
 ### Ciphertext Comparison Attacks
 
-An adversary may come across backup archives of the PDDB, or snapshots taken at events such as border crossings or other lawful or unlawful surveillance seizures. With more than one backup file, an adversary could compare the evolution of the ciphertext and noise, and map out which blocks are very likely to be unused, versus ones which have definitely been used. The more frequently snapshots taken, the less deniable things become, to an asmyptotic limit of an adversary with a precise log of every write to disk, leading to zero deniability (but you have bigger problems if this has happened).
+An adversary may come across backup archives of the PDDB, or snapshots taken at events such as border crossings or other lawful or unlawful surveillance seizures. With more than one backup file, an adversary could compare the evolution of the ciphertext and noise, and map out which blocks are very likely to be unused, versus ones which have definitely been used. The more frequently snapshots taken, the less deniable things become, to an asymptotic limit of an adversary with a precise log of every write to disk, leading to zero deniability (but you have bigger problems if this has happened).
 
 To counter this, a user may regularly `churn` their device after doing a backup. This is done by running the `pddb churn` command in the `shellchat` app. This will ask the user to unlock all known secret Bases, and then it will:
 
@@ -66,7 +66,7 @@ As a matter of philosophy, there are no hand-rolled ciphers in the PDDB and we t
 
 ### Known Issues
 
-The AES-GCM-SIV construction in particular was revealed to have a problem known as [Salamanders](https://keymaterial.net/2020/09/07/invisible-salamanders-in-aes-gcm-siv/). This has been worked around by requiring a key commitment in the root page of the cryptographic Bases. However, our implementation of a key commitment *is* hand-rolled, because there isn't a committe-blessed standard on how to do this (yet). We do follow the recommendations [in this paper](https://eprint.iacr.org/2020/1456.pdf).
+The AES-GCM-SIV construction in particular was revealed to have a problem known as [Salamanders](https://keymaterial.net/2020/09/07/invisible-salamanders-in-aes-gcm-siv/). This has been worked around by requiring a key commitment in the root page of the cryptographic Bases. However, our implementation of a key commitment *is* hand-rolled, because there isn't a committee-blessed standard on how to do this (yet). We do follow the recommendations [in this paper](https://eprint.iacr.org/2020/1456.pdf).
 
 Finally, *all* confidentiality of the PDDB stems solely from the secrecy of the backup password, the boot PIN, and any secret Bases name/password combos. If you don't perform a backup, then the backup password is ostensibly only known to the hardware itself, and it requires an adversary with direct access to the device and its JTAG port to pull off any practical attack to extract the key. See [this FAQ](https://github.com/betrusted-io/betrusted-wiki/wiki/FAQ:-FPGA-AES-Encryption-Key-(eFuse-BBRAM)#can-the-fpga-encryption-key-foil-an-attacker-who-has-unlimited-physical-access-to-my-device) for limitations on using Precursor as a "true HSM".
 

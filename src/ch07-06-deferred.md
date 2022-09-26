@@ -1,6 +1,6 @@
 # Deferred Response
 
-Deferred response is a variant of synchronous messaging. In this case, the caller blocks, but the callee is free to process new messages (typically to help compute results that evnetually unblock the caller).
+Deferred response is a variant of synchronous messaging. In this case, the caller blocks, but the callee is free to process new messages (typically to help compute results that eventually unblock the caller).
 
 As of Xous 0.9.7, the trick to deferred response is different between `scalar` and `memory` messages.
 
