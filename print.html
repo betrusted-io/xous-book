@@ -424,7 +424,7 @@ In order to wake only one thread, pass <code>1</code>.</p>
 <p>&quot;Drivers&quot; are really just Servers. For example, to print a string to the console, send a <code>StandardOutput</code> (1) opcode to the server &quot;xous-log-server &quot; with a <code>&amp;[u8]</code> attached to some memory. The process will block until the server is finished printing.</p>
 <p>The entire Xous operating system is built from these small servers, making it easy to work on one component at a time.</p>
 <h2><a class="header" href="#memory-and-mapping" id="memory-and-mapping">Memory and mapping</a></h2>
-<p>Memory is obtained by issuing a <code>MapMemory</code> syscall. This call can optionally provide a physical address to map. If no memory is specified, a random phyiscal page is provided. The process has no way of knowing the physical address of the page.</p>
+<p>Memory is obtained by issuing a <code>MapMemory</code> syscall. This call can optionally provide a physical address to map. If no memory is specified, a random physical page is provided. The process has no way of knowing the physical address of the page.</p>
 <p>If the caller allocates memory from the primary region, it will be zeroed. If it allocates memory from an ancillary region such as a registor or a framebuffer, then that memory will not be initialized.</p>
 <p>Processes can use this to allocate memory-mapped regions in order to create drivers.</p>
 <h2><a class="header" href="#interrupts" id="interrupts">Interrupts</a></h2>
@@ -584,7 +584,7 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 <h2><a class="header" href="#threading" id="threading">Threading</a></h2>
 <p>All Xous syscalls go to the kernel, however certain syscalls are simply stubs. One example of this is threading, where the kernel has no way of actually launching a thread.</p>
 <p>The application is responsible for creating new threads, and may do so either by &quot;sending&quot; a <code>CreateThread</code> call to the kernel or by creating a native thread using <code>std::Thread::spawn()</code>.</p>
-<p>When launching a thread with <code>CreateThread</code>, the kernel will allocate a nwe &quot;Xous TID&quot; and return that to the application. The application will then launch its new thread and set the local <code>THREAD_ID</code> variable to this ID. This ID will be used as part of the header when sending syscalls to the kernel, and will be used to delegate responses to their waiting threads.</p>
+<p>When launching a thread with <code>CreateThread</code>, the kernel will allocate a new &quot;Xous TID&quot; and return that to the application. The application will then launch its new thread and set the local <code>THREAD_ID</code> variable to this ID. This ID will be used as part of the header when sending syscalls to the kernel, and will be used to delegate responses to their waiting threads.</p>
 <p>If an application calls <code>std::Thread::spawn()</code> then it will not have a <code>THREAD_ID</code> set. When the thread attempts to send a syscall, hosted mode will notice that <code>THREAD_ID</code> is None. When this occurs, Hosted mode will create a &quot;fake&quot; thread ID (starting at TID 65536) and call <code>SysCall::CreateThread(ThreadInit {})</code> to register this new ID. Then all subsequent calls will use this fake thread ID.</p>
 <h1><a class="header" href="#process-creation" id="process-creation">Process Creation</a></h1>
 <p>Creating processes is a fundamental requirement of modern operating systems above a certain size. Xous supports process creation, although it does not prescribe an executable format nor does it even have a built-in loader.</p>
@@ -629,7 +629,7 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
     panic!(&quot;parent exited&quot;);
 }
 </code></pre>
-<p>This compiles down to a very efficient program that can be used to load a larger program into the new address space. Memory is written using the <code>WriteMemory</code> opcode to load new pages into the nacent process, and <code>FinishStartup</code> is used to shut down the server and jump to the new process entrypoint.</p>
+<p>This compiles down to a very efficient program that can be used to load a larger program into the new address space. Memory is written using the <code>WriteMemory</code> opcode to load new pages into the nascent process, and <code>FinishStartup</code> is used to shut down the server and jump to the new process entrypoint.</p>
 <h3><a class="header" href="#limitations-of-created-processes" id="limitations-of-created-processes">Limitations of Created Processes</a></h3>
 <p><strong>NOTE:</strong> The following is subject to fixes in the kernel, and do not currently apply. This information is presented here in order to explain oddities observed when these features are implemented.</p>
 <p>Newly-created processes cannot create servers with a predefined Server ID. They can only create randomized servers.</p>
@@ -827,7 +827,7 @@ private bool enabled = true;
 <h1><a class="header" href="#xous-operating-system-startup" id="xous-operating-system-startup">Xous Operating System Startup</a></h1>
 <p>The Xous operating system is set up by the loader, which is responsible for unpacking data into RAM and setting up processes. It is covered in the <a href="ch05-02-loader.html">Xous Loader</a> section.</p>
 <p>The loader reads a binary stream of data located in a tagged format that is discussed in the <a href="ch05-01-arguments.html">Arguments Structure</a> section. This arguments structure defines features such as the memory layout, system configuration, and initial process data.</p>
-<p>Programs are loaded in flattened foramts called <code>MiniELF</code>, which is documented in the <a href="ch05-03-minielf.html">MiniELF Format</a> section.</p>
+<p>Programs are loaded in flattened formats called <code>MiniELF</code>, which is documented in the <a href="ch05-03-minielf.html">MiniELF Format</a> section.</p>
 <p>You may also find the following links of interest:</p>
 <ul>
 <li><a href="https://github.com/betrusted-io/betrusted-wiki/wiki/How-Does-Precursor-Get-to-the-Reset-Vector%3F">What happens before boot?</a> fills in the details of everything that happens before the first instruction gets run.</li>
@@ -1002,7 +1002,7 @@ The format for this tag consists of a single word defining how many additional s
 <p>The Arguments structure may be in RAM, but it may be located in some other area that will become inaccessible when the system is running. If configured, the Arguments structure is copied into RAM.</p>
 <h3><a class="header" href="#process-copying" id="process-copying">Process Copying</a></h3>
 <p>Each process, plus the kernel, is then copied into RAM.</p>
-<p>This is complex due to how memory data is laid out. For example, some sections are labeld NOCOPY, and indicate data such as <code>.bss</code> where there is no actual data to copy, it must simply be zeroed out.</p>
+<p>This is complex due to how memory data is laid out. For example, some sections are labeled NOCOPY, and indicate data such as <code>.bss</code> where there is no actual data to copy, it must simply be zeroed out.</p>
 <h3><a class="header" href="#setting-page-ownership" id="setting-page-ownership">Setting page ownership</a></h3>
 <p>Mark all loader pages as being owned by <code>PID 1</code>. This ensures they cannot be reallocated later on.</p>
 <h2><a class="header" href="#loader-stage-2-setting-page-tables" id="loader-stage-2-setting-page-tables">Loader Stage 2: Setting Page Tables</a></h2>
@@ -1188,7 +1188,7 @@ $
 <p>Well-known servers have a name like <code>b&quot;xous-name-server&quot;</code>, which reads like ASCII text but fits in exactly 128 bits: you just have to know the magic string, and you can connect to them.</p>
 <p>Application programers will never need to know this name, because it is encapsulated within the objects that access the servers. For example, <code>XousNames::new()</code> &quot;just knows&quot; the name, so to access <code>xous-names</code> one simply needs to create a new <code>XousNames</code> object.</p>
 <h2><a class="header" href="#discovered-names" id="discovered-names">Discovered Names</a></h2>
-<p>All other servers have their names registered as a 64-byte free-from <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a crytpographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the &quot;well known&quot; names, because the chance that the TRNG would output the string <code>b&quot;xous-name-server&quot;</code> by chance is vanishingly small.</p>
+<p>All other servers have their names registered as a 64-byte free-from <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a cryptographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the &quot;well known&quot; names, because the chance that the TRNG would output the string <code>b&quot;xous-name-server&quot;</code> by chance is vanishingly small.</p>
 <p>When registering a server, one might invoke a call like this:</p>
 <pre><code class="language-rust noplayground ignore">    let xns = xous_names::XousNames::new().unwrap();
     let net_sid = xns
@@ -1903,7 +1903,7 @@ fn xmain() -&gt; ! {
 }
 </code></pre>
 <h1><a class="header" href="#deferred-response" id="deferred-response">Deferred Response</a></h1>
-<p>Deferred response is a variant of synchronous messaging. In this case, the caller blocks, but the callee is free to process new messages (typically to help compute results that evnetually unblock the caller).</p>
+<p>Deferred response is a variant of synchronous messaging. In this case, the caller blocks, but the callee is free to process new messages (typically to help compute results that eventually unblock the caller).</p>
 <p>As of Xous 0.9.7, the trick to deferred response is different between <code>scalar</code> and <code>memory</code> messages.</p>
 <ul>
 <li>For <code>scalar</code> messages, one needs to store the <code>msg.sender</code> field (a <code>usize</code>) and delay the <code>xous::return_scalar(sender, value)</code> call until the appropriate time.</li>
@@ -2042,7 +2042,7 @@ fn xmain() -&gt; ! {
 }
 </code></pre>
 <h1><a class="header" href="#forwarding-messages" id="forwarding-messages">Forwarding Messages</a></h1>
-<p>Because server IDs are used to protect APIs, there arises occassions where
+<p>Because server IDs are used to protect APIs, there arises occasions where
 servers need to be firewalled: a private server within a crate may implement
 a range of powerful and dangerous APIs, of which only a small portion should
 be revealed to external callers.</p>
@@ -2877,7 +2877,7 @@ In the following examples, the given Basis, Dict, and Key are as follows:</p>
 <li><code>:Home Wifi</code> -- A basis named &quot;Home Wifi&quot;</li>
 <li><code>:.System:</code> -- A basis named &quot;.System&quot;</li>
 <li><code>wlan.networks</code> -- A dict named &quot;wlan.networks&quot; in the default basis</li>
-<li><code>wlan.networks:recent</code> -- A dict named &quot;wlan.networks:recent&quot;, which may be considered a path, in the default basis. This also desecribes a key called &quot;recent&quot; in the dict &quot;wlan.networks&quot;, depending on whether</li>
+<li><code>wlan.networks:recent</code> -- A dict named &quot;wlan.networks:recent&quot;, which may be considered a path, in the default basis. This also describes a key called &quot;recent&quot; in the dict &quot;wlan.networks&quot;, depending on whether</li>
 <li><code>:.System:wlan.networks</code> -- A dict named &quot;wlan.networks&quot; in the basis &quot;.System&quot;</li>
 <li><code>:.System:wlan.networks:recent</code> -- a fully-qualified path, describing a key &quot;recent&quot; in the dict &quot;wlan.networks&quot; in the basis &quot;.System&quot;. Also describes a dict &quot;wlan.networks:recent&quot; in the basis &quot;.System&quot; when</li>
 <li><code>:</code> -- The root, which lists every basis. Files cannot be created here. &quot;Directories&quot; can be
@@ -2963,7 +2963,7 @@ the basis &quot;bar&quot;, or a dict called &quot;lorem.ipsum:foo:baz&quot;. Leg
 <li>Free space cache leakage</li>
 </ul>
 <h3><a class="header" href="#ciphertext-comparison-attacks" id="ciphertext-comparison-attacks">Ciphertext Comparison Attacks</a></h3>
-<p>An adversary may come across backup archives of the PDDB, or snapshots taken at events such as border crossings or other lawful or unlawful surveillance seizures. With more than one backup file, an adversary could compare the evolution of the ciphertext and noise, and map out which blocks are very likely to be unused, versus ones which have definitely been used. The more frequently snapshots taken, the less deniable things become, to an asmyptotic limit of an adversary with a precise log of every write to disk, leading to zero deniability (but you have bigger problems if this has happened).</p>
+<p>An adversary may come across backup archives of the PDDB, or snapshots taken at events such as border crossings or other lawful or unlawful surveillance seizures. With more than one backup file, an adversary could compare the evolution of the ciphertext and noise, and map out which blocks are very likely to be unused, versus ones which have definitely been used. The more frequently snapshots taken, the less deniable things become, to an asymptotic limit of an adversary with a precise log of every write to disk, leading to zero deniability (but you have bigger problems if this has happened).</p>
 <p>To counter this, a user may regularly <code>churn</code> their device after doing a backup. This is done by running the <code>pddb churn</code> command in the <code>shellchat</code> app. This will ask the user to unlock all known secret Bases, and then it will:</p>
 <ol>
 <li>Re-encrypt every used block by &quot;re-noncing&quot; the ciphers</li>
@@ -2993,7 +2993,7 @@ the basis &quot;bar&quot;, or a dict called &quot;lorem.ipsum:foo:baz&quot;. Leg
 <h3><a class="header" href="#approach" id="approach">Approach</a></h3>
 <p>As a matter of philosophy, there are no hand-rolled ciphers in the PDDB and we try to use, as much as practical, implementations directly from the <a href="https://cryptography.rs/">RustCrypto</a> community (the exceptions are the hardware-accelerated core primitives like AES, SHA and Curve25519, required for performance reasons). However, the PDDB itself is a novel construction and could very likely have issues.</p>
 <h3><a class="header" href="#known-issues" id="known-issues">Known Issues</a></h3>
-<p>The AES-GCM-SIV construction in particular was revealed to have a problem known as <a href="https://keymaterial.net/2020/09/07/invisible-salamanders-in-aes-gcm-siv/">Salamanders</a>. This has been worked around by requiring a key commitment in the root page of the cryptographic Bases. However, our implementation of a key commitment <em>is</em> hand-rolled, because there isn't a committe-blessed standard on how to do this (yet). We do follow the recommendations <a href="https://eprint.iacr.org/2020/1456.pdf">in this paper</a>.</p>
+<p>The AES-GCM-SIV construction in particular was revealed to have a problem known as <a href="https://keymaterial.net/2020/09/07/invisible-salamanders-in-aes-gcm-siv/">Salamanders</a>. This has been worked around by requiring a key commitment in the root page of the cryptographic Bases. However, our implementation of a key commitment <em>is</em> hand-rolled, because there isn't a committee-blessed standard on how to do this (yet). We do follow the recommendations <a href="https://eprint.iacr.org/2020/1456.pdf">in this paper</a>.</p>
 <p>Finally, <em>all</em> confidentiality of the PDDB stems solely from the secrecy of the backup password, the boot PIN, and any secret Bases name/password combos. If you don't perform a backup, then the backup password is ostensibly only known to the hardware itself, and it requires an adversary with direct access to the device and its JTAG port to pull off any practical attack to extract the key. See <a href="https://github.com/betrusted-io/betrusted-wiki/wiki/FAQ:-FPGA-AES-Encryption-Key-(eFuse-BBRAM)#can-the-fpga-encryption-key-foil-an-attacker-who-has-unlimited-physical-access-to-my-device">this FAQ</a> for limitations on using Precursor as a &quot;true HSM&quot;.</p>
 <p><a href="https://en.wikipedia.org/wiki/Kerckhoffs%27s_principle">There is no other magic</a>, so protect those keys!</p>
 

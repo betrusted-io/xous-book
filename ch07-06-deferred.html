@@ -168,7 +168,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#deferred-response" id="deferred-response">Deferred Response</a></h1>
-<p>Deferred response is a variant of synchronous messaging. In this case, the caller blocks, but the callee is free to process new messages (typically to help compute results that evnetually unblock the caller).</p>
+<p>Deferred response is a variant of synchronous messaging. In this case, the caller blocks, but the callee is free to process new messages (typically to help compute results that eventually unblock the caller).</p>
 <p>As of Xous 0.9.7, the trick to deferred response is different between <code>scalar</code> and <code>memory</code> messages.</p>
 <ul>
 <li>For <code>scalar</code> messages, one needs to store the <code>msg.sender</code> field (a <code>usize</code>) and delay the <code>xous::return_scalar(sender, value)</code> call until the appropriate time.</li>

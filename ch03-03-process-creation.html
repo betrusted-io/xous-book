@@ -210,7 +210,7 @@
     panic!(&quot;parent exited&quot;);
 }
 </code></pre>
-<p>This compiles down to a very efficient program that can be used to load a larger program into the new address space. Memory is written using the <code>WriteMemory</code> opcode to load new pages into the nacent process, and <code>FinishStartup</code> is used to shut down the server and jump to the new process entrypoint.</p>
+<p>This compiles down to a very efficient program that can be used to load a larger program into the new address space. Memory is written using the <code>WriteMemory</code> opcode to load new pages into the nascent process, and <code>FinishStartup</code> is used to shut down the server and jump to the new process entrypoint.</p>
 <h3><a class="header" href="#limitations-of-created-processes" id="limitations-of-created-processes">Limitations of Created Processes</a></h3>
 <p><strong>NOTE:</strong> The following is subject to fixes in the kernel, and do not currently apply. This information is presented here in order to explain oddities observed when these features are implemented.</p>
 <p>Newly-created processes cannot create servers with a predefined Server ID. They can only create randomized servers.</p>

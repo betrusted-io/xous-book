@@ -175,7 +175,7 @@
 <p>&quot;Drivers&quot; are really just Servers. For example, to print a string to the console, send a <code>StandardOutput</code> (1) opcode to the server &quot;xous-log-server &quot; with a <code>&amp;[u8]</code> attached to some memory. The process will block until the server is finished printing.</p>
 <p>The entire Xous operating system is built from these small servers, making it easy to work on one component at a time.</p>
 <h2><a class="header" href="#memory-and-mapping" id="memory-and-mapping">Memory and mapping</a></h2>
-<p>Memory is obtained by issuing a <code>MapMemory</code> syscall. This call can optionally provide a physical address to map. If no memory is specified, a random phyiscal page is provided. The process has no way of knowing the physical address of the page.</p>
+<p>Memory is obtained by issuing a <code>MapMemory</code> syscall. This call can optionally provide a physical address to map. If no memory is specified, a random physical page is provided. The process has no way of knowing the physical address of the page.</p>
 <p>If the caller allocates memory from the primary region, it will be zeroed. If it allocates memory from an ancillary region such as a registor or a framebuffer, then that memory will not be initialized.</p>
 <p>Processes can use this to allocate memory-mapped regions in order to create drivers.</p>
 <h2><a class="header" href="#interrupts" id="interrupts">Interrupts</a></h2>

@@ -232,7 +232,7 @@
 <p>The Arguments structure may be in RAM, but it may be located in some other area that will become inaccessible when the system is running. If configured, the Arguments structure is copied into RAM.</p>
 <h3><a class="header" href="#process-copying" id="process-copying">Process Copying</a></h3>
 <p>Each process, plus the kernel, is then copied into RAM.</p>
-<p>This is complex due to how memory data is laid out. For example, some sections are labeld NOCOPY, and indicate data such as <code>.bss</code> where there is no actual data to copy, it must simply be zeroed out.</p>
+<p>This is complex due to how memory data is laid out. For example, some sections are labeled NOCOPY, and indicate data such as <code>.bss</code> where there is no actual data to copy, it must simply be zeroed out.</p>
 <h3><a class="header" href="#setting-page-ownership" id="setting-page-ownership">Setting page ownership</a></h3>
 <p>Mark all loader pages as being owned by <code>PID 1</code>. This ensures they cannot be reallocated later on.</p>
 <h2><a class="header" href="#loader-stage-2-setting-page-tables" id="loader-stage-2-setting-page-tables">Loader Stage 2: Setting Page Tables</a></h2>
