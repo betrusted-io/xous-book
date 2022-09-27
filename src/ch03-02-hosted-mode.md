@@ -124,6 +124,6 @@ All Xous syscalls go to the kernel, however certain syscalls are simply stubs. O
 
 The application is responsible for creating new threads, and may do so either by "sending" a `CreateThread` call to the kernel or by creating a native thread using `std::Thread::spawn()`.
 
-When launching a thread with `CreateThread`, the kernel will allocate a nwe "Xous TID" and return that to the application. The application will then launch its new thread and set the local `THREAD_ID` variable to this ID. This ID will be used as part of the header when sending syscalls to the kernel, and will be used to delegate responses to their waiting threads.
+When launching a thread with `CreateThread`, the kernel will allocate a new "Xous TID" and return that to the application. The application will then launch its new thread and set the local `THREAD_ID` variable to this ID. This ID will be used as part of the header when sending syscalls to the kernel, and will be used to delegate responses to their waiting threads.
 
 If an application calls `std::Thread::spawn()` then it will not have a `THREAD_ID` set. When the thread attempts to send a syscall, hosted mode will notice that `THREAD_ID` is None. When this occurs, Hosted mode will create a "fake" thread ID (starting at TID 65536) and call `SysCall::CreateThread(ThreadInit {})` to register this new ID. Then all subsequent calls will use this fake thread ID.

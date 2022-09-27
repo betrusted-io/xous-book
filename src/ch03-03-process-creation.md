@@ -61,7 +61,7 @@ pub extern "C" fn init(a1: u32, a2: u32, a3: u32, a4: u32) -> ! {
 }
 ```
 
-This compiles down to a very efficient program that can be used to load a larger program into the new address space. Memory is written using the `WriteMemory` opcode to load new pages into the nacent process, and `FinishStartup` is used to shut down the server and jump to the new process entrypoint.
+This compiles down to a very efficient program that can be used to load a larger program into the new address space. Memory is written using the `WriteMemory` opcode to load new pages into the nascent process, and `FinishStartup` is used to shut down the server and jump to the new process entrypoint.
 
 ### Limitations of Created Processes
 
