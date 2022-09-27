@@ -67,7 +67,9 @@ The first stage goes through the Arguments structure and does initial accounting
 
 ### Runtime Page Tracker
 
-The first pass sets up the *Runtime Page Tracker*. Each valid page in the system can be assigned to exactly one process. Memory that does not have an entry in the *Runtime Page Tracker* cannot be allocated, preventing us from allowing aliased memory.
+The first pass sets up the *Runtime Page Tracker*. This is a whitelist where each valid page in the system can be assigned to exactly one process. Memory that does not have an entry in the *Runtime Page Tracker* cannot be allocated. This helps prevent memory aliasing attacks in the case that a hardware module does not fully decode all the address bits.
+
+Thus, the image creation program must be passed a full SVD description of the SoC register model to create this whitelist. It shows up as the "Additional Regions" item in the Xous Arguments output as displayed by the image creation program.
 
 Each page in main memory as well as each page in memory-mapped IO will get one byte of data in the *Runtime Page Tracker*. This byte indicates the process ID that the memory is assigned to. Process ID `0` is invalid, and indicates the page is free.
 
