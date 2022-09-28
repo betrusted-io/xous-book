@@ -1,0 +1,401 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Target Specification, UTRA - The Xous Operating System</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-renode.html"><strong aria-hidden="true">1.2.</strong> Hello, Renode!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li><li class="chapter-item expanded "><a href="ch03-02-hosted-mode.html"><strong aria-hidden="true">3.2.</strong> Hosted Mode</a></li><li class="chapter-item expanded "><a href="ch03-03-process-creation.html"><strong aria-hidden="true">3.3.</strong> Process Creation</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-platform-definition.html"><strong aria-hidden="true">4.1.</strong> Platform Definition</a></li><li class="chapter-item expanded "><a href="ch04-02-renode-startup-script.html"><strong aria-hidden="true">4.2.</strong> Renode Startup Script</a></li><li class="chapter-item expanded "><a href="ch04-03-python-extensions.html"><strong aria-hidden="true">4.3.</strong> Python Extensions</a></li><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.4.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-testing-crates.html"><strong aria-hidden="true">6.1.</strong> Testing Crates</a></li><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.2.</strong> Image Creation</a></li><li class="chapter-item expanded "><a href="ch06-03-target-specification.html" class="active"><strong aria-hidden="true">6.3.</strong> Target Specification, UTRA</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li><li class="chapter-item expanded "><a href="ch07-07-forwarding.html"><strong aria-hidden="true">7.2.5.</strong> Forwarding</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li><li class="chapter-item expanded "><a href="ch08-02-menus.html"><strong aria-hidden="true">8.2.</strong> Menus</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-pddb-overview.html"><strong aria-hidden="true">9.</strong> Plausibly Deniable DataBase (PDDB)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-basis.html"><strong aria-hidden="true">9.1.</strong> Basis Internal Structure</a></li><li class="chapter-item expanded "><a href="ch09-02-rootkeys.html"><strong aria-hidden="true">9.2.</strong> Key Derivation</a></li><li class="chapter-item expanded "><a href="ch09-03-api-native.html"><strong aria-hidden="true">9.3.</strong> Native API</a></li><li class="chapter-item expanded "><a href="ch09-04-api-std.html"><strong aria-hidden="true">9.4.</strong> std API</a></li><li class="chapter-item expanded "><a href="ch09-05-testing.html"><strong aria-hidden="true">9.5.</strong> Testing and CI</a></li><li class="chapter-item expanded "><a href="ch09-06-backups.html"><strong aria-hidden="true">9.6.</strong> Backups</a></li><li class="chapter-item expanded "><a href="ch09-07-discussion.html"><strong aria-hidden="true">9.7.</strong> Security and Deniability</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Xous Operating System</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#target-specification-and-hardware-registers-with-utra" id="target-specification-and-hardware-registers-with-utra">Target Specification and Hardware Registers with UTRA</a></h1>
+<p>Xous isolates target-specific code, such as the location and fields of hardware registers, inside the Unambiguous Thin Register Astraction (UTRA).</p>
+<p>The UTRA is contained in the <code>utralib</code> crate, and its contents are generated from <a href="https://www.keil.com/pack/doc/CMSIS/SVD/html/svd_Format_pg.html">SVD files</a> using <a href="https://crates.io/crates/svd2utra"><code>svd2utra</code></a>. SVD itself is an XML format commonly used by hardware vendors for the interchange of SoC registers, and is a native output format of SoC building tools such as LiteX. SVD files are also readily available for many commercial MCUs.</p>
+<h2><a class="header" href="#specifying-targets" id="specifying-targets">Specifying Targets</a></h2>
+<p>Services that talk to hardware will typically have one or more <code>implementation</code> modules that encapsulate the target-specific back ends. These are gated with <code>#[cfg(feature=&quot;X&quot;)]</code> directives, where &quot;X&quot; is the specific build target.</p>
+<p>This means that a specific build target is selected by passing a <code>--feature</code> flag during compilation, e.g. <code>--feature precursor</code>, <code>--feature hosted</code>, or <code>--feature renode</code>.</p>
+<h2><a class="header" href="#about-the-utra" id="about-the-utra">About the UTRA</a></h2>
+<p>UTRA is a register abstraction for accessing hardware resources. It tries to be:</p>
+<ul>
+<li>Unambiguous -- the access rules should be concise and unambiguous to a systems programmer with a C background</li>
+<li>Thin -- it should hide constants, but not bury them so they become difficult to verify</li>
+</ul>
+<p>Here is an example of an ambiguous style of register access, from a
+PAC generated using <a href="https://crates.io/crates/svd2rust">svd2rust</a>:</p>
+<pre><code class="language-rust noplayground ignore">    // this seems clear -- as long as all the bit fields are specified
+    // (they actually aren't, so some non-obvious things are happening)
+    p.POWER.power.write(|w|
+       w.discharge().bit(true)
+        .soc_on().bit(false)
+        .kbddrive().bit(true)
+        .kbdscan().bits(3)
+      );
+
+    // what should this do?
+    // 1. just set the discharge bit to true and everything else to zero?
+    // 2. read the register first, change only the discharge bit to true, leaving the rest unchanged?
+    p.POWER.power.write(|w|
+       w.discharge().bit(true)
+      );
+
+    // answer: it does (1). You need to use the `modify()` function to have (2) happen.
+
+</code></pre>
+<p>While the closure-chaining is clever syntax, it's also ambiguous.
+First, does the chaining imply an order of writes happening in
+sequence, or do they all happen at once? The answer depends on Rust's
+optimizer, which is very good and one can expect the behavior to be
+the latter, but it is still write-ordering behavior that depends upon
+the outcome of an optimizer and not a linguistic guarantee. Second,
+the term <code>write</code> itself is ambiguous when it comes to bitfields: do we
+write just the bitfield, or do we write the entire register, assuming
+the rest of the contents are zero? These types of ambiguity make it
+hard to audit code, especially for experts in systems programming
+who are not also experts in Rust.</p>
+<p>The primary trade-off for achieving unambiguity and thinness is less
+type checking and type hardening, because we are not fully taking
+advantage of the advanced syntax features of Rust.</p>
+<p>That being said, a certain degree of deliberate malleability in the
+register abstraction is desired to assist with security-oriented
+audits: for a security audit, it is often just as important to ask
+what the undefined bits do, as it is to check the settings of the
+defined bits. Malleabilty allows an auditor to quickly create targeted
+tests that exercise undefined bits. Existing Rust-based access crates
+create strict types that eliminate the class of errors where constants
+defined for one register are used in an incorrect type of register,
+but they also make it very hard to modify in an ad-hoc manner.</p>
+<h2><a class="header" href="#utra-api-details" id="utra-api-details">UTRA API Details</a></h2>
+<p>This crate is designed to serve as an alternative to <code>svd2rust</code>. It generates
+a crate which consists of:</p>
+<ol>
+<li>A library which is used to perform register accesses</li>
+<li>A &quot;header file&quot; (library) that is auto-generated from a given <code>soc.svd</code> file</li>
+</ol>
+<p>The library provides the a function template for <code>CSR</code> that provides the following
+methods:</p>
+<ul>
+<li><code>.r(reg: Register) -&gt; T</code> - Read. Reads the entire contents of a CSR</li>
+<li><code>.rf(field: Field) -&gt; T</code> - Read Field. Read a CSR and return only the masked and shifted value of a sub-field</li>
+<li><code>.wo(reg: Register, value:T)</code> - Write only. Write <code>value</code> into a register, replacing its entire contents</li>
+<li><code>.wfo(field: Field, value:T)</code> - Write field only. Write <code>value</code> into a field of a register, zeroizing all the other fields and replacing its entire contents</li>
+<li><code>.rmwf(field: Field, value:T)</code> - Read-modify-write a register. Replace just the contents of <code>field</code> while leaving the other fields intact. The current implementation makes no guarantees about atomicity.</li>
+</ul>
+<p><code>Register</code> and <code>Field</code> are generated by the library; <code>Field</code> refers to
+the <code>Register</code> to which it belongs, and thus it is not necessary to
+specify it explicitly. Furthermore, the base address of the <code>CSR</code> is
+bound when the object is created, which allows the crate to work both
+with physical and virtual addresses by replacing the base address with
+the desired value depending upon the active addressing mode.</p>
+<p>In addition to the <code>CSR</code> function template, convenience constants for
+the CSR base, as well as any memory bases and interrupts, are also
+generated by this crate.</p>
+<p>This set of API calls supports the most common set of use cases, which
+is reading, writing, and updating single fields of a register, or
+entire registers all at once.</p>
+<p>The API does not natively support setting two fields
+simultaneously. This is because there can be nuances to this that
+depend upon the hardware implementation, such as bit fields that are
+self-resetting, registers that self-clear on read, or registers that
+have other automatic and implicit side effects.</p>
+<p>Users that require multiple bit fields to be set simultaneously must
+explicitly read the CSR value, bind it to a temporary variable, mask
+out the fields they want to replace, and combine in the values before
+writing it back to the CSR.</p>
+<p>To aid with this, the following helper functions are also available:</p>
+<ul>
+<li><code>zf(field:Field, value:T) -&gt; T</code> - Zeroize field. Take bits corresponding to <code>field</code> and set it to zero in <code>value</code>, leaving other bits unchanged</li>
+<li><code>ms(field:Field, value:T) -&gt; T</code> - Mask and shift. Take value, mask it to the field width, and then shift to its final position.</li>
+</ul>
+<p>The idea here is that the <code>.r(register)</code> method is used to read the
+entire register; then successive <code>.zf(field, value)</code> calls are made to
+clear the fields prior to setting. Field values are OR'd with the
+result of <code>.ms(field, value)</code> to create the final composite register
+value.  Finally, <code>.wo(value)</code> is used to overwrite the entire
+register with the final composite register value.</p>
+<p>The <code>.ms(field,value)</code> can also be used to synthesize initial register
+values that need to be committed all at once to a hardware register,
+before a <code>.wo(value)</code> call.</p>
+<h2><a class="header" href="#example-usage" id="example-usage">Example Usage</a></h2>
+<p>Let's assume you've used svd2utra.py to create a <code>utra</code> crate in the
+same directory as svd2utra.py, and you've added this to your <code>Cargo.toml</code> file.
+Now, inside your <code>lib.rs</code> file, you might have something like this:</p>
+<pre><code class="language-rust noplayground ignore">use utra
+
+fn test_fn() {
+        // Audio tests
+
+        // The audio block is a pointer to *mut 32.
+        let mut audio = CSR::new(HW_AUDIO_BASE as *mut u32);
+
+        // Read the entire contents of the RX_CTL register
+        audio.r(utra::audio::RX_CTL);
+
+        // Or read just one field
+        audio.rf(utra::audio::RX_CTL_ENABLE);
+
+        // Do a read-modify-write of the specified field
+        audio.rmwf(utra::audio::RX_CTL_RESET, 1);
+
+	// Do a multi-field operation where all fields are updated in a single write.
+	// First read the field into a temp variable.
+        let mut stat = audio.r(utra::audio::RX_STAT);
+	// in read replica, zero EMPTY and RDCOUNT
+	stat = audio.zf(utra::audio::RX_STAT_EMPTY, stat);
+	stat = audio.zf(utra::audio::RX_STAT_RDCOUNT, stat);
+	// in read replica, now set RDCOUNT to 0x123
+	stat |= audio.ms(utra::audio::RX_STAT_RDCOUNT, 0x123);
+	// commit read replica to register, updating both EMPTY and RDCOUNT in a single write
+	audio.wo(utra::audio::RX_STAT, stat);
+
+        // UART tests
+
+        // Create the UART register as a pointer to *mut u8
+        let mut uart = CSR::new(HW_UART_BASE as *mut u8);
+
+        // Write the RXTX field of the RXTX register
+        uart.wfo(utra::uart::RXTX_RXTX, b'a');
+
+        // Or you can write the whole UART register
+        uart.wo(utra::uart::RXTX, b'a');
+        assert_ne!(uart.rf(pac::uart::TXFULL_TXFULL), 1);
+
+        // Anomalies
+
+        // This compiles but requires a cast since `audio` is a pointer to
+        // u32, whereas `uart` is a pointer to u8.
+        audio.wfo(utra::uart::RXTX_RXTX, b'a' as _);
+
+        // This also compiles, despite the fact that the register offset is
+        // mismatched and nonsensical
+        audio.wfo(utra::uart::TXFULL_TXFULL, 1);
+}
+
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="ch06-02-create-image.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="ch07-00-messages.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="ch06-02-create-image.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="ch07-00-messages.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
