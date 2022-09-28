@@ -30,6 +30,7 @@
 - [Build System](ch06-00-build-system-overview.md)
     - [Testing Crates](ch06-01-testing-crates.md)
     - [Image Creation](ch06-02-create-image.md)
+    - [Target Specification, UTRA](ch06-03-target-specification.md) read here to learn how hardware registers are handled.
 
 - [Messages](ch07-00-messages.md)
     - [Xous Names](ch07-01-xous-names.md) how to discover and connect with services in Xous
