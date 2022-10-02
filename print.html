@@ -1056,8 +1056,82 @@ The format for this tag consists of a single word defining how many additional s
 <p>The <code>xtask</code> concept is simply an alias under <code>.cargo/config</code> that turns <code>cargo xtask</code> into <code>cargo run --package xtask --</code>.</p>
 <p>Therefore, all complex operations from building the kernel to constructing an output image are handled by <code>xtask/src/main.rs</code>, which is compiled and run as a normal Rust program.</p>
 <h2><a class="header" href="#building-images" id="building-images">Building Images</a></h2>
-<p>Generally, users will want to use <code>cargo xtask app-image [app 1] [app ..]</code> to build a Xous image that contains the desired list of applications. The applications are the names of crates contained in the &quot;apps/&quot; directory.</p>
+<p>Generally, users will want to use <code>cargo xtask app-image [app 1] [app ..]</code> to build a Xous image that contains the desired list of applications. The applications are the names of crates contained in the &quot;apps/&quot; directory. Tesulting FLASH images will be called <a href="ch05-02-loader.html"><code>loader.bin</code></a> and <code>xous.img</code> in the <code>target/riscv32imac-unknown-xous-elf/release</code> directory.</p>
 <p>There are also convenience commands to build emulation images, such as <code>cargo xtask run</code> (for hosted mode, where Xous runs directly on your native OS) and <code>cargo xtask renode-image</code> (for a Renode image, where a cycle accurate simulation can be run inside the Renode emulator). See Chapter 4 for more information about Renode.</p>
+<h3><a class="header" href="#build-command-syntax-details" id="build-command-syntax-details">Build Command Syntax Details</a></h3>
+<p>The general format of an <code>xtask</code> command is as follows:</p>
+<pre><code class="language-text">cargo xtask [verb] [cratespecs ..]
+    [--feature [feature name]]
+    [--lkey [loader key]] [--kkey [kernel key]]
+    [--app [cratespec]]
+    [--service [cratespec]]
+    [--no-timestamp]
+</code></pre>
+<p>After <code>xtask</code>, a <code>verb</code> will select one of several pre-configured sets of packages and build targets. Immediately after <code>verb</code>, one can specifay a list of 0 or more items that are interpreted as <code>cratespecs</code>.</p>
+<p>The binary images merged into a FLASH image is usually built from local source, but it can actually come from many locations. Thus each <code>cratespec</code> has the following syntax:</p>
+<ul>
+<li><code>name</code>: crate 'name' to be built from local source</li>
+<li><code>name@version</code>: crate 'name' to be fetched from crates.io at the specified version</li>
+<li><code>name#URL</code>: pre-built binary crate of 'name', to be downloadeded from a server at 'URL' after the <code>#</code> separator</li>
+<li><code>path-to-binary</code>: file path to a prebuilt binary image on local machine. Files in '.' must be specified as <code>./file</code> to avoid confusion with local source</li>
+</ul>
+<p>The exact meaning of a <code>cratespec</code> depends on the context of the verb. Generally, fully-configured builds interpret the <code>cratespec</code> as an <code>app</code>, and debug builds interpcet <code>cratepsec</code> as a <code>service</code>.</p>
+<p>Both an <code>app</code> and a <code>service</code> are Xous binaries that are copied into the final disk image; however, there is an additional step that gets run in the build system for an <code>app</code> that looks up its description in <code>apps/manifest.json</code> and attempts to configure the launch menu for the app prior to running the build.</p>
+<p>Additional crates can be merged in with explicit app/service treatment by preceeding the crate name with either an <code>--app</code> flag or <code>---service</code> flag.</p>
+<h4><a class="header" href="#example-building-a-precursor-user-image" id="example-building-a-precursor-user-image">Example: Building a Precursor User Image</a></h4>
+<p>If one were building a user image for Precursor hardware, one could use the following command to build a base system that contains no apps.</p>
+<p><code>cargo xtask app-image</code></p>
+<p><code>app-image</code> automatically selects a <a href="ch06-03-target-specification.html"><code>utralib</code></a> hardware target, and populates a set of base services that would be bundled into a user image. Thus this command would create an image with no apps and just the default <code>shellchat</code> management interface.</p>
+<p>One could add the <code>vault</code> app and the <code>ball</code> demo app by specifying them as positional arguments like this:</p>
+<p><code>cargo xtask vault ball</code></p>
+<p>It is also perfectly fine to specify them using explicit flags like this:</p>
+<p><code>cargo xtask --app vault --app ball</code></p>
+<h4><a class="header" href="#example-system-bringup-builds" id="example-system-bringup-builds">Example: System Bringup Builds</a></h4>
+<p>When doing system bringup, it's often helpful to build just the tiniest subset of Xous, and then merge the service of interest into the disk image. Let's say you are building a tiny service that is located in a separate source tree. Let's say the service is called <code>test-server</code> and your workspace is set up like this:</p>
+<pre><code class="language-text">|
+|-- xous-core/
+|-- test-server/
+</code></pre>
+<p>Inside <code>test-server</code>, you would have a <code>src/main.rs</code> that looks like this:</p>
+<pre><code class="language-rust noplayground ignore">use xous_api_log_server as log_server;
+use std::{thread, time};
+
+fn main() -&gt; ! {
+    log_server::init_wait().unwrap();
+    log::set_max_level(log::LevelFilter::Info);
+    log::info!(&quot;my PID is {}&quot;, xous::process::id());
+
+    let timeout = time::Duration::from_millis(1000);
+    let mut count = 0;
+    loop {
+        log::info!(&quot;test loop {}&quot;, count);
+        count += 1;
+        thread::sleep(timeout);
+    }
+}
+</code></pre>
+<p>And a <code>Cargo.toml</code> that looks like this:</p>
+<pre><code class="language-toml">[package]
+name = &quot;test-server&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+xous = &quot;0.9.9&quot;
+log = &quot;0.4.14&quot;
+xous-api-log-server = {version = &quot;0.1.2&quot;, package = &quot;xous-api-log-server&quot;}
+
+</code></pre>
+<p>Inside <code>test-server</code>, run this command to build the program:</p>
+<p><code>cargo build --target riscv32imac-unknown-xous-elf --release</code></p>
+<p>The command would create a Xous executable in <code>target/riscv32imac-unknown-elf/release/test-server</code>.</p>
+<p>Then, in the <code>xous-core</code> source tree, you can run this command to create a runnable Xous disk image:</p>
+<p><code>cargo xtask tiny ../test-server/target/riscv32imac-unknown-elf/release/test-server</code></p>
+<p>The <code>tiny</code> verb selects the smallest subset of servers one can have to run the most basic OS functions, and it interprets the path to <code>test-server</code> as a <code>cratespec</code> which is injected into the <code>xous.img</code> file as another service. The Loader will automatically load <code>test-server</code> and run it concurrently with all the other Xous services in the <code>tiny</code> target.</p>
+<p>You could also use the <code>libstd-test</code> verb and create the same image, but for a Renode target.</p>
+<p>The advantage of this process is that you can iterate rapidly on <code>test-server</code> without triggering rebuilds of Xous, since the <code>test-server</code> program is entirely out of tree and specified as a binary file path <code>cratespec</code> to <code>xtask</code>. This is particularly useful during very early hardware bring-up of a new peripheral.</p>
+<p>Note that the <code>tiny</code> and <code>libstd-test</code> targets contain a minimal subset of Xous, and not all <code>libstd</code> functions will work; for example, the <code>Net</code> and <code>File</code> functions would fail because the test image does not contain networking or PDDB services. Generally, for development that relies on higher-level APIs such as networking and filesystem, it's easier to just build the full user image, because beyond a certain point of complexity all the services become inter-dependent upon each other and there is less value in isolating their dependencies.</p>
+<p>Binary <code>cratespec</code>s are also useful for handling license-incompatible crates. Xous is MIT-or-Apache licensed; thus, one cannot introduce a GPL crate into its source tree. However, one can create an executable from a GPL program, that is then copied into a Xous disk image using binary path <code>cratespec</code>s.</p>
 <h2><a class="header" href="#the-internal-flow-of-the-build-system" id="the-internal-flow-of-the-build-system">The Internal Flow of the Build System</a></h2>
 <p>For those curious as to what the builder does on the inside, here is the general flow of most build operations.</p>
 <h3><a class="header" href="#step-0-build-the-build-system" id="step-0-build-the-build-system">Step 0: Build the Build System</a></h3>
