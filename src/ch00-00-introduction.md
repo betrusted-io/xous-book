@@ -50,3 +50,17 @@ Alternatively, A Server can send a **synchronous** Message, and wait (block) unt
 **asynchronous** Message flow is also possible. The Sender will send a non-synchronous Message, which the kernel will amend with a "return token". The Recipient Server will complete the operation, and then send a non-synchronous Message in reply to this return token.
 
 A Server may also send a synchronous Message and wait for a **deferred-response**. This setup is needed when the recipient Server cannot formulate a reply within a single pass of the event loop. Rather, the recipient Server must "park" the request and continue to process subsequent Messages until the original request can be satisfied. The request is "parked" by either saving the `msg.sender` field (for Scalar messages) or keeping a reference to the `MessageEnvelope` (for Memory messages). Memory Messages automatically return-on-Drop, relying on the Rust borrow checker and reference counting system to enforce implicit return semantics.
+
+## Acknowledgement
+
+This project is funded through the NGI0 PET Fund, a fund established by NLnet
+with financial support from the European Commission's Next Generation Internet
+programme, under the aegis of DG Communications Networks, Content and Technology
+under grant agreement No 825310.
+
+<table>
+    <tr>
+        <td align="center" width="50%"><img src="https://nlnet.nl/logo/banner.svg" alt="NLnet foundation logo" style="width:90%"></td>
+        <td align="center"><img src="https://nlnet.nl/image/logos/NGI0_tag.svg" alt="NGI0 logo" style="width:90%"></td>
+    </tr>
+</table>
