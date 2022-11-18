@@ -204,7 +204,17 @@ normal operating system behavior.</p>
 <p>Alternatively, A Server can send a <strong>synchronous</strong> Message, and wait (block) until the Recipient completes the operation and responds. In this arrangement, the Message memory is merely lent to the Recipient (read-only or read-write) and returned to the Sender on completion. While the sender Server &quot;blocks&quot;, its processing quanta is not wasted, but also &quot;lent&quot; to the Recipient Server to complete the request promptly. In the code, these are referred to as either <code>BlockingScalar</code> Scalar Messages, or <code>Borrow</code> or <code>MutableBorrow</code> Memory Messages. <code>Borrow</code> messages are read-only, <code>MutableBorrow</code> are read-write, with semantics enforced by the Rust borrow checker.</p>
 <p><strong>asynchronous</strong> Message flow is also possible. The Sender will send a non-synchronous Message, which the kernel will amend with a &quot;return token&quot;. The Recipient Server will complete the operation, and then send a non-synchronous Message in reply to this return token.</p>
 <p>A Server may also send a synchronous Message and wait for a <strong>deferred-response</strong>. This setup is needed when the recipient Server cannot formulate a reply within a single pass of the event loop. Rather, the recipient Server must &quot;park&quot; the request and continue to process subsequent Messages until the original request can be satisfied. The request is &quot;parked&quot; by either saving the <code>msg.sender</code> field (for Scalar messages) or keeping a reference to the <code>MessageEnvelope</code> (for Memory messages). Memory Messages automatically return-on-Drop, relying on the Rust borrow checker and reference counting system to enforce implicit return semantics.</p>
-<h1><a class="header" href="#getting-started" id="getting-started">Getting Started</a></h1>
+<h2><a class="header" href="#acknowledgement" id="acknowledgement">Acknowledgement</a></h2>
+<p>This project is funded through the NGI0 PET Fund, a fund established by NLnet
+with financial support from the European Commission's Next Generation Internet
+programme, under the aegis of DG Communications Networks, Content and Technology
+under grant agreement No 825310.</p>
+<table>
+    <tr>
+        <td align="center" width="50%"><img src="https://nlnet.nl/logo/banner.svg" alt="NLnet foundation logo" style="width:90%"></td>
+        <td align="center"><img src="https://nlnet.nl/image/logos/NGI0_tag.svg" alt="NGI0 logo" style="width:90%"></td>
+    </tr>
+</table><h1><a class="header" href="#getting-started" id="getting-started">Getting Started</a></h1>
 <p>The <a href="https://github.com/betrusted-io/betrusted-wiki/wiki">wiki</a> is going to be the most up-to-date source of information for getting started, as it is still a topic in flux.</p>
 <p>Below are some excerpts from the Wiki, but some links may be out of date.</p>
 <h2><a class="header" href="#update-your-device" id="update-your-device">Update Your Device</a></h2>
