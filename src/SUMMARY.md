@@ -40,6 +40,7 @@
        - [Asynchronous](ch07-05-asynchronous.md)
        - [Deferred Response](ch07-06-deferred.md)
        - [Forwarding](ch07-07-forwarding.md)
+   -  [Performance](ch07-08-performance.md)
 
 - [Graphics Toolkit](ch08-00-graphics.md)
     - [Modals](ch08-01-modals.md)
