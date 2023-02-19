@@ -6,7 +6,6 @@
 
 - [Getting Started](ch01-00-getting-started.md)
     - [Hello, World!](ch01-02-hello-world.md)
-    - [Hello, Renode!](ch01-03-hello-renode.md)
 
 - [Server Architecture](ch02-00-server-architecture.md)
     - [Synchronization](ch02-04-synchronization.md)
@@ -17,9 +16,6 @@
     - [Process Creation](ch03-03-process-creation.md)
 
 - [Renode Emulation](ch04-00-renode-emulation.md)
-    - [Platform Definition](ch04-01-platform-definition.md)
-    - [Renode Startup Script](ch04-02-renode-startup-script.md)
-    - [Python Extensions](ch04-03-python-extensions.md)
     - [Writing C# Peripherals](ch04-04-writing-cs-peripherals.md)
 
 - [System Startup](ch05-00-system-startup.md)
