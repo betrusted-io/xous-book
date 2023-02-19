@@ -1,6 +1,6 @@
 # Xous Loader
 
-The Xous loader is located in the [loader/](https://github.com/betrusted-io/xous/tree/main/loader) directory. This program runs in Machine mode, and makes the following assumptions:
+The Xous loader is located in the [loader/](https://github.com/betrusted-io/xous-core/tree/main/loader) directory. This program runs in Machine mode, and makes the following assumptions:
 
 1. There is an Argument structure located somewhere in memory and register `$a0` points to it
 2. The system has 16 MB of RAM and it is located at address `0x40000000`
@@ -55,19 +55,90 @@ If the image is signed with anything but the self-generated key, a visible marke
 
 Upon the conclusion of the signature check, the loader also does a quick check of the stack usage, to ensure that nothing ran out of bounds. This is important because the Kernel assumes that no memory pages are modified across a suspend/resume, except for the (currently) two pages of RAM allocated to the loader's stack.
 
-## Reading Initial Configuration
+## Loading the OS
+
+Once the image has been signature checked, the loader must set up the Xous kernel. Xous has a very regular structure, where everything is a process, including the kernel. What makes the kernel special is that it is process ID `1`, and its code is also mapped into the high 4 MiB of every other processes' memory space, allowing processes to run kernel code without having to swap out the `satp` (that is, the page table base).
+
+The loader's responsibility is to go from a machine that has essentially a zero-ized RAM space and a bunch of archives in FLASH, to one where physical pages of memory are mapped into the correct virtual address spaces for every process.
+
+This is done in several stages:
+
+1. Reading the configuration
+2. `Stage 1` - copying processes to their final runtime locations, and keeping track of all the copies
+3. `Stage 2` - creating a page table that reflects the copies done in `Stage 1`
+4. Jumping to the kernel
+
+### Reading Initial Configuration
 
 The loader needs to know basic information about the Arguments structure before it can begin. This includes information about the memory layout, extra memory regions, kernel offset, and the number of initial programs.
 
 The loader performs one pass through the Arguments structure to ensure that it contains the required fields before continuing.
 
-## Loader Stage 1: Accounting
+### Loader Stage 1: Copying and Aligning Data
 
-The first stage goes through the Arguments structure and does initial accounting. This involves multiple passes over the arguments structure.
+Stage 1 copies and aligns all of the processes, such that the sub-page offsets for the code matches the expectations that the linker set up. It also copies any data requires write access, even if is already correctly aligned. The core routine is `copy_processes()`.
 
-### Runtime Page Tracker
+In the case that the offsets for the memory image on FLASH line up with the virtual memory offsets, nothing needs to be done for the text, read-only data, and exception handler sections. In the case that they do not line up, a copy must be made in RAM of these sections to ensure correct alignment.
 
-The first pass sets up the *Runtime Page Tracker*. This is a whitelist where each valid page in the system can be assigned to exactly one process. Memory that does not have an entry in the *Runtime Page Tracker* cannot be allocated. This helps prevent memory aliasing attacks in the case that a hardware module does not fully decode all the address bits.
+Virtual sections marked as `NOCOPY` must be allocated and zero-ized, and sections marked with write access must always the copied.
+
+The loader reserves the top two pages for its own working stack space, and adds a configurable `GUARD_MEMORY_BYTES` buffer to determine the beginning of process space. Note that one page of the "guard" area is used to store a "clean supend marker", which is used by the loader to check if the current power-on cycle is due to a resume, or a cold boot.
+
+Currently, the total works out to an offset of 16kiB reserved from top of RAM before processes are copied. These RAM pages are "lost forever" and not available to the Xous kernel for any purpose. This physical offset represents the start of the loader's workspace for setting up Xous.
+
+#### Process Copying
+
+The loader consumes RAM, page-by-page, starting from the highest available physical offset, working its way down.
+
+The loader iterates through the list of user process images (`IniE`/`IniF`), and copies data into physical pages of RAM based on the following set of rules:
+
+1. If a new page is required, decrement the "top of RAM" pointer by a page and zeroize the page
+2. "If necessary", copy (or allocate) the section from FLASH to RAM, taking care to align the target data so that it matches the expected virtual address offset
+3. Zeroize any unallocated data in the page
+
+The "if necessary" rules are as follows:
+
+1. If it is an `IniE`, always copy or allocate the sections. Sections marked as `NOCOPY` are simply allocated in virtual memory and zeroized.
+2. If it is an `IniF`, only copy sections marked as writeable; allocate any `NOCOPY` areas.
+
+At the conclusion of process copying, the "top of RAM" pointer is now at the bottom of all the physical pages allocated for the user processes.
+
+At this point, the kernel is copied into RAM, and the top of RAM pointer is decremented accordingly. The algorithm is very similar to the above except there are fewer sections to deal with in the kernel.
+
+Finally, the "top of RAM" is located at the lowest address in RAM that has been allocated for the initial process state of Xous.
+
+### Loader Stage 2: Setting Page Tables
+
+Now that memory has been copied, the second stage is responsible for re-parsing the loader file and setting up the system-specific page tables. To recap, memory is laid out as follows:
+
+- Top of RAM
+- Loader stack (2 pages currently)
+- Guard area (2 pages; one page used for "clean suspend marker")
+- PID2
+- PID3
+- ...
+- Kernel
+- Pointer to next free memory
+
+However, the page tables have not been set up.
+
+Stage 2 iterates through the arguments in the same order as "Stage 1", except this time we know where the "bottom" of total physical memory is, so we know where to start allocating pages of the page table.
+
+Thus, Stage 2 walks the Arguments structure again, in the exact same order as Stage 1. For each process, it allocates the root page table (noting the SATP location), sets up the various memory sections with their requested permissions, allocates a default stack, and marks all memory as loaded by the correct process in the `runtime page tracker`, discussed in the next subsection. This is done using a series of `alloc` routines that simply decrement the "top of RAM" pointer and hand back pages to be stuck into page table entries.
+
+Note that "allocating stack" simply refers to the process of reserving some page table entries for would-be stack; the actual physical memory for stack isn't allocated until runtime, when a page fault happens in stack and the kernel grabs a physical page of RAM and slots it into the stack area on demand.
+
+After this is done, the loader maps all of the loader-specific sections into the kernel's memory space. In particular, the following are all mapped directly into the kernel's memory space:
+
+* Arguments structure
+* Initial process list
+* Runtime page tracker
+
+#### Runtime Page Tracker
+
+The *Runtime Page Tracker* is a slice of `PID`, where each entry corresponds to a page of physical RAM or I/O, starting from the lowest RAM available to the highest RAM, and then any memory-mapped I/O space. Because the loader doesn't have a "heap" per se to allocate anything, the runtime page tracker is conjured from a chunk of RAM subtracted from the "top of free RAM" pointer, and then constructed using `slice::from_raw_parts_mut()`. This slice is then passed directly onto the kernel so it has a zero-copy method for tracking RAM allocations.
+
+Thus, the *Runtime Page Tracker* is a whitelist where each valid page in the system can be assigned to exactly one process. Memory that does not have an entry in the *Runtime Page Tracker* cannot be allocated. This helps prevent memory aliasing attacks in the case that a hardware module does not fully decode all the address bits, because RAM that isn't explicitly described in the SVD description of the SoC can't be allocated.
 
 Thus, the image creation program must be passed a full SVD description of the SoC register model to create this whitelist. It shows up as the "Additional Regions" item in the Xous Arguments output as displayed by the image creation program.
 
@@ -75,9 +146,7 @@ Each page in main memory as well as each page in memory-mapped IO will get one b
 
 Whenever a page is allocated in the loader, it is marked in this region as belonging to the kernel -- i.e. PID 1. This region is passed to the kernel which will continue to use it to keep track of page allocations.
 
-This memory is zeroed out and will be filled in later.
-
-### Process Allocation
+#### Process Allocation
 
 The loader allocates a set of initial processes, and it must pass this list of processes to the kernel. Fundamentally a process is just three things:
 
@@ -85,35 +154,37 @@ The loader allocates a set of initial processes, and it must pass this list of p
 2. An entrypoint
 3. A stack
 
-As such, the loader needs to allocate a table with these three pieces of information that is large enough to fit all of the initial processes. Therefore, it allocates a slice of memory that contains an `InitialProcess` struct that is big enough to cover all of the initial processes.
+As such, the loader needs to allocate a table with these three pieces of information that is large enough to fit all of the initial processes. Therefore, in a manner similar to the *Runtime Page Tracker*, it allocates a slice of memory that contains an `InitialProcess` `struct` that is big enough to cover all of the initial processes.
 
-This structure is zeroed out, and will be filled in later.
+This structure is zeroed out, and is filled in by the Stage 2 loader.
 
-### Argument Copying
+### Preparing to Boot
+
+At this point, RAM looks something like this:
+
+- Top of RAM
+- Loader stack (2 pages currently)
+- Guard area (2 pages; one page used for "clean suspend marker")
+- PID2
+- PID3
+- ...
+- Kernel
+- Runtime page tracker
+- Initial process table, holding pointers to root page table locations
+- Page table entries for PID2
+- Page table entries for PID3
+- ...
+- Page table entries for the kernel
+
+The kernel is now ready for the pivot into virtual memory, so we perform the following final steps.
+
+#### Argument Copying
 
 The Arguments structure may be in RAM, but it may be located in some other area that will become inaccessible when the system is running. If configured, the Arguments structure is copied into RAM.
 
-### Process Copying
+#### Setting page ownership
 
-Each process, plus the kernel, is then copied into RAM.
-
-This is complex due to how memory data is laid out. For example, some sections are labeled NOCOPY, and indicate data such as `.bss` where there is no actual data to copy, it must simply be zeroed out.
-
-### Setting page ownership
-
-Mark all loader pages as being owned by `PID 1`. This ensures they cannot be reallocated later on.
-
-## Loader Stage 2: Setting Page Tables
-
-Now that memory has been copied, the second stage is responsible for parsing the loader file and setting up the system-specific page tables.
-
-The loader walks the Arguments structure again and loops through each initial process as well as the kernel. For each process, it allocates the root page table, sets up the various memory sections with their requested permissions, allocates a stack, and marks all memory as loaded by the correct process.
-
-After this is done, the loader maps all of the loader-specific sections into the kernel's memory space. In particular, the following are all mapped directly:
-
-* Arguments structure
-* Initial process list
-* Runtime page tracker
+Mark all loader pages as being owned by `PID 1`. This ensures they cannot be reallocated later on and overwritten by a rogue process.
 
 ## Jumping to the Kernel
 
@@ -121,11 +192,14 @@ The loader runs in Machine mode, which means the MMU is disabled. As soon as the
 
 The loader stashes these settings in a structure called `backup_args`. This structure is currently placed at the end of loader stack, however in the future it may be allocated alongside structures such as the runtime page tracker.
 
-Execution continues in `start_kernel`, which is located in `asm.S`.
+Execution continues in `start_kernel`, which is currently located in `asm.S` (but is slated to migrate into a `.rs` file now that assembly is part of stable Rust).
 
-In order to allow interrupts and exceptions to be handled by the kernel, the loader sets `mideleg` to `0xffffffff` in order to delegate all interrupts to Supervisor mode, and it sets `medeleg` to `0xffffffff` in order to delegate all CPU exceptions to the kernel.
+In order to allow interrupts and exceptions to be handled by the kernel, which runs in Supervisor mode, the loader sets `mideleg` to `0xffffffff` in order to delegate all interrupts to Supervisor mode, and it sets `medeleg` to `0xffffffff` in order to delegate all CPU exceptions to the kernel.
 
-The loader then does the handover by setting `mepc` and issuing a `reti` Return from Interrupt opcode.
+The loader then does the handover by setting `mepc` (the exception return program counter - contains the virtual address of the instruction that
+nominally triggered the exception) to the `entrypoint` of the kernel, and issuing a `reti` (Return from Interrupt) opcode.
+
+Thus one can effectively think of this entire "boot process" as just one big machine mode exception that started at the reset vector, and now, we can return from this exception and resume in Supervisor (kernel) code.
 
 ## Resuming from Suspend
 

@@ -32,12 +32,12 @@ Finally, it creates a new section entry in the Arguments structure with the spec
 
 ELF supports multiple flags. For example, it is possible to mark a section as `Executable`, `Read-Only`, or `Read-Write`. Unfortunately these flags don't work well in practice, and issues can arise from various permissions problems.
 
-Xous currently marks all pages `Read-Write-Execute`, however this may change in the future.
+Xous supports a subset of these flags, as documented in the [flags section](ch05-01-arguments.md#inie-and-inif-flags) of the `IniE` and `IniF` tags.
 
 ## Page-Aligned MiniELF
 
 Programs that are meant to be run out of FLASH directly and not copied to RAM are laid out in the MiniELF archive format such that the sub-page address offsets (that is, the lower 12 bits) correspond 1:1 with the virtual memory mappings. This allows the FLASH copy of the MiniELF to be simply mapped into the correct location in virtual memory for the target process, instead of being copied into RAM. `IniF`-tagged sections comply to this discipline.
 
-The penalty for page-aligned MiniELF is minor; primarily, a few bytes of padding have to be inserted here and there as the files are generated to ensure that the alignment requirements are met. The hardest part about this is the cognitive load of peeking into the next iteration of a Rust iterator to determine what the alignment of the *next* section should be so that you can finalize the padding of the *current* section.
+The penalty for page-aligned MiniELF is minor; primarily, a few bytes of padding have to be inserted here and there as the files are generated to ensure that the alignment requirements are met. The main overhead is the cognitive load of peeking into the next iteration of a Rust iterator to determine what the alignment of the *next* section should be so that you can finalize the padding of the *current* section.
 
 However, the `IniE` format is retained as-is for historical reasons.
