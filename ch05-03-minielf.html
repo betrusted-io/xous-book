@@ -186,10 +186,10 @@
 <p>Finally, it creates a new section entry in the Arguments structure with the specified flags, offset, and size. The offset used here is relative to the start of the output image on disk. Therefore, the very first section to be written will have an offset of <code>0</code>.</p>
 <h2><a class="header" href="#elf-flags" id="elf-flags">ELF Flags</a></h2>
 <p>ELF supports multiple flags. For example, it is possible to mark a section as <code>Executable</code>, <code>Read-Only</code>, or <code>Read-Write</code>. Unfortunately these flags don't work well in practice, and issues can arise from various permissions problems.</p>
-<p>Xous currently marks all pages <code>Read-Write-Execute</code>, however this may change in the future.</p>
+<p>Xous supports a subset of these flags, as documented in the <a href="ch05-01-arguments.html#inie-and-inif-flags">flags section</a> of the <code>IniE</code> and <code>IniF</code> tags.</p>
 <h2><a class="header" href="#page-aligned-minielf" id="page-aligned-minielf">Page-Aligned MiniELF</a></h2>
 <p>Programs that are meant to be run out of FLASH directly and not copied to RAM are laid out in the MiniELF archive format such that the sub-page address offsets (that is, the lower 12 bits) correspond 1:1 with the virtual memory mappings. This allows the FLASH copy of the MiniELF to be simply mapped into the correct location in virtual memory for the target process, instead of being copied into RAM. <code>IniF</code>-tagged sections comply to this discipline.</p>
-<p>The penalty for page-aligned MiniELF is minor; primarily, a few bytes of padding have to be inserted here and there as the files are generated to ensure that the alignment requirements are met. The hardest part about this is the cognitive load of peeking into the next iteration of a Rust iterator to determine what the alignment of the <em>next</em> section should be so that you can finalize the padding of the <em>current</em> section.</p>
+<p>The penalty for page-aligned MiniELF is minor; primarily, a few bytes of padding have to be inserted here and there as the files are generated to ensure that the alignment requirements are met. The main overhead is the cognitive load of peeking into the next iteration of a Rust iterator to determine what the alignment of the <em>next</em> section should be so that you can finalize the padding of the <em>current</em> section.</p>
 <p>However, the <code>IniE</code> format is retained as-is for historical reasons.</p>
 
                     </main>
