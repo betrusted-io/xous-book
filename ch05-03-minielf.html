@@ -187,9 +187,10 @@
 <h2><a class="header" href="#elf-flags" id="elf-flags">ELF Flags</a></h2>
 <p>ELF supports multiple flags. For example, it is possible to mark a section as <code>Executable</code>, <code>Read-Only</code>, or <code>Read-Write</code>. Unfortunately these flags don't work well in practice, and issues can arise from various permissions problems.</p>
 <p>Xous currently marks all pages <code>Read-Write-Execute</code>, however this may change in the future.</p>
-<h2><a class="header" href="#flattened-minielf" id="flattened-minielf">Flattened MiniELF</a></h2>
-<p>The flattened MiniELF format is currently theoretical. This format would expand the on-disk representation of a process such that it was page-aligned. For example, in the storage format, offset <code>0x100</code> may be loaded to memory location <code>0x20000000</code>, while offset <code>0x110</code> may be loaded to offset <code>0x40000000</code>. The MMU is unable to create such fine-grained mappings, however a <code>Flattened MiniELF</code> file would reorder this such that the first memory location is stored at offset <code>0x1000</code> on the disk, allowing that entire page to be mapped to offset <code>0x20000000</code>. Padding will be added, and the subsequent data would be stored at offset <code>0x2000</code>. This allows the next page to be cleanly mapped to <code>0x40000000</code>.</p>
-<p>This format will allow Execute-in-Place from SPI flash, which will free up additional memory.</p>
+<h2><a class="header" href="#page-aligned-minielf" id="page-aligned-minielf">Page-Aligned MiniELF</a></h2>
+<p>Programs that are meant to be run out of FLASH directly and not copied to RAM are laid out in the MiniELF archive format such that the sub-page address offsets (that is, the lower 12 bits) correspond 1:1 with the virtual memory mappings. This allows the FLASH copy of the MiniELF to be simply mapped into the correct location in virtual memory for the target process, instead of being copied into RAM. <code>IniF</code>-tagged sections comply to this discipline.</p>
+<p>The penalty for page-aligned MiniELF is minor; primarily, a few bytes of padding have to be inserted here and there as the files are generated to ensure that the alignment requirements are met. The hardest part about this is the cognitive load of peeking into the next iteration of a Rust iterator to determine what the alignment of the <em>next</em> section should be so that you can finalize the padding of the <em>current</em> section.</p>
+<p>However, the <code>IniE</code> format is retained as-is for historical reasons.</p>
 
                     </main>
 

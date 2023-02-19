@@ -219,12 +219,12 @@ offsets must be in the range <code>0xffc0_0000</code> - <code>0xfff0_0000</code>
 <tr><td>0</td><td>4</td><td>LOAD_OFFSET</td><td>Position in RAM relative to the start of the arguments  block where this program is stored, or an absolute value if <code>ABSOLUTE</code>  is <code>1</code>.</td></tr>
 <tr><td>4</td><td>4</td><td>ENTRYPOINT</td><td>Virtual memory address of the <code>_start()</code> function</td></tr>
 </tbody></table>
-<p>Following this is a list of <em>section definitions</em>. Section definitions must be sequential in RAM -- that is, it is not permitted for <code>SECTIONn_OFFSET</code> to decrease.
-| Offset | Size | Name            | Description                                  |
-| ------ | ---- | --------------- | -------------------------------------------- |
-| n<em>3+8  | 8    | SECTIONn_OFFSET | Virtual memory address of memory section <em>n</em> |
-| n</em>3+12 | 3    | SECTIONn_SIZE   | Size of memory section <em>n</em>                   |
-| n*3+15 | 1    | SECTIONn_FLAGS  | Flags describing memory section <em>n</em>          |</p>
+<p>Following this is a list of <em>section definitions</em>. Section definitions must be sequential in RAM -- that is, it is not permitted for <code>SECTIONn_OFFSET</code> to decrease.</p>
+<table><thead><tr><th>Offset</th><th>Size</th><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>n*3+8</td><td>8</td><td>SECTIONn_OFFSET</td><td>Virtual memory address of memory section <em>n</em></td></tr>
+<tr><td>n*3+12</td><td>3</td><td>SECTIONn_SIZE</td><td>Size of memory section <em>n</em></td></tr>
+<tr><td>n*3+15</td><td>1</td><td>SECTIONn_FLAGS</td><td>Flags describing memory section <em>n</em></td></tr>
+</tbody></table>
 <p>The fields <code>size</code>, <code>flags</code>, and <code>offset</code> together occupy 64 bits (8 bytes). The
 <code>OFFSET</code> is a full 32-bit address.  The <code>SIZE</code> field is in units of
 bytes, however as it is only 24 bits, meaning the largest section size
@@ -238,6 +238,7 @@ looks like this:</p>
 <li><code>K</code> is the 8-bit flag field</li>
 <li><code>L</code> is the 24-bit size field</li>
 </ul>
+<h4><a class="header" href="#inie-and-inif-flags" id="inie-and-inif-flags"><code>IniE</code> and <code>IniF</code> Flags</a></h4>
 <p>The <code>FLAGS</code> field contains the following four bits.  Any region may be
 marked NOCOPY, however RISC-V does not allow regions to be marked
 &quot;Write-only&quot;:</p>
@@ -249,6 +250,7 @@ marked NOCOPY, however RISC-V does not allow regions to be marked
 <tr><td>4</td><td>0b010000</td><td>EH_FLAG</td><td>Region is an EH_FLAG region</td></tr>
 <tr><td>5</td><td>0b100000</td><td>EH_FLAG_HDR</td><td>Region is an EH_FLAG_HEADER region</td></tr>
 </tbody></table>
+<p>These correspond 1:1 to the flag definitions used in the MiniELF format.</p>
 <p>Programs <strong>cannot</strong> access the final four megabytes, as this memory
 is reserved for the kernel. It is an error if any section enters this memory region.</p>
 <h3><a class="header" href="#pnam-tag----program-names" id="pnam-tag----program-names"><code>PNam</code> Tag -- Program Names</a></h3>
