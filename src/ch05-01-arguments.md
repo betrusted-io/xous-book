@@ -68,6 +68,7 @@ This tag has the following values:
 | 4      | 4    | ENTRYPOINT  | Virtual memory address of the `_start()` function                                                                                       |
 
 Following this is a list of *section definitions*. Section definitions must be sequential in RAM -- that is, it is not permitted for `SECTIONn_OFFSET` to decrease.
+
 | Offset | Size | Name            | Description                                  |
 | ------ | ---- | --------------- | -------------------------------------------- |
 | n*3+8  | 8    | SECTIONn_OFFSET | Virtual memory address of memory section _n_ |
@@ -83,10 +84,13 @@ looks like this:
 ```
 0xJJJJ_JJJJ 0xKK_LLLLLL
 ```
+
 Where:
   - `J` is the 32-bit offset
   - `K` is the 8-bit flag field
   - `L` is the 24-bit size field
+
+#### `IniE` and `IniF` Flags
 
 The `FLAGS` field contains the following four bits.  Any region may be
 marked NOCOPY, however RISC-V does not allow regions to be marked
@@ -100,6 +104,8 @@ marked NOCOPY, however RISC-V does not allow regions to be marked
 | 3   | 0b001000 | EXECUTABLE | Region will be allocated with the "X" bit     |
 | 4   | 0b010000 | EH_FLAG    | Region is an EH_FLAG region                   |
 | 5   | 0b100000 | EH_FLAG_HDR | Region is an EH_FLAG_HEADER region           |
+
+These correspond 1:1 to the flag definitions used in the MiniELF format.
 
 Programs **cannot** access the final four megabytes, as this memory
 is reserved for the kernel. It is an error if any section enters this memory region.
