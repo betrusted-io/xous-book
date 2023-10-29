@@ -6,6 +6,7 @@
 
 - [Getting Started](ch01-00-getting-started.md)
     - [Hello, World!](ch01-02-hello-world.md)
+    - [Coding Style](ch01-04-coding-style.md)
 
 - [Server Architecture](ch02-00-server-architecture.md)
     - [Synchronization](ch02-04-synchronization.md)
