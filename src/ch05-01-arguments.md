@@ -81,7 +81,7 @@ bytes, however as it is only 24 bits, meaning the largest section size
 is `2^24` bytes. If these are printed as `u32` and read on the screen, the format
 looks like this:
 
-```
+```text
 0xJJJJ_JJJJ 0xKK_LLLLLL
 ```
 
