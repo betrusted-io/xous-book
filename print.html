@@ -712,15 +712,15 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 <p>Then, flash the resulting image to the target device as normal.</p>
 <h2><a class="header" href="#attaching-to-the-debugger" id="attaching-to-the-debugger">Attaching to the debugger</a></h2>
 <p>If you're using Renode, then you can connect gdb to <code>localhost:3456</code>:</p>
-<pre><code>riscv-none-elf-gdb -ex 'tar ext :3456'
+<pre><code class="language-text">riscv-none-elf-gdb -ex 'tar ext :3456'
 </code></pre>
 <p>On real hardware, you will first need to re-mux the serial port so that gdb is visible on serial. Then you can connect gdb to the target serial port.</p>
 <h2><a class="header" href="#debugging-a-process" id="debugging-a-process">Debugging a process</a></h2>
 <p>Within the gdb server, you can switch which file you're debugging. For example, to debug the ticktimer, run:</p>
-<pre><code>(gdb) file target/riscv32imac-unknown-xous-elf/release/xous-ticktimer
+<pre><code class="language-text">(gdb) file target/riscv32imac-unknown-xous-elf/release/xous-ticktimer
 </code></pre>
 <p>After setting the ELF file you will need to attach to the process. Use <code>mon pr</code> or <code>monitor process</code> to list available processes. Then, use <code>attach</code> to attach to a process:</p>
-<pre><code>(gdb) mon pr
+<pre><code class="language-text">(gdb) mon pr
 Available processes:
    1   kernel
    2   xous-ticktimer
@@ -738,7 +738,7 @@ Attaching to process 2
 <p>You can switch processes by sending <code>att</code> to a different PID.</p>
 <h2><a class="header" href="#debugging-a-thread" id="debugging-a-thread">Debugging a thread</a></h2>
 <p>To list threads, use <code>info thr</code>:</p>
-<pre><code>(gdb) info thr
+<pre><code class="language-text">(gdb) info thr
   Id   Target Id         Frame
 * 1    Thread 2.255      0xff802000 in ?? ()
   2    Thread 2.2        xous::definitions::Result::from_args (src=...) at src/definitions.rs:474
@@ -746,7 +746,7 @@ Attaching to process 2
 (gdb)
 </code></pre>
 <p>To switch threads, use <code>thr [n]</code>:</p>
-<pre><code>(gdb) thr 2
+<pre><code class="language-text">(gdb) thr 2
 [Switching to thread 2 (Thread 2.2)]
 #0  xous::definitions::Result::from_args (src=...) at src/definitions.rs:474
 474             match src[0] {
