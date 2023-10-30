@@ -15,6 +15,7 @@
     - [Memory Layout](ch03-01-memory-layout.md)
     - [Hosted Mode](ch03-02-hosted-mode.md)
     - [Process Creation](ch03-03-process-creation.md)
+    - [Debugging Programs with GDB](ch03-04-debugging-programs.md)
 
 - [Renode Emulation](ch04-00-renode-emulation.md)
     - [Writing C# Peripherals](ch04-04-writing-cs-peripherals.md)
