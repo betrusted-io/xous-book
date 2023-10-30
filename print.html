@@ -707,8 +707,9 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 </ul>
 <h2><a class="header" href="#enabling-the-debugger" id="enabling-the-debugger">Enabling the debugger</a></h2>
 <p>You probably want to set <code>debug = true</code> inside <code>Cargo.toml</code>. This will add debug symbols to the resulting ELF binaries which greatly enhance the debugging experience. Otherwise the debugger will have to guess where </p>
-<p>To enable the debugger, build the kernel with the <code>gdb-stub</code> feature. Your device must additionally have the 3rd serial port enabled.</p>
-<p>The <code>gdb-stub</code> feature flag is not yet exposed, so you will need to build the kernel with something along the lines of <code>cargo build --release --target riscv32imac-unknown-xous-elf --package xous-kernel --features renode --features gdb-stub</code>. Once <a href="https://github.com/betrusted-io/xous-core/issues/444">#444</a> is closed, you will be able to enable <code>gdb-stub</code> via a normal <code>xtask</code> flag.</p>
+<p>To enable the debugger, pass <code>--gdb-stub</code> to <code>xtask</code>. For example:</p>
+<pre><code class="language-text">cargo xtask app-image-xip --gdb-stub mtxchat --feature efuse --feature tls
+</code></pre>
 <p>Then, flash the resulting image to the target device as normal.</p>
 <h2><a class="header" href="#attaching-to-the-debugger" id="attaching-to-the-debugger">Attaching to the debugger</a></h2>
 <p>If you're using Renode, then you can connect gdb to <code>localhost:3456</code>:</p>
