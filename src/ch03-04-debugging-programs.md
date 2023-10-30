@@ -22,9 +22,11 @@ The following features are NOT SUPPORTED:
 
 You probably want to set `debug = true` inside `Cargo.toml`. This will add debug symbols to the resulting ELF binaries which greatly enhance the debugging experience. Otherwise the debugger will have to guess where 
 
-To enable the debugger, build the kernel with the `gdb-stub` feature. Your device must additionally have the 3rd serial port enabled.
+To enable the debugger, pass `--gdb-stub` to `xtask`. For example:
 
-The `gdb-stub` feature flag is not yet exposed, so you will need to build the kernel with something along the lines of `cargo build --release --target riscv32imac-unknown-xous-elf --package xous-kernel --features renode --features gdb-stub`. Once [#444](https://github.com/betrusted-io/xous-core/issues/444) is closed, you will be able to enable `gdb-stub` via a normal `xtask` flag.
+```text
+cargo xtask app-image-xip --gdb-stub mtxchat --feature efuse --feature tls
+```
 
 Then, flash the resulting image to the target device as normal.
 
