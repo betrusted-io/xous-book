@@ -32,7 +32,7 @@ Then, flash the resulting image to the target device as normal.
 
 If you're using Renode, then you can connect gdb to `localhost:3456`:
 
-```
+```text
 riscv-none-elf-gdb -ex 'tar ext :3456'
 ```
 
@@ -42,13 +42,13 @@ On real hardware, you will first need to re-mux the serial port so that gdb is v
 
 Within the gdb server, you can switch which file you're debugging. For example, to debug the ticktimer, run:
 
-```
+```text
 (gdb) file target/riscv32imac-unknown-xous-elf/release/xous-ticktimer
 ```
 
 After setting the ELF file you will need to attach to the process. Use `mon pr` or `monitor process` to list available processes. Then, use `attach` to attach to a process:
 
-```
+```text
 (gdb) mon pr
 Available processes:
    1   kernel
@@ -71,7 +71,7 @@ You can switch processes by sending `att` to a different PID.
 
 To list threads, use `info thr`:
 
-```
+```text
 (gdb) info thr
   Id   Target Id         Frame
 * 1    Thread 2.255      0xff802000 in ?? ()
@@ -82,7 +82,7 @@ To list threads, use `info thr`:
 
 To switch threads, use `thr [n]`:
 
-```
+```text
 (gdb) thr 2
 [Switching to thread 2 (Thread 2.2)]
 #0  xous::definitions::Result::from_args (src=...) at src/definitions.rs:474
