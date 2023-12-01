@@ -196,6 +196,13 @@
 <pre><code class="language-text">riscv-none-elf-gdb -ex 'tar ext :3456'
 </code></pre>
 <p>On real hardware, you will first need to re-mux the serial port so that gdb is visible on serial. Then you can connect gdb to the target serial port.</p>
+<p>For example, if you have a hardware Precursor device connected to a Raspberry Pi 3B+ with a debug HAT running Raspbian &quot;Buster&quot;, you would first run this command in <code>shellchat</code> on the hardware device itself:</p>
+<pre><code class="language-text">console app
+</code></pre>
+<p>This switches the internal serial port mux in the Precursor to the GDB port.</p>
+<p>Then, on the Raspberry pi command line, you would run this:</p>
+<pre><code class="language-text">riscv-none-elf-gdb -ex 'tar ext /dev/ttyS0'
+</code></pre>
 <h2><a class="header" href="#debugging-a-process" id="debugging-a-process">Debugging a process</a></h2>
 <p>Within the gdb server, you can switch which file you're debugging. For example, to debug the ticktimer, run:</p>
 <pre><code class="language-text">(gdb) file target/riscv32imac-unknown-xous-elf/release/xous-ticktimer
