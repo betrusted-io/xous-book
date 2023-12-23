@@ -277,7 +277,11 @@ under grant agreement No 825310.</p>
 <li>You will need the latest stable Rust. For now, Xous is tightly coupled to the latest stable Rust toolchain.</li>
 <li>One should be able to run <code>cargo xtask run</code> after cloning <a href="https://github.com/betrusted-io/xous-core">xous-core</a>, and it will pop up a &quot;host-mode&quot; emulated version of Precursor.
 <ul>
-<li>You should be prompted to install the <code>xous</code> target; if this fails, you can follow <a href="https://github.com/betrusted-io/rust#readme">these instructions</a>. You may need to remove the target directory, as well, to reset the build state after installing.</li>
+<li>You should be prompted to install the <code>xous</code> target the very first time you run <code>cargo</code>.
+<ul>
+<li>If you have updated <code>rust</code> or have tinkered with <code>std</code> on your system, you can re-install the <code>xous</code> target with <code>cargo xtask install-toolkit --force</code>, and then run <code>rm -r target</code> to force remove stale build files.</li>
+</ul>
+</li>
 <li>You may also need to install some additional libraries, such as <code>libxkbdcommon-dev</code>.</li>
 <li>:warning: hosted mode is literally Xous running on your local host, which means it supports more features than Xous on native hardware:
 <ul>
