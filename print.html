@@ -782,6 +782,18 @@ until <code>DecodedOperation</code> is included in the release.</p>
 <pre><code class="language-sh">renode emulation/xous-release.resc
 </code></pre>
 <p>Renode will start emulation automatically, and will run the same set of programs as in &quot;Hosted mode&quot;.</p>
+<h3><a class="header" href="#network-support" id="network-support">Network support</a></h3>
+<p>If you are seeking to emulate a Xous build with apps requiring network support, then there is some additional setup.</p>
+<p>Renode accepts the Ethernet frames that the EC sends to the simulated WF200, and then dumps them onto a network TAP interface called <code>renodetap</code>.</p>
+<p>It is probably best to prepare the TAP interface and associated configuration before the emulation:</p>
+<ul>
+<li><strong>linux distro with Network Manager:</strong> <code>nmcli c add con-name renodetun type tun ifname renodetun mode tap ipv4.method shared ipv6.method ignore</code></li>
+<li><strong>OpenSuSE Aeon:</strong> requires installation of dnsmasq <code>transactional-update pkg install dnsmasq</code></li>
+</ul>
+<p>Start the emulation with:</p>
+<pre><code class="language-sh">renode emulation/xous-release-tap.resc
+</code></pre>
+<p>Once the emulation is up and running then connect to one of the WiFi APs Renode1 ... Renode9 (any password will work)</p>
 <h1><a class="header" href="#writing-renode-c-peripherals" id="writing-renode-c-peripherals">Writing Renode C# Peripherals</a></h1>
 <p>Renode is written in C#, which means it has access to the entire base of C#. One feature of C# is the <code>CSharpCodeProvider</code> object which provides the <code>CompileAssemblyFromSource(CompilerParameters, string[])</code> function. This means that Renode has a runtime C# compiler built in.</p>
 <p>You can <code>include</code> C# files in the Renode console or in your startup script to dynamically add new peripherals to your environment. Xous uses this extensively in Betrusted since the hardware peripherals are still under development and therefore change regularly. Updating a hardware module in Renode simply involves modifying the <code>.cs</code> file and restarting Renode. There is no additional compile step.</p>
