@@ -38,7 +38,7 @@ Renode accepts the Ethernet frames that the EC sends to the simulated WF200, and
 
 It is probably best to prepare the TAP interface and associated configuration before the emulation:
 * **linux distro with Network Manager:** `nmcli c add con-name renodetun type tun ifname renodetun mode tap ipv4.method shared ipv6.method ignore`
-* **OpenSuSE Aeon:** requires installation of dnsmasq `transactional-update pkg install dnsmasq`
+* **OpenSuSE Aeon:** also requires installation of dnsmasq `transactional-update pkg install dnsmasq`
 
 Start the emulation with:
 
