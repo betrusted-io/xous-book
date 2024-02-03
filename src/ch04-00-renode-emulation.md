@@ -29,3 +29,20 @@ renode emulation/xous-release.resc
 ```
 
 Renode will start emulation automatically, and will run the same set of programs as in "Hosted mode".
+
+### Network support
+
+If you are seeking to emulate a Xous build with apps requiring network support, then there is some additional setup.
+
+Renode accepts the Ethernet frames that the EC sends to the simulated WF200, and then dumps them onto a network TAP interface called `renodetap`.
+
+It is probably best to prepare the TAP interface and associated configuration before the emulation:
+* **linux distro with Network Manager:** `nmcli c add con-name renodetun type tun ifname renodetun mode tap ipv4.method shared ipv6.method ignore`
+* **OpenSuSE Aeon:** requires installation of dnsmasq `transactional-update pkg install dnsmasq`
+
+Start the emulation with:
+
+```sh
+renode emulation/xous-release-tap.resc
+```
+Once the emulation is up and running then connect to one of the WiFi APs Renode1 ... Renode9 (any password will work)
