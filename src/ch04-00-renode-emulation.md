@@ -45,4 +45,4 @@ Start the emulation with:
 ```sh
 renode emulation/xous-release-tap.resc
 ```
-Once the emulation is up and running then connect to one of the WiFi APs Renode1 ... Renode9 (any password will work)
+Once the emulation is up and running then connect to one of the WiFi APs `Renode1` ... `Renode9` (any password will work)
