@@ -279,6 +279,7 @@
 <li><code>ReadFromSwap</code>: a memory message that retrieves &amp; decrypts a page from swap, and copies it to the lent page. The <code>offset</code> &amp; <code>valid</code> fields encode the original PID and virtual address.</li>
 <li><code>AllocateAdvisory</code>: a scalar message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address</li>
 <li><code>Trim</code>: a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.</li>
+<li><code>Free</code>: a scalar message that informs the swapper that a page was de-allocated by a process.</li>
 </ul>
 <h4><a class="header" href="#flags-and-states" id="flags-and-states">Flags and States</a></h4>
 <p>When <code>swap</code> is enabled, the flags have the following meaning:</p>
@@ -296,11 +297,14 @@
 </ul>
 <p>From the standpoint of memory management, a page can only have the following states:</p>
 <ul>
-<li>Allocated: <code>V</code> set, <code>P</code> may not be set</li>
-<li>Fault: No flags are set, or <code>S</code> is set and <code>V</code> is not set</li>
-<li>Swapped: <code>P</code> is set. <code>V</code> is <em>not</em> set. <code>S</code> may also not be set.</li>
-<li>Reserved: <code>V</code> is <em>not</em> set, and at least one other flag is set except for <code>S</code></li>
+<li><code>Allocated</code>: <code>V</code> set, <code>P</code> may not be set</li>
+<li><code>Fault</code>: No flags are set, or <code>S</code> is set and <code>V</code> is not set</li>
+<li><code>Swapped</code>: <code>P</code> is set. <code>V</code> is <em>not</em> set. <code>S</code> may also not be set. Upon access to this page, the kernel allocates a resident page and calls <code>ReadFromSwap</code> to fill it. The page will move to the <code>Allocated</code> state on conclusion.</li>
+<li><code>Reserved</code>: <code>V</code> is <em>not</em> set, <code>P</code> is <em>not</em> set, and at least one other flag is set except for <code>S</code>. A kernel allocates a resident page and zeros it. The page will move to the <code>Allocated</code> state on conclusion.</li>
 </ul>
+<p>Pages go from <code>Allocated</code> to <code>Swapped</code> based on the <code>swapper</code> observing that the kernel is low on memory, and calling a series of <code>EvictPage</code> calls to free up memory. It is always assumed that the kernel can allocate memory when necessary; as a last ditch the kernel can attempt to call <code>Trim</code> on the swapper, but this should only happen in extreme cases of memory pressure.</p>
+<p>Pages go from <code>Allocated</code> to <code>Reserved</code> when a process unmaps memory.</p>
+<p>When the <code>swapper</code> runs out of space, <code>WriteToSwap</code> panics with an OOM.</p>
 <h4><a class="header" href="#registerswapper-syscall" id="registerswapper-syscall">RegisterSwapper Syscall</a></h4>
 <p>The <code>swapper</code> registers with the kernel on a TOFU basis. The kernel reserves a single 128-bit <code>sid</code> with the target of the <code>swapper</code>, and it will trust the first process to use the <code>RegisterSwapper</code> syscall with its 128-bit random ID.</p>
 <p>After registration, the kernel sends a message to the <code>swapper</code> with the location of the SPT/SMT regions as created by the bootloader, as well as the base and bounds of the free memory pool. The free memory pool is the region remaining after boot, after the loader has marked all the necessary RAM pages as <code>wired</code>.</p>
@@ -308,7 +312,7 @@
 <p><code>EvictPage</code> is a syscall that only the <code>swapper</code> is allowed to call. It is a scalar <code>send</code> message, which contains the PID and address of the page to evict. Upon receipt, the kernel will:</p>
 <ul>
 <li>Change into the requested PID's address space</li>
-<li>Lookup teh physical address of the evicted page</li>
+<li>Lookup the physical address of the evicted page</li>
 <li>Clear the <code>V</code> bit and set the <code>P</code> bit of the evicted page's PTE</li>
 <li>Change into the swapper's address space</li>
 <li>Mutably lend the evicted physical page to the swapper with a <code>WriteToSwap</code> message</li>
