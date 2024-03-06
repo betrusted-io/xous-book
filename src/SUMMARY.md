@@ -52,3 +52,5 @@
   - [Testing and CI](ch09-05-testing.md)
   - [Backups](ch09-06-backups.md)
   - [Security and Deniability](ch09-07-discussion.md)
+
+- [Swap Extensions](ch10-00-swap-overview.md)
