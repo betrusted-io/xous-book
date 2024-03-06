@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Swap Extensions - The Xous Operating System</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-04-coding-style.html"><strong aria-hidden="true">1.2.</strong> Coding Style</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li><li class="chapter-item expanded "><a href="ch03-02-hosted-mode.html"><strong aria-hidden="true">3.2.</strong> Hosted Mode</a></li><li class="chapter-item expanded "><a href="ch03-03-process-creation.html"><strong aria-hidden="true">3.3.</strong> Process Creation</a></li><li class="chapter-item expanded "><a href="ch03-04-debugging-programs.html"><strong aria-hidden="true">3.4.</strong> Debugging Programs with GDB</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.1.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-testing-crates.html"><strong aria-hidden="true">6.1.</strong> Testing Crates</a></li><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.2.</strong> Image Creation</a></li><li class="chapter-item expanded "><a href="ch06-03-target-specification.html"><strong aria-hidden="true">6.3.</strong> Target Specification, UTRA</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li><li class="chapter-item expanded "><a href="ch07-07-forwarding.html"><strong aria-hidden="true">7.2.5.</strong> Forwarding</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-08-performance.html"><strong aria-hidden="true">7.3.</strong> Performance</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li><li class="chapter-item expanded "><a href="ch08-02-menus.html"><strong aria-hidden="true">8.2.</strong> Menus</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-pddb-overview.html"><strong aria-hidden="true">9.</strong> Plausibly Deniable DataBase (PDDB)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-basis.html"><strong aria-hidden="true">9.1.</strong> Basis Internal Structure</a></li><li class="chapter-item expanded "><a href="ch09-02-rootkeys.html"><strong aria-hidden="true">9.2.</strong> Key Derivation</a></li><li class="chapter-item expanded "><a href="ch09-03-api-native.html"><strong aria-hidden="true">9.3.</strong> Native API</a></li><li class="chapter-item expanded "><a href="ch09-04-api-std.html"><strong aria-hidden="true">9.4.</strong> std API</a></li><li class="chapter-item expanded "><a href="ch09-05-testing.html"><strong aria-hidden="true">9.5.</strong> Testing and CI</a></li><li class="chapter-item expanded "><a href="ch09-06-backups.html"><strong aria-hidden="true">9.6.</strong> Backups</a></li><li class="chapter-item expanded "><a href="ch09-07-discussion.html"><strong aria-hidden="true">9.7.</strong> Security and Deniability</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-swap-overview.html" class="active"><strong aria-hidden="true">10.</strong> Swap Extensions</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">The Xous Operating System</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#encrypted-swap" id="encrypted-swap">Encrypted Swap</a></h1>
+<p>Encrypted swap is a solution for small-footprint secure microcontrollers that must rely upon external RAM chips. The idea is to have the fast, on-chip RAM within the secure perimeter serve as the working set of data, but have this backed up with a &quot;swapfile&quot; consisting of slower, off-chip RAM that is also encrypted.</p>
+<p>The swap implementation is modelled after the kind of swap space found in other operating systems like Linux. The kernel can over-commit pages of virtual memory, and data is only allocated when a program actually attempts to access the over-committed pages. When the on-chip memory gets full, the swapper will guess as to what pages are not being used and copy them to encrypted swap. The kernel is then free to mark those virtual memory pages as invalid, and re-allocate them to actively used data.</p>
+<p>Terminology:</p>
+<ul>
+<li><code>wired</code> refers to pages that are resident in RAM and cannot be swapped out</li>
+<li><code>resident</code> refers to a page in RAM</li>
+<li><code>free RAM</code> refers unallocated internal RAM</li>
+<li><code>swapped</code> refers to a page in swap</li>
+<li><code>free swap</code> refers to unallocated pages in external swap memory</li>
+<li><code>reserved</code> refers to memory that has been over-committed, i.e., exists in virtual memory space but has no physical allocation</li>
+<li><code>allocated</code> refers to memory that has been allocated, but could be in either <code>resident</code> or <code>swapped</code> states</li>
+</ul>
+<h2><a class="header" href="#review-of-virtual-memory-implementation-without-swap" id="review-of-virtual-memory-implementation-without-swap">Review of Virtual Memory Implementation Without Swap</a></h2>
+<p>In Xous, every process has a page table, including the kernel. The <code>satp</code> field of a process record stores the page address of the root of a process page table in <code>satp.PPN</code>. <code>satp.ASID</code> contains the PID.</p>
+<p>The kernel is mapped into every process virtual memory space, in the top 16MiB of memory. Thus, the kernel is unique in that it is the only process that can access its physical pages alongside another process.</p>
+<p>When each process is created, their page tables are populated with entries that hard-wire the program's code. The stack and heap are also fully allocated, but over-provisioned. Only the first page of each space is backed with physical memory; the rest is demand-paged. Thus, when a program starts, its maximum stack and heap extents are defined by the loader. These extents can be modified at runtime with a kernel syscall, but a program will OOM-fail even if there is physical memory available if its virtual stack and heap allocations are exhausted.</p>
+<p>To review, each PTE has the following flags:</p>
+<ul>
+<li>V <code>valid</code>: page contents are valid</li>
+<li>R <code>read</code>: page can be read</li>
+<li>W <code>write</code>: page can be written</li>
+<li>X <code>execute</code>: page is executable</li>
+<li>U <code>user</code>: page is accessible in user mode</li>
+<li>G <code>global</code>: page is in all address spaces</li>
+<li>A <code>accessed</code>: page has been accessed (read, execute, or write) (Vex does not implement)</li>
+<li>D <code>dirty</code>: page has been written since last time it was cleared (Vex does not implement)</li>
+<li>S <code>shared</code>: (part of RWS set) shared page - used by Xous to track if a page has been lent to another process</li>
+<li>P <code>previously writable</code>: (part of RWS set) previously writable (not used)</li>
+</ul>
+<p>From the standpoint of memory management, a page can only have the following states:</p>
+<ul>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/f389b41ccf3f31d4565b6840403af522ffc16890/kernel/src/arch/riscv/mem.rs#L894-L896">Allocated</a>: <code>V</code> set</li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/f389b41ccf3f31d4565b6840403af522ffc16890/kernel/src/arch/riscv/mem.rs#L901-L903">Fault</a>: No flags are set, or <code>S</code> is set and <code>V</code> is not set</li>
+<li>Reserved: <code>V</code> is <em>not</em> set, and at least one other flag is set except for <code>S</code></li>
+</ul>
+<h2><a class="header" href="#encryption-method" id="encryption-method">Encryption Method</a></h2>
+<p>Swap is encrypted using AES-GCM-SIV. The swap encryption key is generated from a hardware TRNG on boot. It is critical that this TRNG function correctly and be truly random early at boot.</p>
+<p>The 16-byte AES-GCM-SIV MAC codes for every page are stored in a global appendix in untrusted RAM; this is fine, as the MAC is considered to be ciphertext, as all security derives from the key, but the swap space is reduced by this overhead.</p>
+<p>The nonce for AES-GCM-SIV is derived as follows:</p>
+<p><code>nonce[96] = {swap_count[32]|pid[8]|p_page[24]|v_page[24]}</code></p>
+<p>This gives the following security properties:</p>
+<ul>
+<li>In all cases, pages cannot be replayed between reboots, as the key is generated on each boot</li>
+<li>Tampered pages in external memory are cryptographically likely to be detected (due to the 128-bit MAC code)</li>
+<li>Identical plaintext between two processes will not map to the same ciphertext</li>
+<li>Identical plaintext within a process will not map to the same ciphertext</li>
+<li>Ciphertext between two processes cannot be swapped to do code injection with ciphertext</li>
+<li>Ciphertext of one page within a process cannot be copied to a new page location in the same process and decrypt correctly</li>
+<li>Identical plaintext located in the same physical location and virtual location for the same process with the same swap count will create interchangeable ciphertext</li>
+</ul>
+<p>The swap count of a page is a cryptographically small number (nominally 32 bits) that is used to track which page has been least-recently used (to manage evictions). The implementation will be coded to allow a larger number if necessary, but there is a trade-off between the size of this number and the amount of heap space needed to track every virtual page and its swap space; as the swap grows large, the overhead can start to overwhelm the amount of memory available in a small footprint microcontroller.</p>
+<p>The last property means that, for example, it is possible to infer something about the heap or stack of a running process that has been swapped out. In particular, we can detect if a region of stack or heap memory has been modified &amp; swapped, and then restored to the original data &amp; swapped, once the swap count is saturated.</p>
+<p>This can be used for the following malicious activities:</p>
+<ul>
+<li>Build a side channel to exfiltrate data via swap</li>
+<li>Force a running process into a previous stack or heap configuration by recording and restoring pages after forcing the swap count to roll over</li>
+</ul>
+<p>Mitigation of this vulnerability relies upon these factors:</p>
+<ul>
+<li>It takes a long time to push the swap count to 32 bits. This is the equivalent of encrypting and decrypting about 17 terabytes of data using the embedded controller. This would take over 22 years if the microcontroller can run AES-GCM-SIV bidirectionally at a rate of 100MiB/s. An Apple M1 Pro <a href="https://engineering.linecorp.com/en/blog/AES-GCM-SIV-optimization">can achieve 590MiB/s</a> unidirectionally, so this is an optimistic estimate for an embedded controller running at a few hundred MHz.</li>
+<li>Instead of saturating, the swap count must roll-over. This means that the LRU algorithm will suffer a performance degradation after a &quot;long time&quot; (see previous bullet for bounds on that), but by avoiding saturation it means an attacker has a single window of opportunity to re-use a page before having to roll over again (or they must keep a log of all the pages). This isn't a cryptographically strong defense, but it practically complicates any attack with little cost in implementation.</li>
+<li>The swap count can be increased to up to 40 bits in size (any larger would overflow the nonce size considering the other data concatenated into the nonce), if further strength is desired, at a considerable price on 32-bit microcontrollers.</li>
+</ul>
+<h2><a class="header" href="#swap-implementation" id="swap-implementation">Swap Implementation</a></h2>
+<p>Swap is a kernel feature that is enabled with the flag <code>swap</code>.</p>
+<p>Swap is intended to be implemented using an off-chip SPI RAM device. While it is most performant if it is a memory mapped RAM, it does not need to be; the <code>swapper</code> shall be coded with a HAL that can also handle SPI devices that are accessible only through a register interface.</p>
+<h3><a class="header" href="#boot-setup-loader" id="boot-setup-loader">Boot Setup: Loader</a></h3>
+<p>The loader gets new responsibilities when <code>swap</code> is enabled:</p>
+<ul>
+<li>The loader needs to be aware of both the location and size of the trusted internal unencrypted RAM (resident memory), and the external encrypted RAM (swap memory).</li>
+<li>The resident memory is tracked using the existing &quot;Runtime Page Tracker&quot; (RPT) mechanism.</li>
+<li>Two additional structures are created:
+<ul>
+<li>The &quot;Swap Page Tables&quot; (SPT), which is a slice of pointers to swap page table structures, one for each PID that is using swap.</li>
+<li>The &quot;Swap MAC Table&quot; (SMT), which tracks the 16-byte MAC codes for every page in swap. It does not degrade security to locate the SMT in swap.</li>
+</ul>
+</li>
+<li>The &quot;Swap Count Tracker&quot; is not allocated by the loader. However, the swap count of pages in swap is guaranteed to be set to 0 by the loader.</li>
+<li>The loader is responsible for querying the TRNG on every boot to generate the session key for encrypting off-chip RAM.</li>
+<li>A new image tag type is created <code>inis</code>, to indicate data that should start in encrypted swap.</li>
+</ul>
+<p>The SPT has the same structure as system page tables. However, SPT entries are only allocated on-demand for processes that have swap; it is not a fully copy of every page in the system page table.</p>
+<h4><a class="header" href="#inif-handling" id="inif-handling">INIF handling</a></h4>
+<p>Regions marked as <code>xip</code> (i.e, marked as <code>inif</code> type) are assumed to FLASH that is contained within the secure perimeter of the microcontroller. These regions are mapped directly and unencrypted into the kernel memory space.</p>
+<p>These boot-critical processes must be <code>xip</code>, and are never swapped out:</p>
+<ul>
+<li>kernel</li>
+<li>swapper</li>
+<li>ticktimer</li>
+</ul>
+<p>More regions can be marked as <code>xip</code>; this is preferable, because if the code is resident in on-chip FLASH, they aren't taking up working-set RAM and things will run faster.</p>
+<p>The initial data set of <code>inif</code> processes are considered to be <code>wired</code>; however, their reserved memory regions can be swapped after allocation.</p>
+<h4><a class="header" href="#inie-handling" id="inie-handling">INIE handling</a></h4>
+<p>Regions marked as <code>inie</code> are copied to the working set RAM and executed out of RAM. It is assumed this tag is mostly unused in microcontrollers with a small internal working set, but the behavior is not modified because it is a valid and useful tag for devices with large, trusted RAMs.</p>
+<h4><a class="header" href="#inis-handling" id="inis-handling">INIS handling</a></h4>
+<p>Regions marked as <code>inis</code> are copied into encrypted swap on boot. The kernel page table state start out with the correct <code>R</code>/<code>W</code>/<code>X</code>/<code>U</code> values, but <code>V</code> is not set, and <code>P</code> is set. Entries are created in the SPT to inform the tracker where to find the pages.</p>
+<p>An kernel argument of type <code>swap</code> is provided, which is a base and bounds to the SPT/SMT region. This is meant to passed to the <code>swapper</code> process when it registers to the kernel.</p>
+<p>The image creation routine and kernel arguments need to be extended to support <code>inis</code> regions located in off-chip SPI FLASH. The off-chip data is not encrypted, but it is signature checked with a dedicated signature block. Note that the off-chip SPI FLASH does not need to be memory mapped: the loader may read the memory through a register interface.</p>
+<h3><a class="header" href="#kernel-runtime" id="kernel-runtime">Kernel Runtime</a></h3>
+<p>Systems with <code>swap</code> enabled must have a process located at <code>PID</code> 2 that is the <code>swapper</code>. The kernel will only recognize <code>swap</code> extension syscalls originating from <code>PID</code> 2.</p>
+<p>The following kernel syscall extensions are recognized when the <code>swap</code> feature is activated:</p>
+<ul>
+<li><code>RegisterSwapper</code></li>
+<li><code>EvictPage</code></li>
+</ul>
+<p>The <code>swapper</code> must also implement the following opcodes:</p>
+<ul>
+<li><code>WriteToSwap</code>: a memory message that copies &amp; encrypts the mapped page to swap. The <code>offset</code> &amp; <code>valid</code> fields encode the original PID and virtual address.</li>
+<li><code>ReadFromSwap</code>: a memory message that retrieves &amp; decrypts a page from swap, and copies it to the lent page. The <code>offset</code> &amp; <code>valid</code> fields encode the original PID and virtual address.</li>
+<li><code>AllocateAdvisory</code>: a scalar message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address</li>
+<li><code>Trim</code>: a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.</li>
+</ul>
+<h4><a class="header" href="#flags-and-states" id="flags-and-states">Flags and States</a></h4>
+<p>When <code>swap</code> is enabled, the flags have the following meaning:</p>
+<ul>
+<li>V <code>valid</code>: page contents are valid</li>
+<li>R <code>read</code>: page can be read</li>
+<li>W <code>write</code>: page can be written</li>
+<li>X <code>execute</code>: page is executable</li>
+<li>U <code>user</code>: page is accessible in user mode</li>
+<li>G <code>global</code>: page is in all address spaces</li>
+<li>A <code>accessed</code>: page has been accessed (read, execute, or write) (Vex does not implement)</li>
+<li>D <code>dirty</code>: page has been written since last time it was cleared (Vex does not implement)</li>
+<li>S <code>shared</code>: (part of RWS set) shared page - used by Xous to track if a page has been lent to another process</li>
+<li>P <code>swapped</code>: (part of RWS set) page is in swap</li>
+</ul>
+<p>From the standpoint of memory management, a page can only have the following states:</p>
+<ul>
+<li>Allocated: <code>V</code> set, <code>P</code> may not be set</li>
+<li>Fault: No flags are set, or <code>S</code> is set and <code>V</code> is not set</li>
+<li>Swapped: <code>P</code> is set. <code>V</code> is <em>not</em> set. <code>S</code> may also not be set.</li>
+<li>Reserved: <code>V</code> is <em>not</em> set, and at least one other flag is set except for <code>S</code></li>
+</ul>
+<h4><a class="header" href="#registerswapper-syscall" id="registerswapper-syscall">RegisterSwapper Syscall</a></h4>
+<p>The <code>swapper</code> registers with the kernel on a TOFU basis. The kernel reserves a single 128-bit <code>sid</code> with the target of the <code>swapper</code>, and it will trust the first process to use the <code>RegisterSwapper</code> syscall with its 128-bit random ID.</p>
+<p>After registration, the kernel sends a message to the <code>swapper</code> with the location of the SPT/SMT regions as created by the bootloader, as well as the base and bounds of the free memory pool. The free memory pool is the region remaining after boot, after the loader has marked all the necessary RAM pages as <code>wired</code>.</p>
+<h4><a class="header" href="#evictpage-syscall" id="evictpage-syscall">EvictPage Syscall</a></h4>
+<p><code>EvictPage</code> is a syscall that only the <code>swapper</code> is allowed to call. It is a scalar <code>send</code> message, which contains the PID and address of the page to evict. Upon receipt, the kernel will:</p>
+<ul>
+<li>Change into the requested PID's address space</li>
+<li>Lookup teh physical address of the evicted page</li>
+<li>Clear the <code>V</code> bit and set the <code>P</code> bit of the evicted page's PTE</li>
+<li>Change into the swapper's address space</li>
+<li>Mutably lend the evicted physical page to the swapper with a <code>WriteToSwap</code> message</li>
+<li>Schedule the swapper to run</li>
+</ul>
+<h3><a class="header" href="#swapper-responsibilities" id="swapper-responsibilities">Swapper Responsibilities</a></h3>
+<p>It is the swapper's responsibility to maintain a structure that keeps track of every page in the <code>free RAM</code> pool. It builds this using the <code>AllocateAdvisory</code> messages.</p>
+<p>When the amount of free RAM falls below a certain threshold, the swapper will initiate a <code>Trim</code> operation. A kernel can also initiate a <code>Trim</code> as a last-ditch in case the <code>swapper</code> was starved of time and was unable to initiate a <code>Trim</code>, but this meant to be avoided.</p>
+<p>In a <code>Trim</code> operation, the swapper picks the pages it thinks will have the least performance impact and calls <code>EvictPage</code> to remove them. Initially, the swapper will have no way to know what pages are most important; it must use a heuristic to guess the first pages to evict. However, since it must track how frequently a page has been swapped with the <code>swap_count</code> field (necessary for encryption), it can rely upon this to build an eventual map of which pages to avoid.</p>
+<p>The swapper is also responsible for responding to <code>WriteToSwap</code> and <code>ReadFromSwap</code> calls.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="ch09-07-discussion.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="ch09-07-discussion.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
