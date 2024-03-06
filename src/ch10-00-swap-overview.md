@@ -134,6 +134,7 @@ The `swapper` must also implement the following opcodes:
 - `ReadFromSwap`: a memory message that retrieves & decrypts a page from swap, and copies it to the lent page. The `offset` & `valid` fields encode the original PID and virtual address.
 - `AllocateAdvisory`: a scalar message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address
 - `Trim`: a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.
+- `Free`: a scalar message that informs the swapper that a page was de-allocated by a process.
 
 #### Flags and States
 
@@ -152,10 +153,16 @@ When `swap` is enabled, the flags have the following meaning:
 
 From the standpoint of memory management, a page can only have the following states:
 
-- Allocated: `V` set, `P` may not be set
-- Fault: No flags are set, or `S` is set and `V` is not set
-- Swapped: `P` is set. `V` is *not* set. `S` may also not be set.
-- Reserved: `V` is *not* set, and at least one other flag is set except for `S`
+- `Allocated`: `V` set, `P` may not be set
+- `Fault`: No flags are set, or `S` is set and `V` is not set
+- `Swapped`: `P` is set. `V` is *not* set. `S` may also not be set. Upon access to this page, the kernel allocates a resident page and calls `ReadFromSwap` to fill it. The page will move to the `Allocated` state on conclusion.
+- `Reserved`: `V` is *not* set, `P` is *not* set, and at least one other flag is set except for `S`. A kernel allocates a resident page and zeros it. The page will move to the `Allocated` state on conclusion.
+
+Pages go from `Allocated` to `Swapped` based on the `swapper` observing that the kernel is low on memory, and calling a series of `EvictPage` calls to free up memory. It is always assumed that the kernel can allocate memory when necessary; as a last ditch the kernel can attempt to call `Trim` on the swapper, but this should only happen in extreme cases of memory pressure.
+
+Pages go from `Allocated` to `Reserved` when a process unmaps memory.
+
+When the `swapper` runs out of space, `WriteToSwap` panics with an OOM.
 
 #### RegisterSwapper Syscall
 
@@ -168,7 +175,7 @@ After registration, the kernel sends a message to the `swapper` with the locatio
 `EvictPage` is a syscall that only the `swapper` is allowed to call. It is a scalar `send` message, which contains the PID and address of the page to evict. Upon receipt, the kernel will:
 
 - Change into the requested PID's address space
-- Lookup teh physical address of the evicted page
+- Lookup the physical address of the evicted page
 - Clear the `V` bit and set the `P` bit of the evicted page's PTE
 - Change into the swapper's address space
 - Mutably lend the evicted physical page to the swapper with a `WriteToSwap` message
