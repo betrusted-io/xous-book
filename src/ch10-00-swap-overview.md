@@ -84,12 +84,15 @@ Swap is intended to be implemented using an off-chip SPI RAM device. While it is
 The loader gets new responsibilities when `swap` is enabled:
 - The loader needs to be aware of both the location and size of the trusted internal unencrypted RAM (resident memory), and the external encrypted RAM (swap memory).
 - The resident memory is tracked using the existing "Runtime Page Tracker" (RPT) mechanism.
-- Two additional structures are created:
-   - The "Swap Page Tables" (SPT), which is a slice of pointers to swap page table structures, one for each PID that is using swap.
-   - The "Swap MAC Table" (SMT), which tracks the 16-byte MAC codes for every page in swap. It does not degrade security to locate the SMT in swap.
+- Additional structures are created, located at virtual address `0xE000_0000` and mapped into PID2's memory space:
+   1. The "Swap Page Tables" (SPT), which is a slice of pointers to swap page table structures. Every process starts with a root page table page pre-allocated, even if it does not use swap. Any page table pages allocated are placed in the 0xE000_0000 memory range; however, at run-time any additional pages needed will be allocated using `MapMemory` calls to the kernel and thus placed in the swapper's heap region.
+   2. The "Swap MAC Table" (SMT), which tracks the 16-byte MAC codes for every page in swap. It does not degrade security to locate the SMT in swap. The size is fixed, and is proportional to the size of swap.
+   3. A copy of the RPT, except with `wired` memory marked with a PID of 0 (pages marked with the kernel's PID, 1, are free memory; the kernel code itself is marked 0 and `wired`). The size is fixed, and is proportional to the total size of internal (`resident`) RAM.
+- All of these structures must be mapped into PID2's memory space by the loader
 - The "Swap Count Tracker" is not allocated by the loader. However, the swap count of pages in swap is guaranteed to be set to 0 by the loader.
 - The loader is responsible for querying the TRNG on every boot to generate the session key for encrypting off-chip RAM.
 - A new image tag type is created `inis`, to indicate data that should start in encrypted swap.
+- A kernel argument with tag `swap` is created. It contains the userspace address for PID2 (the swapper) of the SPT, SMT, and RPT structures.
 
 The SPT has the same structure as system page tables. However, SPT entries are only allocated on-demand for processes that have swap; it is not a fully copy of every page in the system page table.
 
@@ -128,25 +131,28 @@ The following kernel syscall extensions are recognized when the `swap` feature i
 - `RegisterSwapper`
 - `EvictPage`
 
-The `swapper` must also implement the following opcodes:
+The `swapper` must also handle two classes of events. The first are blocking events, handled in an interrupt-like context where all IRQs are disabled. These are "atomic" swap operations and cannot invoke any syscalls that could block. The second are non-blocking events and are queued into the `swapper` like any other message.
 
-- `WriteToSwap`: a memory message that copies & encrypts the mapped page to swap. The `offset` & `valid` fields encode the original PID and virtual address.
-- `ReadFromSwap`: a memory message that retrieves & decrypts a page from swap, and copies it to the lent page. The `offset` & `valid` fields encode the original PID and virtual address.
-- `AllocateAdvisory`: a scalar message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address. Only reports on pages that are allocated out of free RAM, and it includes a flag to indicate if the allocation was `wired` or not. Recall that `wired` memory cannot be swapped.
-- `Trim`: a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.
-- `Free`: a scalar message that informs the swapper that a page was de-allocated by a process.
+#### Blocking Events
+Blocking events receive two arguments, one is a page of data that describe the operation to be performed, and the other is a pointer to the virtual address of the data to be swapped in or out.
 
-#### The Swapper Must be Atomic
+- `WriteToSwap`: a message that copies & encrypts the mapped page to swap. The `offset` & `valid` fields encode the original PID and virtual address.
+- `ReadFromSwap`: a message that retrieves & decrypts a page from swap, and copies it to the lent page. The `offset` & `valid` fields encode the original PID and virtual address.
+- `AllocateAdvisory`: a message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address. Only reports on pages that are allocated out of free RAM, and it includes a flag to indicate if the allocation was `wired` or not. Recall that `wired` memory cannot be swapped.
+- `Free`: a message that informs the swapper that a page was de-allocated by a process.
 
-The kernel responder inside the `swapper` must be atomic: in other words, every kernel request that comes in must be fully handled without any dependencies or stalls on other processes, and every kernel request must be satisfied and the responder thread returns to a `Runnable` state in its conclusion. The `swapper` may not expect interrupts or send blocking messages to other processes in the course of its execution, and any preemption timer requests that come in are ignored.
+These are processed with interrupts disabled, and have the same rules as interrupt handlers in terms of safe calls that can be performed.
 
-The responder for these opcodes must exist in the first thread (`TID == 2`), and must always be runnable when the kernel needs to swap (in other words, it cannot do any background activities or respond to other servers -- every kernel request is atomic, and consists of a request and response, and no other requests are allowed to that thread).
+The blocking responder inside the `swapper` must be atomic: in other words, every kernel request that comes in must be fully handled without any dependencies or stalls on other processes, and upon satisfaction the `swapper` must be immediately ready for another blocking request.
 
-The kernel shall include a check that enforces this discipline, and will panic if the responding thread in PID2/TID2 is not runnable in the event of a swap request.
+#### Non-Blocking Events
+- `Trim`: (**this might be a bad idea**) a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.
+- `ProcessAdvisory`: This is a scalar message generated by a blocking `AllocateAdvisory` message via the `try_send_message` method that tells the swapper to decide if an `EvictPage` call is needed. `ProcessAdvisory` can be safely missed if the message queue overflows.
 
-Alternatively, the kernel could return `ThreadNotAvailable` if PID2 attempts to create a new thread and completely rule out multithreading in the `swapper`; however, a second thread may have value for diagnostics and tuning, for example, setting the `Trim` threshold or querying available swap space. The downside of allowing this is it introduces the possibility that an implementation could involve a thread that builds a `Mutex` on a structure that the kernel swap responder relies upon, and if it is locked when a swap is called, the system would hang.
+Non-blocking events happen in the normal userspace server thread.
 
-In summary, here are the modifications on base behavior required of the kernel and the swapper process:
+#### Summary Requirements
+Here are the modifications on base behavior required of the kernel and the swapper process:
 - Preemption requests are ignored during a swap event (this should happen because IRQs are disabled)
 - The swapper must have a responder in PID2/TID2 that is runnable. This is enforced with an `assert` in the kernel.
 - The swapper shall not allow any shared-state locks on data structures required to satisfy a swap request. Such a lock will lead to a system hang with no error message, since what happens is the `swapper` will busy-wait eternally because preemption has been disabled.
