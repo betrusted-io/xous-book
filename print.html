@@ -3827,9 +3827,20 @@ the basis &quot;bar&quot;, or a dict called &quot;lorem.ipsum:foo:baz&quot;. Leg
 <ul>
 <li><code>WriteToSwap</code>: a memory message that copies &amp; encrypts the mapped page to swap. The <code>offset</code> &amp; <code>valid</code> fields encode the original PID and virtual address.</li>
 <li><code>ReadFromSwap</code>: a memory message that retrieves &amp; decrypts a page from swap, and copies it to the lent page. The <code>offset</code> &amp; <code>valid</code> fields encode the original PID and virtual address.</li>
-<li><code>AllocateAdvisory</code>: a scalar message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address</li>
+<li><code>AllocateAdvisory</code>: a scalar message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address. Only reports on pages that are allocated out of free RAM, and it includes a flag to indicate if the allocation was <code>wired</code> or not. Recall that <code>wired</code> memory cannot be swapped.</li>
 <li><code>Trim</code>: a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.</li>
 <li><code>Free</code>: a scalar message that informs the swapper that a page was de-allocated by a process.</li>
+</ul>
+<h4><a class="header" href="#the-swapper-must-be-atomic" id="the-swapper-must-be-atomic">The Swapper Must be Atomic</a></h4>
+<p>The kernel responder inside the <code>swapper</code> must be atomic: in other words, every kernel request that comes in must be fully handled without any dependencies or stalls on other processes, and every kernel request must be satisfied and the responder thread returns to a <code>Runnable</code> state in its conclusion. The <code>swapper</code> may not expect interrupts or send blocking messages to other processes in the course of its execution, and any preemption timer requests that come in are ignored.</p>
+<p>The responder for these opcodes must exist in the first thread (<code>TID == 2</code>), and must always be runnable when the kernel needs to swap (in other words, it cannot do any background activities or respond to other servers -- every kernel request is atomic, and consists of a request and response, and no other requests are allowed to that thread).</p>
+<p>The kernel shall include a check that enforces this discipline, and will panic if the responding thread in PID2/TID2 is not runnable in the event of a swap request.</p>
+<p>Alternatively, the kernel could return <code>ThreadNotAvailable</code> if PID2 attempts to create a new thread and completely rule out multithreading in the <code>swapper</code>; however, a second thread may have value for diagnostics and tuning, for example, setting the <code>Trim</code> threshold or querying available swap space. The downside of allowing this is it introduces the possibility that an implementation could involve a thread that builds a <code>Mutex</code> on a structure that the kernel swap responder relies upon, and if it is locked when a swap is called, the system would hang.</p>
+<p>In summary, here are the modifications on base behavior required of the kernel and the swapper process:</p>
+<ul>
+<li>Preemption requests are ignored during a swap event (this should happen because IRQs are disabled)</li>
+<li>The swapper must have a responder in PID2/TID2 that is runnable. This is enforced with an <code>assert</code> in the kernel.</li>
+<li>The swapper shall not allow any shared-state locks on data structures required to satisfy a swap request. Such a lock will lead to a system hang with no error message, since what happens is the <code>swapper</code> will busy-wait eternally because preemption has been disabled.</li>
 </ul>
 <h4><a class="header" href="#flags-and-states" id="flags-and-states">Flags and States</a></h4>
 <p>When <code>swap</code> is enabled, the flags have the following meaning:</p>
@@ -3864,6 +3875,7 @@ the basis &quot;bar&quot;, or a dict called &quot;lorem.ipsum:foo:baz&quot;. Leg
 <li>Change into the requested PID's address space</li>
 <li>Lookup the physical address of the evicted page</li>
 <li>Clear the <code>V</code> bit and set the <code>P</code> bit of the evicted page's PTE</li>
+<li>Mark the RPT entry as free</li>
 <li>Change into the swapper's address space</li>
 <li>Mutably lend the evicted physical page to the swapper with a <code>WriteToSwap</code> message</li>
 <li>Schedule the swapper to run</li>
