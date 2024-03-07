@@ -132,9 +132,24 @@ The `swapper` must also implement the following opcodes:
 
 - `WriteToSwap`: a memory message that copies & encrypts the mapped page to swap. The `offset` & `valid` fields encode the original PID and virtual address.
 - `ReadFromSwap`: a memory message that retrieves & decrypts a page from swap, and copies it to the lent page. The `offset` & `valid` fields encode the original PID and virtual address.
-- `AllocateAdvisory`: a scalar message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address
+- `AllocateAdvisory`: a scalar message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address. Only reports on pages that are allocated out of free RAM, and it includes a flag to indicate if the allocation was `wired` or not. Recall that `wired` memory cannot be swapped.
 - `Trim`: a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.
 - `Free`: a scalar message that informs the swapper that a page was de-allocated by a process.
+
+#### The Swapper Must be Atomic
+
+The kernel responder inside the `swapper` must be atomic: in other words, every kernel request that comes in must be fully handled without any dependencies or stalls on other processes, and every kernel request must be satisfied and the responder thread returns to a `Runnable` state in its conclusion. The `swapper` may not expect interrupts or send blocking messages to other processes in the course of its execution, and any preemption timer requests that come in are ignored.
+
+The responder for these opcodes must exist in the first thread (`TID == 2`), and must always be runnable when the kernel needs to swap (in other words, it cannot do any background activities or respond to other servers -- every kernel request is atomic, and consists of a request and response, and no other requests are allowed to that thread).
+
+The kernel shall include a check that enforces this discipline, and will panic if the responding thread in PID2/TID2 is not runnable in the event of a swap request.
+
+Alternatively, the kernel could return `ThreadNotAvailable` if PID2 attempts to create a new thread and completely rule out multithreading in the `swapper`; however, a second thread may have value for diagnostics and tuning, for example, setting the `Trim` threshold or querying available swap space. The downside of allowing this is it introduces the possibility that an implementation could involve a thread that builds a `Mutex` on a structure that the kernel swap responder relies upon, and if it is locked when a swap is called, the system would hang.
+
+In summary, here are the modifications on base behavior required of the kernel and the swapper process:
+- Preemption requests are ignored during a swap event (this should happen because IRQs are disabled)
+- The swapper must have a responder in PID2/TID2 that is runnable. This is enforced with an `assert` in the kernel.
+- The swapper shall not allow any shared-state locks on data structures required to satisfy a swap request. Such a lock will lead to a system hang with no error message, since what happens is the `swapper` will busy-wait eternally because preemption has been disabled.
 
 #### Flags and States
 
@@ -177,6 +192,7 @@ After registration, the kernel sends a message to the `swapper` with the locatio
 - Change into the requested PID's address space
 - Lookup the physical address of the evicted page
 - Clear the `V` bit and set the `P` bit of the evicted page's PTE
+- Mark the RPT entry as free
 - Change into the swapper's address space
 - Mutably lend the evicted physical page to the swapper with a `WriteToSwap` message
 - Schedule the swapper to run
