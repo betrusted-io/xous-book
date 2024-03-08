@@ -94,7 +94,7 @@ The loader gets new responsibilities when `swap` is enabled:
 - A new image tag type is created `inis`, to indicate data that should start in encrypted swap.
 - A kernel argument with tag `swap` is created. It contains the userspace address for PID2 (the swapper) of the SPT, SMT, and RPT structures.
 
-The SPT has the same structure as system page tables. However, SPT entries are only allocated on-demand for processes that have swap; it is not a fully copy of every page in the system page table.
+The SPT has the same structure as system page tables. However, SPT entries are only allocated on-demand for processes that have swap; it is not a full copy of every page in the system page table.
 
 #### INIF handling
 
@@ -131,31 +131,33 @@ The following kernel syscall extensions are recognized when the `swap` feature i
 - `RegisterSwapper`
 - `EvictPage`
 
-The `swapper` must also handle two classes of events. The first are blocking events, handled in an interrupt-like context where all IRQs are disabled. These are "atomic" swap operations and cannot invoke any syscalls that could block. The second are non-blocking events and are queued into the `swapper` like any other message.
+The kernel page fault handler must also be extended to handle swapped pages by invoking the swapper to recover the contents.
+
+The userspace `swapper` handles two classes of events. The first are blocking events, handled in an interrupt-like context where all IRQs are disabled. These are "atomic" swap operations, and cannot invoke any syscalls that could block, or wait on any events. The second are non-blocking events and are queued into the `swapper` like any other message.
+
+Thus, preemption requests are ignored during a blocking swap event, because external IRQs are disabled.
+
+Finally, the swapper shall not allow any shared-state locks on data structures required to satisfy a swap request. Such a lock will lead to a system hang with no error message, since what happens is the `swapper` will busy-wait eternally because preemption has been disabled.
 
 #### Blocking Events
-Blocking events receive two arguments, one is a page of data that describe the operation to be performed, and the other is a pointer to the virtual address of the data to be swapped in or out.
+Blocking events are called with a list of 8 arguments in an interrupt-like context. Not all arguments are valid for all calls; the 8 arguments are an upper bound and must all be set to something due to the strictness of Rust function call prototypes.
 
-- `WriteToSwap`: a message that copies & encrypts the mapped page to swap. The `offset` & `valid` fields encode the original PID and virtual address.
-- `ReadFromSwap`: a message that retrieves & decrypts a page from swap, and copies it to the lent page. The `offset` & `valid` fields encode the original PID and virtual address.
-- `AllocateAdvisory`: a message that informs the swapper that a page in free RAM was allocated to a given PID and virtual address. Only reports on pages that are allocated out of free RAM, and it includes a flag to indicate if the allocation was `wired` or not. Recall that `wired` memory cannot be swapped.
-- `Free`: a message that informs the swapper that a page was de-allocated by a process.
+Here are the types of blocking events that the swapper must handle:
+
+- `WriteToSwap`: Copy & encrypts a physical page to swap. Arguments include the original processes' PID and virtual address.
+- `ReadFromSwap`: Retrieve & decrypts a page from swap, and copies it to a designated physical page. Arguments include the target process PID and virtual address for the page to retrive.
+- `AllocateAdvisory`: Informs the swapper that a page in free RAM was allocated to a given PID and virtual address. Only reports on pages that are allocated out of free RAM, and it includes a flag to indicate if the allocation was `wired` or not. Recall that `wired` memory cannot be swapped. `AllocateAdvisory` may be coded to "bulk up" a couple of allocate requests for better efficiency.
+- `Free`: Informs the swapper that a page was de-allocated by a process.
 
 These are processed with interrupts disabled, and have the same rules as interrupt handlers in terms of safe calls that can be performed.
 
-The blocking responder inside the `swapper` must be atomic: in other words, every kernel request that comes in must be fully handled without any dependencies or stalls on other processes, and upon satisfaction the `swapper` must be immediately ready for another blocking request.
+The blocking responder inside the `swapper` must be atomic: in other words, every kernel request that comes in must be fully handled without any dependencies or stalls on other processes, and upon satisfaction the `swapper` must be immediately ready for another blocking request. In particular: you can't use the `log` crate for debugging.
 
 #### Non-Blocking Events
 - `Trim`: (**this might be a bad idea**) a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.
 - `ProcessAdvisory`: This is a scalar message generated by a blocking `AllocateAdvisory` message via the `try_send_message` method that tells the swapper to decide if an `EvictPage` call is needed. `ProcessAdvisory` can be safely missed if the message queue overflows.
 
 Non-blocking events happen in the normal userspace server thread.
-
-#### Summary Requirements
-Here are the modifications on base behavior required of the kernel and the swapper process:
-- Preemption requests are ignored during a swap event (this should happen because IRQs are disabled)
-- The swapper must have a responder in PID2/TID2 that is runnable. This is enforced with an `assert` in the kernel.
-- The swapper shall not allow any shared-state locks on data structures required to satisfy a swap request. Such a lock will lead to a system hang with no error message, since what happens is the `swapper` will busy-wait eternally because preemption has been disabled.
 
 #### Flags and States
 
