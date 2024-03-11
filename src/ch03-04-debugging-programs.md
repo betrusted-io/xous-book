@@ -18,14 +18,20 @@ The following features are NOT SUPPORTED:
 * Inserting breakpoints in XIP processes
 * Single-stepping XIP processes
 
-## Enabling the debugger
+## Building a GDB-Compatible Image
 
-You probably want to set `debug = true` inside `Cargo.toml`. This will add debug symbols to the resulting ELF binaries which greatly enhance the debugging experience. Otherwise the debugger will have to guess where 
+For the toolchain, Xous has harmonized around the [xpack](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases) gcc distribution, but other GCC distributions version of GDB (even those that target RV64) should work.
 
-To enable the debugger, pass `--gdb-stub` to `xtask`. For example:
+You probably want to set `debug = true` inside `Cargo.toml`. This will add debug symbols to the resulting ELF binaries which greatly enhance the debugging experience. You may also want to reduce the optimization level and turn off `strip` if it is set.
+
+When running `xtask` to create images, the target processes you want to debug should *not* be XIP. XIP images run out of FLASH, which makes the code immutable and thus impossible for our debugger implementation to insert a breakpoint (our breakpoints are *not* hardware backed). The easiest way to do this is to use the `app-image` generator (instead of `app-image-xip`). However, if you've turned your optimizations to `0` and included debug symbols, it's possible this isn't an option because you'll run out of memory. In this case, you will need to modify `app-image-xip` to check for the target process name and toggle the flag on just that process to run out of RAM.
+
+You will also need to pass `--gdb-stub` as an argument to `xtask`.
+
+For example:
 
 ```text
-cargo xtask app-image-xip --gdb-stub mtxchat --feature efuse --feature tls
+cargo xtask app-image --gdb-stub mtxchat --feature efuse --feature tls
 ```
 
 Then, flash the resulting image to the target device as normal.
