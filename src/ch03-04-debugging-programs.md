@@ -38,10 +38,10 @@ Then, flash the resulting image to the target device as normal.
 
 ## Attaching to the debugger
 
-If you're using Renode, then you can connect gdb to `localhost:3456`:
+If you're using Renode, then you can connect gdb to `localhost:3333` (may also be `3456` on some systems):
 
 ```text
-riscv-none-elf-gdb -ex 'tar ext :3456'
+riscv-none-elf-gdb -ex 'tar ext :3333'
 ```
 
 On real hardware, you will first need to re-mux the serial port so that gdb is visible on serial. Then you can connect gdb to the target serial port.
