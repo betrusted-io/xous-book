@@ -194,10 +194,12 @@
 <pre><code class="language-text">cargo xtask app-image --gdb-stub mtxchat --feature efuse --feature tls
 </code></pre>
 <p>Then, flash the resulting image to the target device as normal.</p>
-<h2><a class="header" href="#attaching-to-the-debugger" id="attaching-to-the-debugger">Attaching to the debugger</a></h2>
-<p>If you're using Renode, then you can connect gdb to <code>localhost:3333</code> (may also be <code>3456</code> on some systems):</p>
-<pre><code class="language-text">riscv-none-elf-gdb -ex 'tar ext :3333'
+<h2><a class="header" href="#attaching-to-the-debugger-renode" id="attaching-to-the-debugger-renode">Attaching to the debugger (Renode)</a></h2>
+<p>If you're using Renode, then you can connect gdb to <code>localhost:3456</code>:</p>
+<pre><code class="language-text">riscv-none-elf-gdb -ex 'tar ext :3456'
 </code></pre>
+<p>On Renode, port <code>3333</code> also exists, but it is useful mainly for debugging machine mode, i.e., when the hardware is in the loader or inside the kernel only.</p>
+<h2><a class="header" href="#attaching-to-the-debugger-hardware" id="attaching-to-the-debugger-hardware">Attaching to the debugger (Hardware)</a></h2>
 <p>On real hardware, you will first need to re-mux the serial port so that gdb is visible on serial. Then you can connect gdb to the target serial port.</p>
 <p>For example, if you have a hardware Precursor device connected to a Raspberry Pi 3B+ with a debug HAT running Raspbian &quot;Buster&quot;, you would first run this command in <code>shellchat</code> on the hardware device itself:</p>
 <pre><code class="language-text">console app
