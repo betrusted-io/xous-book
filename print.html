@@ -723,6 +723,10 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 <pre><code class="language-text">riscv-none-elf-gdb -ex 'tar ext :3456'
 </code></pre>
 <p>On Renode, port <code>3333</code> also exists, but it is useful mainly for debugging machine mode, i.e., when the hardware is in the loader or inside the kernel only.</p>
+<ul>
+<li><code>3333</code> is useful for when Xous itself has crashed, or when you're debugging the bootloader and Xous isn't even running. It's a stop-the-world debugger. Like &quot;God Mode&quot; on the Vex, where you really can do anything. Debugging there has no effect on the emulated world, so it's like stopping time and looking at things.</li>
+<li><code>3456</code> is identical to what is presented on the hardware serial port (see next section). It's invasive, since processes will keep running when you attach but their timing will be skewed. It does, however, let you attach to a given process and get actual translated memory pages. With 3333 you kind of just hope that you don't have to deal with any MMU pages in a process, which is a nonissue as long as you're just debugging the kernel or bootloader.</li>
+</ul>
 <h2><a class="header" href="#attaching-to-the-debugger-hardware" id="attaching-to-the-debugger-hardware">Attaching to the debugger (Hardware)</a></h2>
 <p>On real hardware, you will first need to re-mux the serial port so that gdb is visible on serial. Then you can connect gdb to the target serial port.</p>
 <p>For example, if you have a hardware Precursor device connected to a Raspberry Pi 3B+ with a debug HAT running Raspbian &quot;Buster&quot;, you would first run this command in <code>shellchat</code> on the hardware device itself:</p>
