@@ -36,13 +36,17 @@ cargo xtask app-image --gdb-stub mtxchat --feature efuse --feature tls
 
 Then, flash the resulting image to the target device as normal.
 
-## Attaching to the debugger
+## Attaching to the debugger (Renode)
 
-If you're using Renode, then you can connect gdb to `localhost:3333` (may also be `3456` on some systems):
+If you're using Renode, then you can connect gdb to `localhost:3456`:
 
 ```text
-riscv-none-elf-gdb -ex 'tar ext :3333'
+riscv-none-elf-gdb -ex 'tar ext :3456'
 ```
+
+On Renode, port `3333` also exists, but it is useful mainly for debugging machine mode, i.e., when the hardware is in the loader or inside the kernel only.
+
+## Attaching to the debugger (Hardware)
 
 On real hardware, you will first need to re-mux the serial port so that gdb is visible on serial. Then you can connect gdb to the target serial port.
 
