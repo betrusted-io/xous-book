@@ -46,6 +46,9 @@ riscv-none-elf-gdb -ex 'tar ext :3456'
 
 On Renode, port `3333` also exists, but it is useful mainly for debugging machine mode, i.e., when the hardware is in the loader or inside the kernel only.
 
+- `3333` is useful for when Xous itself has crashed, or when you're debugging the bootloader and Xous isn't even running. It's a stop-the-world debugger. Like "God Mode" on the Vex, where you really can do anything. Debugging there has no effect on the emulated world, so it's like stopping time and looking at things.
+- `3456` is identical to what is presented on the hardware serial port (see next section). It's invasive, since processes will keep running when you attach but their timing will be skewed. It does, however, let you attach to a given process and get actual translated memory pages. With 3333 you kind of just hope that you don't have to deal with any MMU pages in a process, which is a nonissue as long as you're just debugging the kernel or bootloader.
+
 ## Attaching to the debugger (Hardware)
 
 On real hardware, you will first need to re-mux the serial port so that gdb is visible on serial. Then you can connect gdb to the target serial port.
