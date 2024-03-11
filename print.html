@@ -709,15 +709,18 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 <li>Inserting breakpoints in XIP processes</li>
 <li>Single-stepping XIP processes</li>
 </ul>
-<h2><a class="header" href="#enabling-the-debugger" id="enabling-the-debugger">Enabling the debugger</a></h2>
-<p>You probably want to set <code>debug = true</code> inside <code>Cargo.toml</code>. This will add debug symbols to the resulting ELF binaries which greatly enhance the debugging experience. Otherwise the debugger will have to guess where </p>
-<p>To enable the debugger, pass <code>--gdb-stub</code> to <code>xtask</code>. For example:</p>
-<pre><code class="language-text">cargo xtask app-image-xip --gdb-stub mtxchat --feature efuse --feature tls
+<h2><a class="header" href="#building-a-gdb-compatible-image" id="building-a-gdb-compatible-image">Building a GDB-Compatible Image</a></h2>
+<p>For the toolchain, Xous has harmonized around the <a href="https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases">xpack</a> gcc distribution, but other GCC distributions version of GDB (even those that target RV64) should work.</p>
+<p>You probably want to set <code>debug = true</code> inside <code>Cargo.toml</code>. This will add debug symbols to the resulting ELF binaries which greatly enhance the debugging experience. You may also want to reduce the optimization level and turn off <code>strip</code> if it is set.</p>
+<p>When running <code>xtask</code> to create images, the target processes you want to debug should <em>not</em> be XIP. XIP images run out of FLASH, which makes the code immutable and thus impossible for our debugger implementation to insert a breakpoint (our breakpoints are <em>not</em> hardware backed). The easiest way to do this is to use the <code>app-image</code> generator (instead of <code>app-image-xip</code>). However, if you've turned your optimizations to <code>0</code> and included debug symbols, it's possible this isn't an option because you'll run out of memory. In this case, you will need to modify <code>app-image-xip</code> to check for the target process name and toggle the flag on just that process to run out of RAM.</p>
+<p>You will also need to pass <code>--gdb-stub</code> as an argument to <code>xtask</code>.</p>
+<p>For example:</p>
+<pre><code class="language-text">cargo xtask app-image --gdb-stub mtxchat --feature efuse --feature tls
 </code></pre>
 <p>Then, flash the resulting image to the target device as normal.</p>
 <h2><a class="header" href="#attaching-to-the-debugger" id="attaching-to-the-debugger">Attaching to the debugger</a></h2>
-<p>If you're using Renode, then you can connect gdb to <code>localhost:3456</code>:</p>
-<pre><code class="language-text">riscv-none-elf-gdb -ex 'tar ext :3456'
+<p>If you're using Renode, then you can connect gdb to <code>localhost:3333</code> (may also be <code>3456</code> on some systems):</p>
+<pre><code class="language-text">riscv-none-elf-gdb -ex 'tar ext :3333'
 </code></pre>
 <p>On real hardware, you will first need to re-mux the serial port so that gdb is visible on serial. Then you can connect gdb to the target serial port.</p>
 <p>For example, if you have a hardware Precursor device connected to a Raspberry Pi 3B+ with a debug HAT running Raspbian &quot;Buster&quot;, you would first run this command in <code>shellchat</code> on the hardware device itself:</p>
