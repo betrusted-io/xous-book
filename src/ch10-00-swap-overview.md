@@ -43,11 +43,11 @@ From the standpoint of memory management, a page can only have the following sta
 
 ## Encryption Method
 
-Swap is encrypted using AES-GCM-SIV. The swap encryption key is generated from a hardware TRNG on boot. It is critical that this TRNG function correctly and be truly random early at boot.
+Swap is encrypted with an AEAD that is either AES-GCM-SIV or ChachaPoly (the choice will be determined based on benchmarked performance, and can even be changed on the fly since the encrypted information is ephemeral on every boot). The swap encryption key is generated from a hardware TRNG on boot. It is critical that this TRNG function correctly and be truly random early at boot.
 
-The 16-byte AES-GCM-SIV MAC codes for every page are stored in a global appendix in untrusted RAM; this is fine, as the MAC is considered to be ciphertext, as all security derives from the key, but the swap space is reduced by this overhead.
+The 16-byte AEAD MAC codes for every page are stored in a global appendix in untrusted RAM; this is fine, as the MAC is considered to be ciphertext, as all security derives from the key, but the swap space is reduced by this overhead.
 
-The nonce for AES-GCM-SIV is derived as follows:
+The nonce for the AEAD is derived as follows:
 
 `nonce[96] = {swap_count[32]|pid[8]|p_page[24]|v_page[24]}`
 
@@ -69,7 +69,7 @@ This can be used for the following malicious activities:
   - Force a running process into a previous stack or heap configuration by recording and restoring pages after forcing the swap count to roll over
 
 Mitigation of this vulnerability relies upon these factors:
-  - It takes a long time to push the swap count to 32 bits. This is the equivalent of encrypting and decrypting about 17 terabytes of data using the embedded controller. This would take over 22 years if the microcontroller can run AES-GCM-SIV bidirectionally at a rate of 100MiB/s. An Apple M1 Pro [can achieve 590MiB/s](https://engineering.linecorp.com/en/blog/AES-GCM-SIV-optimization) unidirectionally, so this is an optimistic estimate for an embedded controller running at a few hundred MHz.
+  - It takes a long time to push the swap count to 32 bits. This is the equivalent of encrypting and decrypting about 17 terabytes of data using the embedded controller. This would take over 22 years if the microcontroller can run AES-GCM-SIV bidirectionally at a rate of 100MiB/s. An Apple M1 Pro [can achieve 590MiB/s](https://engineering.linecorp.com/en/blog/AES-GCM-SIV-optimization) unidirectionally, so this is an optimistic estimate for an embedded controller running at a few hundred MHz. A similar analysis can be done for ChachaPoly.
   - Instead of saturating, the swap count must roll-over. This means that the LRU algorithm will suffer a performance degradation after a "long time" (see previous bullet for bounds on that), but by avoiding saturation it means an attacker has a single window of opportunity to re-use a page before having to roll over again (or they must keep a log of all the pages). This isn't a cryptographically strong defense, but it practically complicates any attack with little cost in implementation.
   - The swap count can be increased to up to 40 bits in size (any larger would overflow the nonce size considering the other data concatenated into the nonce), if further strength is desired, at a considerable price on 32-bit microcontrollers.
 
