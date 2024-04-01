@@ -79,6 +79,28 @@ Swap is a kernel feature that is enabled with the flag `swap`.
 
 Swap is intended to be implemented using an off-chip SPI RAM device. While it is most performant if it is a memory mapped RAM, it does not need to be; the `swapper` shall be coded with a HAL that can also handle SPI devices that are accessible only through a register interface.
 
+### Image Creation
+
+`swap` configured builds cannot assume that all the static code can fit inside the secure FLASH within a microcontroller.
+Thus, the image creator must take regions marked as `IniS` and locate them in a "detached blob" from the main `xous.img`.
+
+The security properties of the two images are thus:
+  - `xous.img` is assumed to be written into a secure on-chip FLASH region, and is unencrypted by default.
+  - `swap.img` is assumed to be written to an off-chip SPI FLASH memory, and is untrusted by default.
+
+A simple bulk signature check on `swap.img`, like that used on `xous.img`, is not going to cut it in an adversarial
+environment, because of the TOCTOU inherent in doing a hash-and-check and then bulk-copy over a slow bus like SPI.
+Thus, the following two-phase scheme is introduced for distributing `swap.img`.
+
+1. In phase 1, `swap.img` is encrypted using an AEAD to a "well-known-key" of `0`, where each block in FLASH encrypts a page of data, and the AAD/MAC are stored in an appendix to the `swap.img`. The first page is an unprotected directory that defines the expected offset of all the AAD/MAC relative to the encrypted blocks in the image file. The problem of whether to accept an update is outside the scope of this spec: it's assumed that if an update is delivered, it's updated with some signature tied to a certificate in a transparency log that is confirmed by the user at update time. This does mean there is a potential TOCTOU of the bulk update data versus signing at update time, but we assume that the update is done as an atomic operation by the user in a "safe" environment, and that an adversary cannot force an update of the `swap.img` that meets the requirements of phase 2 without user consent.
+2. In phase 2, `swap.img` is re-encrypted to a locally generated key, which is based on a key stored only in the device and derived with the help of a user-supplied password. This prevents adversaries from forcing an update to `swap.img` without a user's explicit consent.
+
+In order to support this scheme, an additional kernel argument known as `Skey` is added. The image creator sets this to a 256-bit "all zero" key initially for distribution and initial device image creation. Once the device is provisioned with a root key, the provisioning routine shall also update the kernel arguments (which are stored inside the secure FLASH region) with the new key, and re-encrypt the `swap` detached blob in SPI FLASH to the unique device key before rebooting.
+
+If followed correctly, a device is distributed "naive" and malleable, but once the keying ceremony is done, it should be hard to intercept and/or modify blocks inside `swap.img`, since the block-by-block read-in and authentication check provides a strong guarantee of consistency even in the face of an adversary that can freely MITM the SPI bus.
+
+This is different from the detached-signature with unencrypted body taken for on-chip FLASH, which is a faster, easier method, but only works if the path to FLASH memory is assumed to be trusted.
+
 ### Boot Setup: Loader
 
 The loader gets new responsibilities when `swap` is enabled:
