@@ -45,7 +45,7 @@ From the standpoint of memory management, a page can only have the following sta
 
 Swap is encrypted with an AEAD that is either AES-GCM-SIV or ChachaPoly (the choice will be determined based on benchmarked performance, and can even be changed on the fly since the encrypted information is ephemeral on every boot). The swap encryption key is generated from a hardware TRNG on boot. It is critical that this TRNG function correctly and be truly random early at boot.
 
-The 16-byte AEAD MAC codes for every page are stored in a global appendix in untrusted RAM; this is fine, as the MAC is considered to be ciphertext, as all security derives from the key, but the swap space is reduced by this overhead.
+The 16-byte AEAD MAC codes for every page are stored in a global appendix in untrusted RAM; this is fine, as the MAC is considered to be ciphertext, as all security derives from the key, but the swap space is reduced by this overhead. Detaching the MAC is done purely as a convenience to simplify page offset mapping computations; the detachment is not meant to imply the MAC is somehow cryptographically separable from the ciphertext block, as would be the case in e.g. a detachable signature scheme.
 
 The nonce for the AEAD is derived as follows:
 
@@ -92,12 +92,12 @@ A simple bulk signature check on `swap.img`, like that used on `xous.img`, is no
 environment, because of the TOCTOU inherent in doing a hash-and-check and then bulk-copy over a slow bus like SPI.
 Thus, the following two-phase scheme is introduced for distributing `swap.img`.
 
-The AEAD shall be either ChachaPoly or AES-256, depending upon which is more performant (to be updated).
+The AEAD shall be either ChachaPoly or AES-256, depending upon which is more performant (to be updated). We use a "detached-MAC" scheme only because it makes mapping block offsets in the ciphertext stream to block offsets in the plaintext stream logically easier. There's no cryptographic meaning in detaching the MAC.
 
 1. In phase 1, `swap.img` is encrypted using an AEAD to a "well-known-key" of `0`, where each block in FLASH encrypts a page of data, and the MAC are stored in an appendix to the `swap.img`. The first page is an unprotected directory that defines the expected offset of all the MAC relative to the encrypted blocks in the image file, and contains the 64-bit nonce seed + AAD. The problem of whether to accept an update is outside the scope of this spec: it's assumed that if an update is delivered, it's updated with some signature tied to a certificate in a transparency log that is confirmed by the user at update time. This does mean there is a potential TOCTOU of the bulk update data versus signing at update time, but we assume that the update is done as an atomic operation by the user in a "safe" environment, and that an adversary cannot force an update of the `swap.img` that meets the requirements of phase 2 without user consent.
 2. In phase 2, `swap.img` is re-encrypted to a locally generated key, which is based on a key stored only in the device and derived with the help of a user-supplied password. This prevents adversaries from forcing an update to `swap.img` without a user's explicit consent. NOTE: the key shall *not* be re-used between `swap.img` updates; it should be re-generated on every update. This does mean that the signature on the `xous.img` shall change on every update, but this is assumed to be happening already on an update.
 
-In order to support this scheme, an additional kernel argument known as `Skey` is added. The image creator sets this to a 256-bit "all zero" key initially for distribution and initial device image creation. Once the device is provisioned with a root key, the provisioning routine shall also update the kernel arguments (which are stored inside the secure FLASH region) with the new key, and re-encrypt the `swap` detached blob in SPI FLASH to the unique device key before rebooting.
+In order to support this scheme, the `Swap` kernel argument contains a `key` field. The image creator sets this to a 256-bit "all zero" key initially for distribution and initial device image creation. Once the device is provisioned with a root key, the provisioning routine shall also update the kernel arguments (which are stored inside the secure FLASH region) with the new key, and re-encrypt the `swap` detached blob in SPI FLASH to the unique device key before rebooting.
 
 If followed correctly, a device is distributed "naive" and malleable, but once the keying ceremony is done, it should be hard to intercept and/or modify blocks inside `swap.img`, since the block-by-block read-in and authentication check provides a strong guarantee of consistency even in the face of an adversary that can freely MITM the SPI bus.
 
@@ -105,7 +105,7 @@ This is different from the detached-signature with unencrypted body taken for on
 
 The nonce for the `swap.img` AEAD is 96 bits, where the lower 32 bits track the block offset, and the upper 64 bits are the lower 64 bits of the git commit corresponding to the `swap.img`. This 64-bit git commit is stored as a nonce seed in the unprotected header page along with the offset of the MAC + AAD data. The incorporation of the git commit helps protect against bugs in the implementation of the locally generated key. The locally generated key should not be re-used between updates, but tying the nonce to the git commit should harden against chosen ciphertext attacks in the case that the generated key happens to be re-used.
 
-The AAD shall include the ASCII characters `'swap'` in little-endian format (`u32`: `0x7061_7773`) plus any AAD specified in the header.
+The AAD shall be the ASCII string 'swap'. I don't think it's strictly necessary, but might as well have domain separation.
 
 ### Boot Setup: Loader
 
