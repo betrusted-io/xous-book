@@ -49,7 +49,9 @@ The 16-byte AEAD MAC codes for every page are stored in a global appendix in unt
 
 The nonce for the AEAD is derived as follows:
 
-`nonce[96] = {swap_count[32]|pid[8]|p_page[24]|v_page[24]}`
+`nonce[96] = {swap_count[32]|pid[8]|p_page[20]|4'b0|v_page[20]|4'b0}`
+
+For performance reasons, no AAD is used.
 
 This gives the following security properties:
 - In all cases, pages cannot be replayed between reboots, as the key is generated on each boot
@@ -59,6 +61,7 @@ This gives the following security properties:
 - Ciphertext between two processes cannot be swapped to do code injection with ciphertext
 - Ciphertext of one page within a process cannot be copied to a new page location in the same process and decrypt correctly
 - Identical plaintext located in the same physical location and virtual location for the same process with the same swap count will create interchangeable ciphertext
+- There is no domain separation. This improves performance slightly (because we don't have to process AAD), but we don't get domain separation. I don't think this is terribly important because the key should be randomly generated each boot, but to improve resistance against potential cross-domain attacks, the swap source data on disk uses a non-null AAD, under the theory that at load time we can better afford the computational overhead of AAD, versus trying to stick it into the core loop of the swapper.
 
 The swap count of a page is a cryptographically small number (nominally 32 bits) that is used to track which page has been least-recently used (to manage evictions). The implementation will be coded to allow a larger number if necessary, but there is a trade-off between the size of this number and the amount of heap space needed to track every virtual page and its swap space; as the swap grows large, the overhead can start to overwhelm the amount of memory available in a small footprint microcontroller.
 
@@ -112,12 +115,11 @@ The AAD shall be the ASCII string 'swap'. I don't think it's strictly necessary,
 The loader gets new responsibilities when `swap` is enabled:
 - The loader needs to be aware of both the location and size of the trusted internal unencrypted RAM (resident memory), and the external encrypted RAM (swap memory).
 - The resident memory is tracked using the existing "Runtime Page Tracker" (RPT) mechanism.
-- Additional structures are created, located at virtual address `0xE000_0000` and mapped into PID2's memory space:
-   1. The "Swap Page Tables" (SPT), which is a slice of pointers to swap page table structures. Every process starts with a root page table page pre-allocated, even if it does not use swap. Any page table pages allocated are placed in the 0xE000_0000 memory range; however, at run-time any additional pages needed will be allocated using `MapMemory` calls to the kernel and thus placed in the swapper's heap region.
-   2. The "Swap MAC Table" (SMT), which tracks the 16-byte MAC codes for every page in swap. It does not degrade security to locate the SMT in swap. The size is fixed, and is proportional to the size of swap.
-   3. A copy of the RPT, except with `wired` memory marked with a PID of 0 (pages marked with the kernel's PID, 1, are free memory; the kernel code itself is marked 0 and `wired`). The size is fixed, and is proportional to the total size of internal (`resident`) RAM.
+- Additional structures are created and mapped into PID2's memory space:
+   - `0xE000_0000`: The "Swap Page Tables" (SPT) root page table. This is like the swap's "satp". It contains an array of `satp`-like pages that form the root pointer for each process' virtual swap address space. Follow-on pages for 2nd-level page tables are also mapped into the `E000_0000` range, but the exact location and amount varies depending on the amount of swap needed.
+   - `0xE100_0000`: The swap arguments. This contains all of the arguments necessary to initialize the swap manager in userspace itself, and is a memory-map of the `SwapSpec` struct
+   - `0xE100_1000`: A copy of the RPT, except with `wired` memory marked with a PID of 0 (pages marked with the kernel's PID, 1, are free memory; the kernel code itself is marked 0 and `wired`). The size is fixed, and is proportional to the total size of internal (`resident`) RAM.
 - All of these structures must be mapped into PID2's memory space by the loader
-- The "Swap Count Tracker" is not allocated by the loader. However, the swap count of pages in swap is guaranteed to be set to 0 by the loader.
 - The loader is responsible for querying the TRNG on every boot to generate the session key for encrypting off-chip RAM.
 - A new image tag type is created `inis`, to indicate data that should start in encrypted swap.
 - A kernel argument with tag `swap` is created. It contains the userspace address for PID2 (the swapper) of the SPT, SMT, and RPT structures.
@@ -217,9 +219,7 @@ When the `swapper` runs out of space, `WriteToSwap` panics with an OOM.
 
 #### RegisterSwapper Syscall
 
-The `swapper` registers with the kernel on a TOFU basis. The kernel reserves a single 128-bit `sid` with the target of the `swapper`, and it will trust the first process to use the `RegisterSwapper` syscall with its 128-bit random ID.
-
-After registration, the kernel sends a message to the `swapper` with the location of the SPT/SMT regions as created by the bootloader, as well as the base and bounds of the free memory pool. The free memory pool is the region remaining after boot, after the loader has marked all the necessary RAM pages as `wired`.
+The `swapper` registers with the kernel on a TOFU basis. The kernel reserves a single 128-bit `sid` with the target of the `swapper`, and it will trust the first process to use the `RegisterSwapper` syscall with its 128-bit random ID. Note that all the data necessary to setup the swapper is placed in the swapper's memory space by the loader, so the kernel does not need to marshall this.
 
 #### EvictPage Syscall
 
