@@ -207,7 +207,8 @@
 <p>Swap is encrypted with an AEAD that is either AES-GCM-SIV or ChachaPoly (the choice will be determined based on benchmarked performance, and can even be changed on the fly since the encrypted information is ephemeral on every boot). The swap encryption key is generated from a hardware TRNG on boot. It is critical that this TRNG function correctly and be truly random early at boot.</p>
 <p>The 16-byte AEAD MAC codes for every page are stored in a global appendix in untrusted RAM; this is fine, as the MAC is considered to be ciphertext, as all security derives from the key, but the swap space is reduced by this overhead. Detaching the MAC is done purely as a convenience to simplify page offset mapping computations; the detachment is not meant to imply the MAC is somehow cryptographically separable from the ciphertext block, as would be the case in e.g. a detachable signature scheme.</p>
 <p>The nonce for the AEAD is derived as follows:</p>
-<p><code>nonce[96] = {swap_count[32]|pid[8]|p_page[24]|v_page[24]}</code></p>
+<p><code>nonce[96] = {swap_count[32]|pid[8]|p_page[20]|4'b0|v_page[20]|4'b0}</code></p>
+<p>For performance reasons, no AAD is used.</p>
 <p>This gives the following security properties:</p>
 <ul>
 <li>In all cases, pages cannot be replayed between reboots, as the key is generated on each boot</li>
@@ -217,6 +218,7 @@
 <li>Ciphertext between two processes cannot be swapped to do code injection with ciphertext</li>
 <li>Ciphertext of one page within a process cannot be copied to a new page location in the same process and decrypt correctly</li>
 <li>Identical plaintext located in the same physical location and virtual location for the same process with the same swap count will create interchangeable ciphertext</li>
+<li>There is no domain separation. This improves performance slightly (because we don't have to process AAD), but we don't get domain separation. I don't think this is terribly important because the key should be randomly generated each boot, but to improve resistance against potential cross-domain attacks, the swap source data on disk uses a non-null AAD, under the theory that at load time we can better afford the computational overhead of AAD, versus trying to stick it into the core loop of the swapper.</li>
 </ul>
 <p>The swap count of a page is a cryptographically small number (nominally 32 bits) that is used to track which page has been least-recently used (to manage evictions). The implementation will be coded to allow a larger number if necessary, but there is a trade-off between the size of this number and the amount of heap space needed to track every virtual page and its swap space; as the swap grows large, the overhead can start to overwhelm the amount of memory available in a small footprint microcontroller.</p>
 <p>The last property means that, for example, it is possible to infer something about the heap or stack of a running process that has been swapped out. In particular, we can detect if a region of stack or heap memory has been modified &amp; swapped, and then restored to the original data &amp; swapped, once the swap count is saturated.</p>
@@ -260,15 +262,14 @@ Thus, the following two-phase scheme is introduced for distributing <code>swap.i
 <ul>
 <li>The loader needs to be aware of both the location and size of the trusted internal unencrypted RAM (resident memory), and the external encrypted RAM (swap memory).</li>
 <li>The resident memory is tracked using the existing &quot;Runtime Page Tracker&quot; (RPT) mechanism.</li>
-<li>Additional structures are created, located at virtual address <code>0xE000_0000</code> and mapped into PID2's memory space:
-<ol>
-<li>The &quot;Swap Page Tables&quot; (SPT), which is a slice of pointers to swap page table structures. Every process starts with a root page table page pre-allocated, even if it does not use swap. Any page table pages allocated are placed in the 0xE000_0000 memory range; however, at run-time any additional pages needed will be allocated using <code>MapMemory</code> calls to the kernel and thus placed in the swapper's heap region.</li>
-<li>The &quot;Swap MAC Table&quot; (SMT), which tracks the 16-byte MAC codes for every page in swap. It does not degrade security to locate the SMT in swap. The size is fixed, and is proportional to the size of swap.</li>
-<li>A copy of the RPT, except with <code>wired</code> memory marked with a PID of 0 (pages marked with the kernel's PID, 1, are free memory; the kernel code itself is marked 0 and <code>wired</code>). The size is fixed, and is proportional to the total size of internal (<code>resident</code>) RAM.</li>
-</ol>
+<li>Additional structures are created and mapped into PID2's memory space:
+<ul>
+<li><code>0xE000_0000</code>: The &quot;Swap Page Tables&quot; (SPT) root page table. This is like the swap's &quot;satp&quot;. It contains an array of <code>satp</code>-like pages that form the root pointer for each process' virtual swap address space. Follow-on pages for 2nd-level page tables are also mapped into the <code>E000_0000</code> range, but the exact location and amount varies depending on the amount of swap needed.</li>
+<li><code>0xE100_0000</code>: The swap arguments. This contains all of the arguments necessary to initialize the swap manager in userspace itself, and is a memory-map of the <code>SwapSpec</code> struct</li>
+<li><code>0xE100_1000</code>: A copy of the RPT, except with <code>wired</code> memory marked with a PID of 0 (pages marked with the kernel's PID, 1, are free memory; the kernel code itself is marked 0 and <code>wired</code>). The size is fixed, and is proportional to the total size of internal (<code>resident</code>) RAM.</li>
+</ul>
 </li>
 <li>All of these structures must be mapped into PID2's memory space by the loader</li>
-<li>The &quot;Swap Count Tracker&quot; is not allocated by the loader. However, the swap count of pages in swap is guaranteed to be set to 0 by the loader.</li>
 <li>The loader is responsible for querying the TRNG on every boot to generate the session key for encrypting off-chip RAM.</li>
 <li>A new image tag type is created <code>inis</code>, to indicate data that should start in encrypted swap.</li>
 <li>A kernel argument with tag <code>swap</code> is created. It contains the userspace address for PID2 (the swapper) of the SPT, SMT, and RPT structures.</li>
@@ -343,8 +344,7 @@ Thus, the following two-phase scheme is introduced for distributing <code>swap.i
 <p>Pages go from <code>Allocated</code> to <code>Reserved</code> when a process unmaps memory.</p>
 <p>When the <code>swapper</code> runs out of space, <code>WriteToSwap</code> panics with an OOM.</p>
 <h4><a class="header" href="#registerswapper-syscall" id="registerswapper-syscall">RegisterSwapper Syscall</a></h4>
-<p>The <code>swapper</code> registers with the kernel on a TOFU basis. The kernel reserves a single 128-bit <code>sid</code> with the target of the <code>swapper</code>, and it will trust the first process to use the <code>RegisterSwapper</code> syscall with its 128-bit random ID.</p>
-<p>After registration, the kernel sends a message to the <code>swapper</code> with the location of the SPT/SMT regions as created by the bootloader, as well as the base and bounds of the free memory pool. The free memory pool is the region remaining after boot, after the loader has marked all the necessary RAM pages as <code>wired</code>.</p>
+<p>The <code>swapper</code> registers with the kernel on a TOFU basis. The kernel reserves a single 128-bit <code>sid</code> with the target of the <code>swapper</code>, and it will trust the first process to use the <code>RegisterSwapper</code> syscall with its 128-bit random ID. Note that all the data necessary to setup the swapper is placed in the swapper's memory space by the loader, so the kernel does not need to marshall this.</p>
 <h4><a class="header" href="#evictpage-syscall" id="evictpage-syscall">EvictPage Syscall</a></h4>
 <p><code>EvictPage</code> is a syscall that only the <code>swapper</code> is allowed to call. It is a scalar <code>send</code> message, which contains the PID and address of the page to evict. Upon receipt, the kernel will:</p>
 <ul>
