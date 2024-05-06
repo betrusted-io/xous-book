@@ -110,6 +110,19 @@ The nonce for the `swap.img` AEAD is 96 bits, where the lower 32 bits track the 
 
 The AAD shall be the ASCII string 'swap'. I don't think it's strictly necessary, but might as well have domain separation.
 
+Thus the swap image has the following layout:
+- `0x0:0xFFF`: unencrypted header containing the version field, partial nonce, mac offset, and the AAD.
+- `0x1000:0x1FFF`: Encrypted XArgs description of the swap blob, padded to a page
+- `0x2000:...`: Successive `IniS` images.
+
+Note that this format introduces two offsets in the swap data:
+
+1. Offset from disk start to start of encrypted images, equal to 0x1000.
+2. Offset from encrypted image start to `IniS` start (e.g., space for the XArgs block)
+
+Note that if the XArgs block overflows its page of space, the loader may not handle this gracefully. There is an assert
+in the image creator to catch this issue.
+
 ### Boot Setup: Loader
 
 The loader gets new responsibilities when `swap` is enabled:
