@@ -257,6 +257,19 @@ Thus, the following two-phase scheme is introduced for distributing <code>swap.i
 <p>This is different from the detached-signature with unencrypted body taken for on-chip FLASH, which is a faster, easier method, but only works if the path to FLASH memory is assumed to be trusted.</p>
 <p>The nonce for the <code>swap.img</code> AEAD is 96 bits, where the lower 32 bits track the block offset, and the upper 64 bits are the lower 64 bits of the git commit corresponding to the <code>swap.img</code>. This 64-bit git commit is stored as a nonce seed in the unprotected header page along with the offset of the MAC + AAD data. The incorporation of the git commit helps protect against bugs in the implementation of the locally generated key. The locally generated key should not be re-used between updates, but tying the nonce to the git commit should harden against chosen ciphertext attacks in the case that the generated key happens to be re-used.</p>
 <p>The AAD shall be the ASCII string 'swap'. I don't think it's strictly necessary, but might as well have domain separation.</p>
+<p>Thus the swap image has the following layout:</p>
+<ul>
+<li><code>0x0:0xFFF</code>: unencrypted header containing the version field, partial nonce, mac offset, and the AAD.</li>
+<li><code>0x1000:0x1FFF</code>: Encrypted XArgs description of the swap blob, padded to a page</li>
+<li><code>0x2000:...</code>: Successive <code>IniS</code> images.</li>
+</ul>
+<p>Note that this format introduces two offsets in the swap data:</p>
+<ol>
+<li>Offset from disk start to start of encrypted images, equal to 0x1000.</li>
+<li>Offset from encrypted image start to <code>IniS</code> start (e.g., space for the XArgs block)</li>
+</ol>
+<p>Note that if the XArgs block overflows its page of space, the loader may not handle this gracefully. There is an assert
+in the image creator to catch this issue.</p>
 <h3><a class="header" href="#boot-setup-loader" id="boot-setup-loader">Boot Setup: Loader</a></h3>
 <p>The loader gets new responsibilities when <code>swap</code> is enabled:</p>
 <ul>
