@@ -49,7 +49,7 @@ The 16-byte AEAD MAC codes for every page are stored in a global appendix in unt
 
 The nonce for the AEAD is derived as follows:
 
-`nonce[96] = {swap_count[32]|pid[8]|p_page[20]|4'b0|v_page[20]|4'b0}`
+`nonce[96] = {1'b0|swap_count[31]|pid[8]|p_page[20]|4'b0|v_page[20]|4'b0}`
 
 For performance reasons, no AAD is used.
 
@@ -63,7 +63,7 @@ This gives the following security properties:
 - Identical plaintext located in the same physical location and virtual location for the same process with the same swap count will create interchangeable ciphertext
 - There is no domain separation. This improves performance slightly (because we don't have to process AAD), but we don't get domain separation. I don't think this is terribly important because the key should be randomly generated each boot, but to improve resistance against potential cross-domain attacks, the swap source data on disk uses a non-null AAD, under the theory that at load time we can better afford the computational overhead of AAD, versus trying to stick it into the core loop of the swapper.
 
-The swap count of a page is a cryptographically small number (nominally 32 bits) that is used to track which page has been least-recently used (to manage evictions). The implementation will be coded to allow a larger number if necessary, but there is a trade-off between the size of this number and the amount of heap space needed to track every virtual page and its swap space; as the swap grows large, the overhead can start to overwhelm the amount of memory available in a small footprint microcontroller.
+The swap count of a page is a cryptographically small number (nominally 31 bits) that is used to track which page has been least-recently used (to manage evictions). The implementation will be coded to allow a larger number if necessary, but there is a trade-off between the size of this number and the amount of heap space needed to track every virtual page and its swap space; as the swap grows large, the overhead can start to overwhelm the amount of memory available in a small footprint microcontroller.
 
 The last property means that, for example, it is possible to infer something about the heap or stack of a running process that has been swapped out. In particular, we can detect if a region of stack or heap memory has been modified & swapped, and then restored to the original data & swapped, once the swap count is saturated.
 
@@ -72,7 +72,7 @@ This can be used for the following malicious activities:
   - Force a running process into a previous stack or heap configuration by recording and restoring pages after forcing the swap count to roll over
 
 Mitigation of this vulnerability relies upon these factors:
-  - It takes a long time to push the swap count to 32 bits. This is the equivalent of encrypting and decrypting about 17 terabytes of data using the embedded controller. This would take over 22 years if the microcontroller can run AES-GCM-SIV bidirectionally at a rate of 100MiB/s. An Apple M1 Pro [can achieve 590MiB/s](https://engineering.linecorp.com/en/blog/AES-GCM-SIV-optimization) unidirectionally, so this is an optimistic estimate for an embedded controller running at a few hundred MHz. A similar analysis can be done for ChachaPoly.
+  - It takes a long time to push the swap count to 31 bits. This is the equivalent of encrypting and decrypting about 17 terabytes of data using the embedded controller. This would take over 11 years if the microcontroller can run AES-GCM-SIV bidirectionally at a rate of 100MiB/s. An Apple M1 Pro [can achieve 590MiB/s](https://engineering.linecorp.com/en/blog/AES-GCM-SIV-optimization) unidirectionally, so this is an optimistic estimate for an embedded controller running at a few hundred MHz. A similar analysis can be done for ChachaPoly. Note that the swap count is 31 bits because the MSB is used to track if the page is allocated or free.
   - Instead of saturating, the swap count must roll-over. This means that the LRU algorithm will suffer a performance degradation after a "long time" (see previous bullet for bounds on that), but by avoiding saturation it means an attacker has a single window of opportunity to re-use a page before having to roll over again (or they must keep a log of all the pages). This isn't a cryptographically strong defense, but it practically complicates any attack with little cost in implementation.
   - The swap count can be increased to up to 40 bits in size (any larger would overflow the nonce size considering the other data concatenated into the nonce), if further strength is desired, at a considerable price on 32-bit microcontrollers.
 
