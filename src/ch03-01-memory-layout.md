@@ -65,19 +65,31 @@ There are different memory regions in virtual address space:
 
 | Address    | Name | Variable | Description
 | ---------- | ---- | -------- | -----------
-| 0x00010000 | text | - | Start of `.text` with the default riscv linker script (`riscv64-unknown-elf-ld -verbose`)
-| 0x20000000 | heap | DEFAULT_HEAP_BASE | Start of the heap section returned by `IncreaseHeap`
-| 0x40000000 | message | DEFAULT_MESSAGE_BASE | Base address where `MemoryMessage` messages are mapped inside of a server
-| 0x60000000 | default | DEFAULT_BASE | Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here
-| 0x7fffffff | stack   | - | The default stack for the first thread - grows downwards
-| 0xff000000 | kernel  | USER_AREA_END | The end of user area and the start of kernel area
-| 0xff400000 | pgtable | PAGE_TABLE_OFFSET | A process' page table is located at this offset, accessible only to the kernel
-| 0xff800000 | pgroot  | PAGE_TABLE_ROOT_OFFSET | The root page table is located at this offset, accessible only to the kernel
+| 0x0001_0000 | text | - | Start of `.text` with the default riscv linker script (`riscv64-unknown-elf-ld -verbose`)
+| 0x2000_0000 | heap | DEFAULT_HEAP_BASE | Start of the heap section returned by `IncreaseHeap`
+| 0x4000_0000 | message | DEFAULT_MESSAGE_BASE | Base address where `MemoryMessage` messages are mapped inside of a server
+| 0x6000_0000 | default | DEFAULT_BASE | Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here
+| 0x7fff_ffff | stack   | - | The default stack for the first thread - grows downwards from 0x8000_0000 not inclusive
+| 0xa000_0000 | swhal   | SWAP_HAL_VADDR | Hardware-specific pages for the swapper. For configs that use memory-mapped swap, contains the memory mapping (and thus constrains total swap size). For configs that use register-mapped swap, contains the HAL structures for the register driver. These configurations could potentially have effectively unlimited swap.
+| 0xe000_0000 | swpt    | SWAP_PT_VADDR | Swap page table roots. One page per process, contains virtual addresses (meant to be walked with code)
+| 0xe100_0000 | swcfg   | SWAP_CFG_VADDR | Swap configuration page. Contains all the arguments necessary to set up the swapper.
+| 0xe100_1000 | swrpt   | SWAP_RPT_VADDR | Location where the memory allocation tracker (runtime page tracker) is mapped when it is shared into userspace.
+| 0xe110_0000 | swcount | SWAP_COUNT_VADDR | Location of the block swap count table. This is statically allocated by the loader before the kernel starts.
+| 0xff00_0000 | kernel  | USER_AREA_END | The end of user area and the start of kernel area
+| 0xff40_0000 | pgtable | PAGE_TABLE_OFFSET | A process' page table is located at this offset, accessible only to the kernel
+| 0xff80_0000 | pgroot  | PAGE_TABLE_ROOT_OFFSET | The root page table is located at this offset, accessible only to the kernel
+| 0xff80_1000 | process | PROCESS | The process context descriptor page
+| 0xffc0_0000 | kargs   | KERNEL_ARGUMENT_OFFSET | Location of kernel arguments
+| 0xffd0_0000 | ktext   | - | Kernel `.text` area. Mapped into all processes.
+| 0xfff7_ffff | kstack  | - | Kernel stack top, grows down from 0xFFF8_0000 not inclusive
+| 0xfffe_ffff | exstack | - | Stack area for exception handlers, grows down from 0xFFFF_0000 not inclusive
+
 
 In addition, there are special addresses that indicate the end of a function. The kernel will set these as the return address for various situations, and they are documented here for completeness:
 
 | Address    | Name | Variable | Description
 | ---------- | ---- | ------ | -----------
-| 0xff802000 | retisr  | RETURN_FROM_ISR | Indicates the return from an interrupt service routine
-| 0xff803000 | exitthr | EXIT_THREAD | Indicates a thread should exit
-| 0xff804000 | retex   | RETURN_FROM_EXCEPTION_HANDLER | Indicates the return from an exception handler
+| 0xff80_2000 | retisr  | RETURN_FROM_ISR | Indicates the return from an interrupt service routine
+| 0xff80_3000 | exitthr | EXIT_THREAD | Indicates a thread should exit
+| 0xff80_4000 | retex   | RETURN_FROM_EXCEPTION_HANDLER | Indicates the return from an exception handler
+| 0xff80_8000 | retswap | RETURN_FROM_SWAPPER | Indicates the return from the userspace swapper code. Only available when `swap` feature is selected.
