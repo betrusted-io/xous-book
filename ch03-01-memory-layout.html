@@ -206,20 +206,31 @@
 <h3><a class="header" href="#virtual-memory-regions" id="virtual-memory-regions">Virtual Memory Regions</a></h3>
 <p>There are different memory regions in virtual address space:</p>
 <table><thead><tr><th>Address</th><th>Name</th><th>Variable</th><th>Description</th></tr></thead><tbody>
-<tr><td>0x00010000</td><td>text</td><td>-</td><td>Start of <code>.text</code> with the default riscv linker script (<code>riscv64-unknown-elf-ld -verbose</code>)</td></tr>
-<tr><td>0x20000000</td><td>heap</td><td>DEFAULT_HEAP_BASE</td><td>Start of the heap section returned by <code>IncreaseHeap</code></td></tr>
-<tr><td>0x40000000</td><td>message</td><td>DEFAULT_MESSAGE_BASE</td><td>Base address where <code>MemoryMessage</code> messages are mapped inside of a server</td></tr>
-<tr><td>0x60000000</td><td>default</td><td>DEFAULT_BASE</td><td>Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here</td></tr>
-<tr><td>0x7fffffff</td><td>stack</td><td>-</td><td>The default stack for the first thread - grows downwards</td></tr>
-<tr><td>0xff000000</td><td>kernel</td><td>USER_AREA_END</td><td>The end of user area and the start of kernel area</td></tr>
-<tr><td>0xff400000</td><td>pgtable</td><td>PAGE_TABLE_OFFSET</td><td>A process' page table is located at this offset, accessible only to the kernel</td></tr>
-<tr><td>0xff800000</td><td>pgroot</td><td>PAGE_TABLE_ROOT_OFFSET</td><td>The root page table is located at this offset, accessible only to the kernel</td></tr>
+<tr><td>0x0001_0000</td><td>text</td><td>-</td><td>Start of <code>.text</code> with the default riscv linker script (<code>riscv64-unknown-elf-ld -verbose</code>)</td></tr>
+<tr><td>0x2000_0000</td><td>heap</td><td>DEFAULT_HEAP_BASE</td><td>Start of the heap section returned by <code>IncreaseHeap</code></td></tr>
+<tr><td>0x4000_0000</td><td>message</td><td>DEFAULT_MESSAGE_BASE</td><td>Base address where <code>MemoryMessage</code> messages are mapped inside of a server</td></tr>
+<tr><td>0x6000_0000</td><td>default</td><td>DEFAULT_BASE</td><td>Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here</td></tr>
+<tr><td>0x7fff_ffff</td><td>stack</td><td>-</td><td>The default stack for the first thread - grows downwards from 0x8000_0000 not inclusive</td></tr>
+<tr><td>0xa000_0000</td><td>swhal</td><td>SWAP_HAL_VADDR</td><td>Hardware-specific pages for the swapper. For configs that use memory-mapped swap, contains the memory mapping (and thus constrains total swap size). For configs that use register-mapped swap, contains the HAL structures for the register driver. These configurations could potentially have effectively unlimited swap.</td></tr>
+<tr><td>0xe000_0000</td><td>swpt</td><td>SWAP_PT_VADDR</td><td>Swap page table roots. One page per process, contains virtual addresses (meant to be walked with code)</td></tr>
+<tr><td>0xe100_0000</td><td>swcfg</td><td>SWAP_CFG_VADDR</td><td>Swap configuration page. Contains all the arguments necessary to set up the swapper.</td></tr>
+<tr><td>0xe100_1000</td><td>swrpt</td><td>SWAP_RPT_VADDR</td><td>Location where the memory allocation tracker (runtime page tracker) is mapped when it is shared into userspace.</td></tr>
+<tr><td>0xe110_0000</td><td>swcount</td><td>SWAP_COUNT_VADDR</td><td>Location of the block swap count table. This is statically allocated by the loader before the kernel starts.</td></tr>
+<tr><td>0xff00_0000</td><td>kernel</td><td>USER_AREA_END</td><td>The end of user area and the start of kernel area</td></tr>
+<tr><td>0xff40_0000</td><td>pgtable</td><td>PAGE_TABLE_OFFSET</td><td>A process' page table is located at this offset, accessible only to the kernel</td></tr>
+<tr><td>0xff80_0000</td><td>pgroot</td><td>PAGE_TABLE_ROOT_OFFSET</td><td>The root page table is located at this offset, accessible only to the kernel</td></tr>
+<tr><td>0xff80_1000</td><td>process</td><td>PROCESS</td><td>The process context descriptor page</td></tr>
+<tr><td>0xffc0_0000</td><td>kargs</td><td>KERNEL_ARGUMENT_OFFSET</td><td>Location of kernel arguments</td></tr>
+<tr><td>0xffd0_0000</td><td>ktext</td><td>-</td><td>Kernel <code>.text</code> area. Mapped into all processes.</td></tr>
+<tr><td>0xfff7_ffff</td><td>kstack</td><td>-</td><td>Kernel stack top, grows down from 0xFFF8_0000 not inclusive</td></tr>
+<tr><td>0xfffe_ffff</td><td>exstack</td><td>-</td><td>Stack area for exception handlers, grows down from 0xFFFF_0000 not inclusive</td></tr>
 </tbody></table>
 <p>In addition, there are special addresses that indicate the end of a function. The kernel will set these as the return address for various situations, and they are documented here for completeness:</p>
 <table><thead><tr><th>Address</th><th>Name</th><th>Variable</th><th>Description</th></tr></thead><tbody>
-<tr><td>0xff802000</td><td>retisr</td><td>RETURN_FROM_ISR</td><td>Indicates the return from an interrupt service routine</td></tr>
-<tr><td>0xff803000</td><td>exitthr</td><td>EXIT_THREAD</td><td>Indicates a thread should exit</td></tr>
-<tr><td>0xff804000</td><td>retex</td><td>RETURN_FROM_EXCEPTION_HANDLER</td><td>Indicates the return from an exception handler</td></tr>
+<tr><td>0xff80_2000</td><td>retisr</td><td>RETURN_FROM_ISR</td><td>Indicates the return from an interrupt service routine</td></tr>
+<tr><td>0xff80_3000</td><td>exitthr</td><td>EXIT_THREAD</td><td>Indicates a thread should exit</td></tr>
+<tr><td>0xff80_4000</td><td>retex</td><td>RETURN_FROM_EXCEPTION_HANDLER</td><td>Indicates the return from an exception handler</td></tr>
+<tr><td>0xff80_8000</td><td>retswap</td><td>RETURN_FROM_SWAPPER</td><td>Indicates the return from the userspace swapper code. Only available when <code>swap</code> feature is selected.</td></tr>
 </tbody></table>
 
                     </main>
