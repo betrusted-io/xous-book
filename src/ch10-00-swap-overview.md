@@ -230,29 +230,40 @@ Pages go from `Allocated` to `Reserved` when a process unmaps memory.
 
 When the `swapper` runs out of space, `WriteToSwap` panics with an OOM.
 
+### Kernel ABI
+
+The swapper communicates with the kernel via two syscalls: `RegisterSwapper` and `SwapOp`. `RegisterSwapper` establishes the legitimacy of the swapper process; `SwapOp` is a wrapper around a swapper ABI that can change and evolve.
+
 #### RegisterSwapper Syscall
 
 The `swapper` registers with the kernel on a TOFU basis. The kernel reserves a single 128-bit `sid` with the target of the `swapper`, and it will trust the first process to use the `RegisterSwapper` syscall with its 128-bit random ID. Note that all the data necessary to setup the swapper is placed in the swapper's memory space by the loader, so the kernel does not need to marshall this.
 
-#### EvictPage Syscall
+The arguments to `RegisterSwapper` are as follows:
 
-`EvictPage` is a syscall that only the `swapper` is allowed to call. It is a scalar `send` message, which contains the PID and address of the page to evict. Upon receipt, the kernel will:
+- `s0`-`s3` are the 128-bit `sid`
+- `handler` is the virtual address of the entry point for the blocking swap handler routine in the swapper's memory space
+- `state` is the virtual address of a pointer to the shared state between the swapper userspace and the swapper blocking handler
 
-- Change into the requested PID's address space
-- Lookup the physical address of the evicted page
-- Clear the `V` bit and set the `P` bit of the evicted page's PTE
-- Mark the RPT entry as free
-- Change into the swapper's address space
-- Mutably lend the evicted physical page to the swapper with a `WriteToSwap` message
-- Schedule the swapper to run
+#### SwapOp Syscall
 
-### Swapper Responsibilities
+The `SwapOp` syscall that encodes a private ABI between the swapper and the kernel. The idea is that this ABI can rapidly evolve without having to update the syscall table, which would require an update to the Xous package itself. The `SwapOp` syscall has arguments consisting of the op itself, which is coded as the numerical representation of `SwapAbi` (below), and up to 6 generic `usize` arguments that have a meaning depending on the `SwapAbi` code.
 
-It is the swapper's responsibility to maintain a structure that keeps track of every page in the `free RAM` pool. It builds this using the `AllocateAdvisory` messages.
+The `SwapAbi` may change rapidly, so please refer to the code for the latest details, but below gives you an idea of what is inside the ABI.
 
-When the amount of free RAM falls below a certain threshold, the swapper will initiate a `Trim` operation. A kernel can also initiate a `Trim` as a last-ditch in case the `swapper` was starved of time and was unable to initiate a `Trim`, but this meant to be avoided.
+```rust
+pub enum SwapAbi {
+    Invalid = 0,
+    Evict = 1,
+    GetFreePages = 2,
+    FetchAllocs = 3,
+    StealPage = 5,
+    ReleaseMemory = 6,
+}
+```
 
-In a `Trim` operation, the swapper picks the pages it thinks will have the least performance impact and calls `EvictPage` to remove them. Initially, the swapper will have no way to know what pages are most important; it must use a heuristic to guess the first pages to evict. However, since it must track how frequently a page has been swapped with the `swap_count` field (necessary for encryption), it can rely upon this to build an eventual map of which pages to avoid.
+There are two basic modes of operation supported by the swapper. One is a userspace-driven `Evict`ion of pages, and the other is a blocking handler driven `Steal`/`Release` cycle. The `Evict` mode is a soft-OOM handler, nicknamed the `OOM Doom` handler, where a userspace program tries to free up memory using all the tools available in rust `std` (including more heap allocations!) without blocking forward progress (i.e., it is pre-emptable). It can be more deliberative and analytical about which pages to remove, and it invokes the kernel with an `Evict` call which will atomically remove one page at a time, stealing the memory from the process, writing it to swap (by doing a re-entrant call back into the swapper's userspace blocking handler), and then releasing the memory.
 
-The swapper is also responsible for responding to `WriteToSwap` and `ReadFromSwap` calls.
+The `Steal`/`Release` mode is invoked on a hard-OOM, i.e. when we literally have 0 free pages of memory left in the system. This handler is significantly more constrained on what it can do, and it operates in a fully blocking context. In this case, the userspace tries to aggressively swap memory out by `Steal`ing pages from other processes, writing their pages to swap, and then `Release`ing their memory from the physical memory allocation table. It will fairly indiscriminately steal memory from processes until enough memory is free to allow forward progress on other operations.
+
+Most of the interesting code for the swapper is split between the kernel stub (inside kernel/src/swap.rs) and the userspace service (services/xous-swapper). The userspace service itself is split into the blocking handler and the regular preemptable handler. There are also a couple of modifications to the architecture-specific implementations (kernel/src/arch/riscv/irq.rs and kernel/src/arch/riscv/mem.rs) to shim the swap into core memory routines. Keep in mind at least half the effort for swap is in the loader, which is responsible for setting up and initializing all the relevant data structures so that swap is even possible.
 
