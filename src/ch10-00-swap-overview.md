@@ -264,8 +264,8 @@ From the standpoint of memory management, a page can only have the following sta
 - `Swapped`: `P` is set. `V` is *not* set. `S` may also not be set. Upon access to this page, the kernel allocates a resident page and calls `ReadFromSwap` to fill it. The page will move to the `Allocated` state on conclusion.
 - `Reserved`: `V` is *not* set, `P` is *not* set, and at least one other flag is set except for `S`. A kernel allocates a resident page and zeros it. The page will move to the `Allocated` state on conclusion.
 
-Pages go from `Allocated` to `Swapped` based on the `swapper` observing that the kernel is low on memory, and calling a series of `EvictPage` calls to free up memory. It is always assumed that the kernel can allocate memory when necessary; as a last ditch the kernel can attempt to call `Trim` on the swapper, but this should only happen in extreme cases of memory pressure.
+Pages go from `Allocated` to `Swapped` based on the `swapper` observing that the kernel is low on memory, and calling a series of `StealPage`/`ReleaseMemory` calls to free up memory. The kernel is allowed to run out of memory and invoke the swapper to free memory for its operations through the use of re-entrant syscalls.
 
 Pages go from `Allocated` to `Reserved` when a process unmaps memory.
 
-When the `swapper` runs out of space, `WriteToSwap` panics with an OOM.
+The kernel can OOM and recover by pushing pages to swap. When the `swapper` runs out of swap space, `write_to_swap_inner()` inside the userspace handler will panic with an out of swap message, and the system will halt.
