@@ -165,42 +165,82 @@ An kernel argument of type `swap` is provided, which is a base and bounds to the
 
 The image creation routine and kernel arguments need to be extended to support `inis` regions located in off-chip SPI FLASH. The off-chip data is not encrypted, but it is signature checked with a dedicated signature block. Note that the off-chip SPI FLASH does not need to be memory mapped: the loader may read the memory through a register interface.
 
-### Kernel Runtime
+### Kernel ABI
 
-Systems with `swap` enabled must have a process located at `PID` 2 that is the `swapper`. The kernel will only recognize `swap` extension syscalls originating from `PID` 2.
+Systems with `swap` enabled must have a process located at `PID` 2 that is the `swapper`. The kernel will only recognize `swap` extension syscalls originating from `PID` 2. The kernel page fault handler must also be extended to handle swapped pages by invoking the swapper to recover the contents.
 
 The following kernel syscall extensions are recognized when the `swap` feature is activated:
 
 - `RegisterSwapper`
-- `EvictPage`
+- `SwapOp`
 
-The kernel page fault handler must also be extended to handle swapped pages by invoking the swapper to recover the contents.
+`RegisterSwapper` establishes the legitimacy of the swapper process; `SwapOp` is a wrapper around a swapper ABI that can change and evolve.
 
-The userspace `swapper` handles two classes of events. The first are blocking events, handled in an interrupt-like context where all IRQs are disabled. These are "atomic" swap operations, and cannot invoke any syscalls that could block, or wait on any events. The second are non-blocking events and are queued into the `swapper` like any other message.
+The swapper shall not allow any shared-state locks on data structures required to satisfy a swap request. Such a lock will lead to a system hang with no error message, since what happens is the `swapper` will busy-wait eternally as preemption has been disabled.
 
-Thus, preemption requests are ignored during a blocking swap event, because external IRQs are disabled.
+The general flow of swap handling is as follows:
 
-Finally, the swapper shall not allow any shared-state locks on data structures required to satisfy a swap request. Such a lock will lead to a system hang with no error message, since what happens is the `swapper` will busy-wait eternally because preemption has been disabled.
+- The userspace swapper handler is registered. This must happen as early in the boot process as possible.
+- An event generates a swap exception. Sources of events include page faults on a swappable page, out of memory, and garbage collection events.
+- Events from within the kernel must issue a `swap_reentrant_syscall()` call, instead of a regular syscall.
+- The swapper handles the events, and returns
 
-#### Blocking Events
-Blocking events are called with a list of 8 arguments in an interrupt-like context. Not all arguments are valid for all calls; the 8 arguments are an upper bound and must all be set to something due to the strictness of Rust function call prototypes.
+#### `swap_reentrant_syscall`
 
-Here are the types of blocking events that the swapper must handle:
+`swap_reentrant_syscall()` allows the kernel to use the `SwapOp` API via a syscall interface. This is important because anything can run out of memory, and anything can encounter a swapped page, including the kernel in its most tender moments (such as an OOM while allocating new page table entries).
 
-- `WriteToSwap`: Copy & encrypts a physical page to swap. Arguments include the original processes' PID and virtual address.
-- `ReadFromSwap`: Retrieve & decrypts a page from swap, and copies it to a designated physical page. Arguments include the target process PID and virtual address for the page to retrive.
-- `AllocateAdvisory`: Informs the swapper that a page in free RAM was allocated to a given PID and virtual address. Only reports on pages that are allocated out of free RAM, and it includes a flag to indicate if the allocation was `wired` or not. Recall that `wired` memory cannot be swapped. `AllocateAdvisory` may be coded to "bulk up" a couple of allocate requests for better efficiency.
-- `Free`: Informs the swapper that a page was de-allocated by a process.
+Thus in order to make the swap implementation sane, we need to be able to make system calls from inside the kernel and from inside interrupt handlers.
 
-These are processed with interrupts disabled, and have the same rules as interrupt handlers in terms of safe calls that can be performed.
+Xous has an "exception handler" context for system calls. It is not set up for nested operations. In implementing swap, we could either introduce nesting by allocating a separate stack space for nested calls and return vectors for the same, or we could just fake it by backing up the stack before doing a re-entrant call.
 
-The blocking responder inside the `swapper` must be atomic: in other words, every kernel request that comes in must be fully handled without any dependencies or stalls on other processes, and upon satisfaction the `swapper` must be immediately ready for another blocking request. In particular: you can't use the `log` crate for debugging.
+While the former strategy sounds elegant, it would require patching every syscall path with something that reads a piece of state to determine which level of the nesting stack you're on. In particular, the assembly stub that is responsible for setting up the exceptions would need to be reworked to do this. This was deemed to be more invasive and more bug-prone than the alternative.
 
-#### Non-Blocking Events
-- `Trim`: (**this might be a bad idea**) a request from the kernel to free up N pages. Normally the kernel would not call this, as the swapper should be pre-emptively clearing space, but it is provided as a last-ditch method in case of an OOM.
-- `ProcessAdvisory`: This is a scalar message generated by a blocking `AllocateAdvisory` message via the `try_send_message` method that tells the swapper to decide if an `EvictPage` call is needed. `ProcessAdvisory` can be safely missed if the message queue overflows.
+So, in this implementation, `swap_reentrant_sycall` has an assembly stub which runs just before entering a re-entrant syscall, and also just after. The routine reads the current stack pointer, copies the exception handler entire stack to a backup location, does the syscall, and then on return, restores the stack's contents. This minimizes code changes to other code paths (reducing analytical complexity) in exchange for an operation that is extremely risky but analytically tractable.
 
-Non-blocking events happen in the normal userspace server thread.
+#### RegisterSwapper Syscall
+
+The `swapper` registers with the kernel on a TOFU basis. Note that all the data necessary to setup the swapper is placed in the swapper's memory space by the loader, so the kernel does not need to marshall this.
+
+The arguments to `RegisterSwapper` are as follows:
+
+- `handler` is the virtual address of the entry point for the blocking swap handler routine in the swapper's memory space
+- `state` is the virtual address of a pointer to the shared state between the swapper userspace and the swapper blocking handler
+
+All communications between the kernel and the swapper happen through the `handler` entry point.
+
+#### SwapOp Syscall
+
+The `SwapOp` syscall that encodes a private ABI between the swapper and the kernel. The idea is that this ABI can rapidly evolve without having to update the syscall table, which would require an update to the Xous package itself. The `SwapOp` syscall has arguments consisting of the op itself, which is coded as the numerical representation of `SwapAbi` (below), and up to 6 generic `usize` arguments that have a meaning depending on the `SwapAbi` code.
+
+The `SwapAbi` may change rapidly, so please refer to the code for the latest details, but below gives you an idea of what is inside the ABI.
+
+```rust
+pub enum SwapAbi {
+    Invalid = 0,
+    ClearMemoryNow = 1,
+    GetFreePages = 2,
+    RetrievePage = 3,
+    HardOom = 4,
+    StealPage = 5,
+    ReleaseMemory = 6,
+}
+```
+
+`ClearMemoryNow` is the call used when the system has run out of physical memory. Only the swapper is allowed to invoke this call; other processes may proxy a request for memory through the swapper's userspace server. This call stops all interrupts, and immediately enters the userspace handler to nominate pages to evict in hopes of recovery.
+
+`GetFreePages` returns the number of physical pages currently unallocated.
+
+`RetrievePage` is used to retrieve a page that has been previously swapped out into physical memory. It must be called with the target PID and virtual address of the page to be retrieved, along with a physical address of where to put the retrieved page.
+
+`HardOom` is the kernel interface to `ClearMemoryNow`. It is what is used to demand a page when another page operation requires it, e.g. you're in the middle of a lend, and the target process needs an L1 page table page, but you're out of free pages; `HardOom` will try to free up some pages to allow an operation like this to proceed. Unlike `ClearMemoryNow`, this call can originate from any process ID, but only from within the kernel.
+
+`StealPage` instructs the kernel to mark a specified page in the victim process' memory space as swapped, and return its contents for storage in swap. The userspace swapper is responsible for swap strategy, and this is one half of the call that it uses to execute the strategy.
+
+`ReleaseMemory` instructs the kernel to mark a specified physical page in the swapper's memory space as no longer used, returning it to the free memory pool. This is called after a successful `StealPage` call followed up by archival of the swapped page to encrypted swap.
+
+Most of the interesting code for the swapper is split between the kernel stub (inside kernel/src/swap.rs) and the userspace service (services/xous-swapper). The userspace service itself is split into the blocking handler and the regular preemptable handler, with most of the action happening in the blocking handler. The blocking handler is named such because it happens in an interrupt-like context: no pre-emption of any type is allowed.
+
+There are also a couple of modifications to the architecture-specific implementations (kernel/src/arch/riscv/irq.rs and kernel/src/arch/riscv/mem.rs) to shim the swap into core memory routines. Keep in mind at least half the effort for swap is in the loader, which is responsible for setting up and initializing all the relevant data structures so that swap is even possible.
 
 #### Flags and States
 
@@ -229,41 +269,3 @@ Pages go from `Allocated` to `Swapped` based on the `swapper` observing that the
 Pages go from `Allocated` to `Reserved` when a process unmaps memory.
 
 When the `swapper` runs out of space, `WriteToSwap` panics with an OOM.
-
-### Kernel ABI
-
-The swapper communicates with the kernel via two syscalls: `RegisterSwapper` and `SwapOp`. `RegisterSwapper` establishes the legitimacy of the swapper process; `SwapOp` is a wrapper around a swapper ABI that can change and evolve.
-
-#### RegisterSwapper Syscall
-
-The `swapper` registers with the kernel on a TOFU basis. The kernel reserves a single 128-bit `sid` with the target of the `swapper`, and it will trust the first process to use the `RegisterSwapper` syscall with its 128-bit random ID. Note that all the data necessary to setup the swapper is placed in the swapper's memory space by the loader, so the kernel does not need to marshall this.
-
-The arguments to `RegisterSwapper` are as follows:
-
-- `s0`-`s3` are the 128-bit `sid`
-- `handler` is the virtual address of the entry point for the blocking swap handler routine in the swapper's memory space
-- `state` is the virtual address of a pointer to the shared state between the swapper userspace and the swapper blocking handler
-
-#### SwapOp Syscall
-
-The `SwapOp` syscall that encodes a private ABI between the swapper and the kernel. The idea is that this ABI can rapidly evolve without having to update the syscall table, which would require an update to the Xous package itself. The `SwapOp` syscall has arguments consisting of the op itself, which is coded as the numerical representation of `SwapAbi` (below), and up to 6 generic `usize` arguments that have a meaning depending on the `SwapAbi` code.
-
-The `SwapAbi` may change rapidly, so please refer to the code for the latest details, but below gives you an idea of what is inside the ABI.
-
-```rust
-pub enum SwapAbi {
-    Invalid = 0,
-    Evict = 1,
-    GetFreePages = 2,
-    FetchAllocs = 3,
-    StealPage = 5,
-    ReleaseMemory = 6,
-}
-```
-
-There are two basic modes of operation supported by the swapper. One is a userspace-driven `Evict`ion of pages, and the other is a blocking handler driven `Steal`/`Release` cycle. The `Evict` mode is a soft-OOM handler, nicknamed the `OOM Doom` handler, where a userspace program tries to free up memory using all the tools available in rust `std` (including more heap allocations!) without blocking forward progress (i.e., it is pre-emptable). It can be more deliberative and analytical about which pages to remove, and it invokes the kernel with an `Evict` call which will atomically remove one page at a time, stealing the memory from the process, writing it to swap (by doing a re-entrant call back into the swapper's userspace blocking handler), and then releasing the memory.
-
-The `Steal`/`Release` mode is invoked on a hard-OOM, i.e. when we literally have 0 free pages of memory left in the system. This handler is significantly more constrained on what it can do, and it operates in a fully blocking context. In this case, the userspace tries to aggressively swap memory out by `Steal`ing pages from other processes, writing their pages to swap, and then `Release`ing their memory from the physical memory allocation table. It will fairly indiscriminately steal memory from processes until enough memory is free to allow forward progress on other operations.
-
-Most of the interesting code for the swapper is split between the kernel stub (inside kernel/src/swap.rs) and the userspace service (services/xous-swapper). The userspace service itself is split into the blocking handler and the regular preemptable handler. There are also a couple of modifications to the architecture-specific implementations (kernel/src/arch/riscv/irq.rs and kernel/src/arch/riscv/mem.rs) to shim the swap into core memory routines. Keep in mind at least half the effort for swap is in the loader, which is responsible for setting up and initializing all the relevant data structures so that swap is even possible.
-
