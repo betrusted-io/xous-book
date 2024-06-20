@@ -380,9 +380,9 @@ in the image creator to catch this issue.</p>
 <li><code>Swapped</code>: <code>P</code> is set. <code>V</code> is <em>not</em> set. <code>S</code> may also not be set. Upon access to this page, the kernel allocates a resident page and calls <code>ReadFromSwap</code> to fill it. The page will move to the <code>Allocated</code> state on conclusion.</li>
 <li><code>Reserved</code>: <code>V</code> is <em>not</em> set, <code>P</code> is <em>not</em> set, and at least one other flag is set except for <code>S</code>. A kernel allocates a resident page and zeros it. The page will move to the <code>Allocated</code> state on conclusion.</li>
 </ul>
-<p>Pages go from <code>Allocated</code> to <code>Swapped</code> based on the <code>swapper</code> observing that the kernel is low on memory, and calling a series of <code>EvictPage</code> calls to free up memory. It is always assumed that the kernel can allocate memory when necessary; as a last ditch the kernel can attempt to call <code>Trim</code> on the swapper, but this should only happen in extreme cases of memory pressure.</p>
+<p>Pages go from <code>Allocated</code> to <code>Swapped</code> based on the <code>swapper</code> observing that the kernel is low on memory, and calling a series of <code>StealPage</code>/<code>ReleaseMemory</code> calls to free up memory. The kernel is allowed to run out of memory and invoke the swapper to free memory for its operations through the use of re-entrant syscalls.</p>
 <p>Pages go from <code>Allocated</code> to <code>Reserved</code> when a process unmaps memory.</p>
-<p>When the <code>swapper</code> runs out of space, <code>WriteToSwap</code> panics with an OOM.</p>
+<p>The kernel can OOM and recover by pushing pages to swap. When the <code>swapper</code> runs out of swap space, <code>write_to_swap_inner()</code> inside the userspace handler will panic with an out of swap message, and the system will halt.</p>
 
                     </main>
 
