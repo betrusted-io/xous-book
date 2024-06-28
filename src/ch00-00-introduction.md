@@ -16,6 +16,10 @@ Chapters [1 (Getting Started)](ch01-00-getting-started.md), [4 (Renode Emulation
 
 Chapter [9 (PDDB)](ch09-00-pddb-overview.md) covers the Plausibly Deniable DataBase, and has sub-sections for both kernel and application developers.
 
+## Getting Help on Devices
+
+This book focuses on the Xous kernel. For device-specific questions (e.g., how to update or factory reset a Precusor), please [visit our wiki](https://github.com/betrusted-io/betrusted-wiki/wiki). You can also [join our Matrix community](https://matrix.to/#/#precursor.dev:matrix.org) and chat with our community members for help.
+
 ----------------
 
 ## Architecture
