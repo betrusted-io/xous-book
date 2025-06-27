@@ -289,20 +289,20 @@ in the image creator to catch this issue.</p>
 </ul>
 <p>The SPT has the same structure as system page tables. However, SPT entries are only allocated on-demand for processes that have swap; it is not a full copy of every page in the system page table.</p>
 <h4><a class="header" href="#inif-handling" id="inif-handling">INIF handling</a></h4>
-<p>Regions marked as <code>xip</code> (i.e, marked as <code>inif</code> type) are assumed to FLASH that is contained within the secure perimeter of the microcontroller. These regions are mapped directly and unencrypted into the kernel memory space.</p>
+<p>Regions marked as <code>xip</code> (i.e, marked as <code>inif</code> type) are assumed to be FLASH that is contained within the secure perimeter of the microcontroller. These regions are mapped directly and unencrypted into the kernel memory space.</p>
 <p>These boot-critical processes must be <code>xip</code>, and are never swapped out:</p>
 <ul>
 <li>kernel</li>
 <li>swapper</li>
 <li>ticktimer</li>
 </ul>
-<p>More regions can be marked as <code>xip</code>; this is preferable, because if the code is resident in on-chip FLASH, they aren't taking up working-set RAM and things will run faster.</p>
+<p>More regions can be marked as <code>xip</code>; this is preferable, because if the code is resident in on-chip FLASH, it isn't taking up working-set RAM and things will run faster.</p>
 <p>The initial data set of <code>inif</code> processes are considered to be <code>wired</code>; however, their reserved memory regions can be swapped after allocation.</p>
 <h4><a class="header" href="#inie-handling" id="inie-handling">INIE handling</a></h4>
 <p>Regions marked as <code>inie</code> are copied to the working set RAM and executed out of RAM. It is assumed this tag is mostly unused in microcontrollers with a small internal working set, but the behavior is not modified because it is a valid and useful tag for devices with large, trusted RAMs.</p>
 <h4><a class="header" href="#inis-handling" id="inis-handling">INIS handling</a></h4>
-<p>Regions marked as <code>inis</code> are copied into encrypted swap on boot. The kernel page table state start out with the correct <code>R</code>/<code>W</code>/<code>X</code>/<code>U</code> values, but <code>V</code> is not set, and <code>P</code> is set. Entries are created in the SPT to inform the tracker where to find the pages.</p>
-<p>An kernel argument of type <code>swap</code> is provided, which is a base and bounds to the SPT/SMT region. This is meant to passed to the <code>swapper</code> process when it registers to the kernel.</p>
+<p>Regions marked as <code>inis</code> are copied into encrypted swap on boot. The kernel page table state starts out with the correct <code>R</code>/<code>W</code>/<code>X</code>/<code>U</code> values, but <code>V</code> is not set, and <code>P</code> is set. Entries are created in the SPT to inform the tracker where to find the pages.</p>
+<p>An kernel argument of type <code>swap</code> is provided, which is a base and bounds to the SPT/SMT region. This is meant to be passed to the <code>swapper</code> process when it registers to the kernel.</p>
 <p>The image creation routine and kernel arguments need to be extended to support <code>inis</code> regions located in off-chip SPI FLASH. The off-chip data is not encrypted, but it is signature checked with a dedicated signature block. Note that the off-chip SPI FLASH does not need to be memory mapped: the loader may read the memory through a register interface.</p>
 <h3><a class="header" href="#kernel-abi" id="kernel-abi">Kernel ABI</a></h3>
 <p>Systems with <code>swap</code> enabled must have a process located at <code>PID</code> 2 that is the <code>swapper</code>. The kernel will only recognize <code>swap</code> extension syscalls originating from <code>PID</code> 2. The kernel page fault handler must also be extended to handle swapped pages by invoking the swapper to recover the contents.</p>
@@ -318,14 +318,14 @@ in the image creator to catch this issue.</p>
 <li>The userspace swapper handler is registered. This must happen as early in the boot process as possible.</li>
 <li>An event generates a swap exception. Sources of events include page faults on a swappable page, out of memory, and garbage collection events.</li>
 <li>Events from within the kernel must issue a <code>swap_reentrant_syscall()</code> call, instead of a regular syscall.</li>
-<li>The swapper handles the events, and returns</li>
+<li>The swapper handles the events, and returns.</li>
 </ul>
 <h4><a class="header" href="#swap_reentrant_syscall" id="swap_reentrant_syscall"><code>swap_reentrant_syscall</code></a></h4>
 <p><code>swap_reentrant_syscall()</code> allows the kernel to use the <code>SwapOp</code> API via a syscall interface. This is important because anything can run out of memory, and anything can encounter a swapped page, including the kernel in its most tender moments (such as an OOM while allocating new page table entries).</p>
 <p>Thus in order to make the swap implementation sane, we need to be able to make system calls from inside the kernel and from inside interrupt handlers.</p>
 <p>Xous has an &quot;exception handler&quot; context for system calls. It is not set up for nested operations. In implementing swap, we could either introduce nesting by allocating a separate stack space for nested calls and return vectors for the same, or we could just fake it by backing up the stack before doing a re-entrant call.</p>
 <p>While the former strategy sounds elegant, it would require patching every syscall path with something that reads a piece of state to determine which level of the nesting stack you're on. In particular, the assembly stub that is responsible for setting up the exceptions would need to be reworked to do this. This was deemed to be more invasive and more bug-prone than the alternative.</p>
-<p>So, in this implementation, <code>swap_reentrant_sycall</code> has an assembly stub which runs just before entering a re-entrant syscall, and also just after. The routine reads the current stack pointer, copies the exception handler entire stack to a backup location, does the syscall, and then on return, restores the stack's contents. This minimizes code changes to other code paths (reducing analytical complexity) in exchange for an operation that is extremely risky but analytically tractable.</p>
+<p>So, in this implementation, <code>swap_reentrant_sycall</code> has an assembly stub which runs just before entering a re-entrant syscall, and also just after. The routine reads the current stack pointer, copies the exception handler's entire stack to a backup location, does the syscall, and then on return, restores the stack's contents. This minimizes code changes to other code paths (reducing analytical complexity) in exchange for an operation that is extremely risky but analytically tractable.</p>
 <h4><a class="header" href="#registerswapper-syscall" id="registerswapper-syscall">RegisterSwapper Syscall</a></h4>
 <p>The <code>swapper</code> registers with the kernel on a TOFU basis. Note that all the data necessary to setup the swapper is placed in the swapper's memory space by the loader, so the kernel does not need to marshall this.</p>
 <p>The arguments to <code>RegisterSwapper</code> are as follows:</p>
@@ -335,7 +335,7 @@ in the image creator to catch this issue.</p>
 </ul>
 <p>All communications between the kernel and the swapper happen through the <code>handler</code> entry point.</p>
 <h4><a class="header" href="#swapop-syscall" id="swapop-syscall">SwapOp Syscall</a></h4>
-<p>The <code>SwapOp</code> syscall that encodes a private ABI between the swapper and the kernel. The idea is that this ABI can rapidly evolve without having to update the syscall table, which would require an update to the Xous package itself. The <code>SwapOp</code> syscall has arguments consisting of the op itself, which is coded as the numerical representation of <code>SwapAbi</code> (below), and up to 6 generic <code>usize</code> arguments that have a meaning depending on the <code>SwapAbi</code> code.</p>
+<p>The <code>SwapOp</code> syscall encodes a private ABI between the swapper and the kernel. The idea is that this ABI can rapidly evolve without having to update the syscall table, which would require an update to the Xous package itself. The <code>SwapOp</code> syscall has arguments consisting of the op itself, which is coded as the numerical representation of <code>SwapAbi</code> (below), and up to 6 generic <code>usize</code> arguments that have a meaning depending on the <code>SwapAbi</code> code.</p>
 <p>The <code>SwapAbi</code> may change rapidly, so please refer to the code for the latest details, but below gives you an idea of what is inside the ABI.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]

@@ -211,7 +211,7 @@
 <p>Upon the conclusion of the signature check, the loader also does a quick check of the stack usage, to ensure that nothing ran out of bounds. This is important because the Kernel assumes that no memory pages are modified across a suspend/resume, except for the (currently) two pages of RAM allocated to the loader's stack.</p>
 <h2><a class="header" href="#loading-the-os" id="loading-the-os">Loading the OS</a></h2>
 <p>Once the image has been signature checked, the loader must set up the Xous kernel. Xous has a very regular structure, where everything is a process, including the kernel. What makes the kernel special is that it is process ID <code>1</code>, and its code is also mapped into the high 4 MiB of every other processes' memory space, allowing processes to run kernel code without having to swap out the <code>satp</code> (that is, the page table base).</p>
-<p>The loader's responsibility is to go from a machine that has essentially a zero-ized RAM space and a bunch of archives in FLASH, to one where physical pages of memory are mapped into the correct virtual address spaces for every process.</p>
+<p>The loader's responsibility is to go from a machine that has essentially a zeroized RAM space and a bunch of archives in FLASH, to one where physical pages of memory are mapped into the correct virtual address spaces for every process.</p>
 <p>This is done in several stages:</p>
 <ol>
 <li>Reading the configuration</li>
@@ -223,10 +223,10 @@
 <p>The loader needs to know basic information about the Arguments structure before it can begin. This includes information about the memory layout, extra memory regions, kernel offset, and the number of initial programs.</p>
 <p>The loader performs one pass through the Arguments structure to ensure that it contains the required fields before continuing.</p>
 <h3><a class="header" href="#loader-stage-1-copying-and-aligning-data" id="loader-stage-1-copying-and-aligning-data">Loader Stage 1: Copying and Aligning Data</a></h3>
-<p>Stage 1 copies and aligns all of the processes, such that the sub-page offsets for the code matches the expectations that the linker set up. It also copies any data requires write access, even if is already correctly aligned. The core routine is <code>copy_processes()</code>.</p>
+<p>Stage 1 copies and aligns all of the processes, such that the sub-page offsets for the code match the expectations that the linker set up. It also copies any data that requires write access, even if is already correctly aligned. The core routine is <code>copy_processes()</code>.</p>
 <p>In the case that the offsets for the memory image on FLASH line up with the virtual memory offsets, nothing needs to be done for the text, read-only data, and exception handler sections. In the case that they do not line up, a copy must be made in RAM of these sections to ensure correct alignment.</p>
-<p>Virtual sections marked as <code>NOCOPY</code> must be allocated and zero-ized, and sections marked with write access must always the copied.</p>
-<p>The loader reserves the top two pages for its own working stack space, and adds a configurable <code>GUARD_MEMORY_BYTES</code> buffer to determine the beginning of process space. Note that one page of the &quot;guard&quot; area is used to store a &quot;clean supend marker&quot;, which is used by the loader to check if the current power-on cycle is due to a resume, or a cold boot.</p>
+<p>Virtual sections marked as <code>NOCOPY</code> must be allocated and zeroized, and sections marked with write access must always the copied.</p>
+<p>The loader reserves the top two pages for its own working stack space, and adds a configurable <code>GUARD_MEMORY_BYTES</code> buffer to determine the beginning of process space. Note that one page of the &quot;guard&quot; area is used to store a &quot;clean suspend marker&quot;, which is used by the loader to check if the current power-on cycle is due to a resume, or a cold boot.</p>
 <p>Currently, the total works out to an offset of 16kiB reserved from top of RAM before processes are copied. These RAM pages are &quot;lost forever&quot; and not available to the Xous kernel for any purpose. This physical offset represents the start of the loader's workspace for setting up Xous.</p>
 <h4><a class="header" href="#process-copying" id="process-copying">Process Copying</a></h4>
 <p>The loader consumes RAM, page-by-page, starting from the highest available physical offset, working its way down.</p>

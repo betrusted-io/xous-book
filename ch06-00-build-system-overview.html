@@ -172,7 +172,7 @@
 <p>The <code>xtask</code> concept is simply an alias under <code>.cargo/config</code> that turns <code>cargo xtask</code> into <code>cargo run --package xtask --</code>.</p>
 <p>Therefore, all complex operations from building the kernel to constructing an output image are handled by <code>xtask/src/main.rs</code>, which is compiled and run as a normal Rust program.</p>
 <h2><a class="header" href="#building-images" id="building-images">Building Images</a></h2>
-<p>Generally, users will want to use <code>cargo xtask app-image [app 1] [app ..]</code> to build a Xous image that contains the desired list of applications. The applications are the names of crates contained in the &quot;apps/&quot; directory. Tesulting FLASH images will be called <a href="ch05-02-loader.html"><code>loader.bin</code></a> and <code>xous.img</code> in the <code>target/riscv32imac-unknown-xous-elf/release</code> directory.</p>
+<p>Generally, users will want to use <code>cargo xtask app-image [app 1] [app ..]</code> to build a Xous image that contains the desired list of applications. The applications are the names of crates contained in the &quot;apps/&quot; directory. Resulting FLASH images will be called <a href="ch05-02-loader.html"><code>loader.bin</code></a> and <code>xous.img</code> in the <code>target/riscv32imac-unknown-xous-elf/release</code> directory.</p>
 <p>There are also convenience commands to build emulation images, such as <code>cargo xtask run</code> (for hosted mode, where Xous runs directly on your native OS) and <code>cargo xtask renode-image</code> (for a Renode image, where a cycle accurate simulation can be run inside the Renode emulator). See Chapter 4 for more information about Renode.</p>
 <h3><a class="header" href="#build-command-syntax-details" id="build-command-syntax-details">Build Command Syntax Details</a></h3>
 <p>The general format of an <code>xtask</code> command is as follows:</p>
@@ -188,12 +188,12 @@
 <ul>
 <li><code>name</code>: crate 'name' to be built from local source</li>
 <li><code>name@version</code>: crate 'name' to be fetched from crates.io at the specified version</li>
-<li><code>name#URL</code>: pre-built binary crate of 'name', to be downloadeded from a server at 'URL' after the <code>#</code> separator</li>
+<li><code>name#URL</code>: pre-built binary crate of 'name', to be downloaed from a server at 'URL' after the <code>#</code> separator</li>
 <li><code>path-to-binary</code>: file path to a prebuilt binary image on local machine. Files in '.' must be specified as <code>./file</code> to avoid confusion with local source</li>
 </ul>
-<p>The exact meaning of a <code>cratespec</code> depends on the context of the verb. Generally, fully-configured builds interpret the <code>cratespec</code> as an <code>app</code>, and debug builds interpcet <code>cratepsec</code> as a <code>service</code>.</p>
+<p>The exact meaning of a <code>cratespec</code> depends on the context of the verb. Generally, fully-configured builds interpret the <code>cratespec</code> as an <code>app</code>, and debug builds interpret <code>cratespec</code> as a <code>service</code>.</p>
 <p>Both an <code>app</code> and a <code>service</code> are Xous binaries that are copied into the final disk image; however, there is an additional step that gets run in the build system for an <code>app</code> that looks up its description in <code>apps/manifest.json</code> and attempts to configure the launch menu for the app prior to running the build.</p>
-<p>Additional crates can be merged in with explicit app/service treatment by preceeding the crate name with either an <code>--app</code> flag or <code>---service</code> flag.</p>
+<p>Additional crates can be merged in with explicit app/service treatment by preceeding the crate name with either an <code>--app</code> flag or <code>--service</code> flag.</p>
 <h4><a class="header" href="#example-building-a-precursor-user-image" id="example-building-a-precursor-user-image">Example: Building a Precursor User Image</a></h4>
 <p>If one were building a user image for Precursor hardware, one could use the following command to build a base system that contains no apps.</p>
 <p><code>cargo xtask app-image</code></p>

@@ -185,10 +185,10 @@
 <h2><a class="header" href="#orthogonal-virtual-page-table-structure" id="orthogonal-virtual-page-table-structure">Orthogonal Virtual Page Table Structure</a></h2>
 <h3><a class="header" href="#page-table-format" id="page-table-format">Page Table Format</a></h3>
 <p>The simplified diagram above would require a user to scan every page of storage and trial-decrypt each page to discover the full extent of user data. It also lacks an index to track what data goes where.</p>
-<p>These two problems are solved by using a classic &quot;page table&quot; mechanism to map Basis data onto the actual storage array. The virtual memory space of any given Basis is 64 bits, with pages that are 4064 bytes long (this is 4096 physical bytes less a per-page overhead for AEC-GCM-SIV + journaling)</p>
+<p>These two problems are solved by using a classic &quot;page table&quot; mechanism to map Basis data onto the actual storage array. The virtual memory space of any given Basis is 64 bits, with pages that are 4064 bytes long (this is 4096 physical bytes less a per-page overhead for AEC-GCM-SIV + journaling).</p>
 <p>The page table itself consists of entries that are 128-bits long (sized to match the length of an AES block), that are encrypted with AES-ECB.</p>
 <p><img src="images/pddb-details.png" alt="details of the PDDB implementation" /></p>
-<p>Each page table entry is encodes the following data:</p>
+<p>Each page table entry encodes the following data:</p>
 <ul>
 <li>52-bit virtual page number of the physical page corresponding to the offset of the page table, stored as a 56-bit zero-padded field.</li>
 <li>8 bits of flags</li>
@@ -237,11 +237,12 @@ but of course, the DNA ID can be forged)</li>
 <ul>
 <li>Most mutability happens on the data keys themselves (keys are read/write/modify routinely).</li>
 <li>Dictionary modifications (key addition or removal) are about 20x less frequent than key mods.</li>
-<li>Basis modifications (creation/removal of dictionaries) is about 10x less frequent than dictionary .</li>
-<li>According to https://www.pdl.cmu.edu/PDL-FTP/HECStorage/Yifan_Final.pdf, 0.01% of files (1 in 10,
-require a name over 100 bytes long; 0.1% require longer than 64 bytes. There longest filename tified
-was 143 bytes long. Study surveys ~14M files on the LANL network.</li>
-<li>Same study says 99.9% of directories have under 1k files, 99.999% under 10k</li>
+<li>Basis modifications (creation/removal of dictionaries) are about 10x less frequent than dictionary mods.</li>
+<li><a href="https://www.pdl.cmu.edu/PDL-FTP/HECStorage/Yifan_Final.pdf">This study</a> surveys &gt;250M files in
+22 file systems in use at LANL and PDL (table 1). For most file systems in LANL, 0.01% of names
+require over 60 bytes, while in PDL file systems, ~0.1% of names are longer than 100 bytes (figure 13).
+The longest filename identified was 143 bytes long.</li>
+<li>The same study says that 99.9% of directories have under 1k files and 99.999% under 10k files (figure 15).</li>
 </ul>
 <h3><a class="header" href="#basis-virtual-memory-layout" id="basis-virtual-memory-layout">Basis Virtual Memory Layout</a></h3>
 <table><thead><tr><th align="right">Start Address</th><th>Description</th></tr></thead><tbody>
@@ -279,11 +280,14 @@ and we just rely on the space being &quot;huge&quot; to save us.</p>
 <p>Small keys are kept in <code>VPAGE</code>-sized pools of data, and compacted together in RAM. The initial, naive
 implementation simply keeps all small keys in a <code>HashMap</code> in RAM, and when it comes time to sync them
 to disk, they are sorted by update count, and written to disk in ascending order.</p>
-<p>Medium keys have a TBD implementation, and are currently directed to the large pool for now.</p>
+<p>Medium keys have a TBD implementation, and are directed to the large pool for now.</p>
 <h3><a class="header" href="#size-limits" id="size-limits">Size Limits</a></h3>
-<p>The biggest key the PDDB can handle, at least in this version, 32GiB. No, this is not
+<p>The biggest key the PDDB can handle, at least in this version, is 32GiB. No, this is not
 web scale, but it's big enough to hold a typical blu-ray movie as a single key.</p>
-<p>One can adjust this constant up or down, and the trade-off is, you get more or less total number of large keys allocated over the life of the filesystem. This is because we simply &quot;increment a pointer&quot; when a new large key is added to create the next virtual memory spot for the large file, meaning each key get allocated a full 32GiB of virtual memory space for it to grow into.</p>
+<p>You can adjust this constant up or down, trading off the maximum key size against the total possible
+number of large keys allocated over the lifetime of the filesystem. This is because we simply &quot;increment
+a pointer&quot; when a new large key is added to create the next virtual memory spot for the large file,
+meaning each key gets allocated a full 32GiB of virtual memory space for it to grow into.</p>
 <p>At 32GiB, you can create a lifetime total of about 200 million keys (this includes keys you've previously deleted, until we create a mechanism for sweeping through the memory space and tracking de-allocations).</p>
 <p>Note that a &quot;large&quot; keys includes anything over 4kiB, so if you create a 5kiB file, it can potentially grow to 32 GiB without bumping into the next large file.</p>
 <p>This is a very &quot;lazy&quot; way to deal with large files. Given that the PDDB is initially designed for a 32-bit device with only 128MiB of memory and a read/write lifetime of 100k cycles for the FLASH, 200 million file allocations is probably greater than the lifetime of the device itself. If the PDDB migrates to a larger handphone-style application, I think it'll probably still hold up OK with 200 million total large file allocations over the device lifetime and a limit of 32GiB. That's about 73k files created per day for 10 years, or about 50 files per minute -- roughly one new file per second for 10 years straight before the PDDB runs out of virtual memory space.</p>
@@ -301,19 +305,19 @@ because the <code>usize</code> type isn't big enough. Recompiling for a 64-bit t
 you access to the full 32GiB file size limit.</p>
 <h3><a class="header" href="#ram-pressure" id="ram-pressure">RAM Pressure</a></h3>
 <p>The PDDB retains in RAM a page table for every Basis. There are about 25,000 potential pages on a Precursor device, and there are no duplicate pages between Bases; thus, it's estimated that the page table structure may take about 500kiB of space at its largest.</p>
-<p>In addition to the page tables, the PDDB agressively caches all &quot;small&quot; keys. The current implementation assumes that any small key is always &quot;hot&quot; in cache, and the disk is just a write-through backing store in case power is lost. In practice, the heap size limit of the PDDB server is about 2MiB, so, the system should crash if one starts to push around a megabyte total of small key data. That's about 256 exactly 4k-sized keys, but typically small keys are very small, about 32 bytes, so the practical limit is probably closer to 10k-20k 32-byte keys.</p>
+<p>In addition to the page tables, the PDDB agressively caches all &quot;small&quot; keys. The current implementation assumes that any small key is always &quot;hot&quot; in cache, and the disk is just a write-through backing store in case power is lost. In practice, the heap size limit of the PDDB server is about 2MiB, so the system should crash if one starts to push around a megabyte total of small key data. That's about 256 exactly 4k-sized keys, but typically small keys are very small, about 32 bytes, so the practical limit is probably closer to 10k-20k 32-byte keys.</p>
 <p>Large keys consume about one 4k-page per key, regardless of the key size. Large keys only retrieve their data when requested, and will keep only the most recently accessed page in RAM, regardless of the size of the large key. Thus one could store a several-megabyte file in a large key, and not worry about blowing out the cache.</p>
 <p>However, because the large key cache is so simple, it has performance problems, especially for situations where one plans to access large key data randomly, or in the worst case, they are accessing bytes that happen to cross a page boundary -- every time you cross the boundary, the old page is forgotten, and the new page is read in.</p>
 <p>The caching mechanism can be improved down the road, but, at the moment for an application like <code>vault</code>, the current implementation should be more than adequate to handle hundreds of password records.</p>
 <h3><a class="header" href="#the-make-before-break-mbbb-structure" id="the-make-before-break-mbbb-structure">The &quot;Make Before Break&quot; (MBBB) Structure</a></h3>
-<p>In order to protect against data loss in case of an untimely power outage, several pages of FLASH is devoted to the &quot;make before break&quot; feature. The core problem is that a single erase page of the page table contains records for 256 page table entres. If there is a power outage while updating one of the entries, all of the other 255 entries are also lost.</p>
+<p>In order to protect against data loss in case of an untimely power outage, several pages of FLASH are devoted to the &quot;make before break&quot; feature. The core problem is that a single page of the page table contains records for 256 page table entries. If there is a power outage while updating one of the entries, all of the other 255 entries are also lost.</p>
 <p>Thus, the MBBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.</p>
 <p>Initially, the MBBB area is blank (all <code>FF</code>'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBBB (the randomness is for wear-levelling, not security) <em>with</em> the changes applied, and then the page containing the page table entry is erased.</p>
-<p>When the next page table entry needs to be updated, the MBBB page table image is then written to the blank slot in the page table, and the process repeats.</p>
+<p>When the next page table entry needs to be updated, the MBBB page table image is written to the blank slot in the page table, and the process repeats.</p>
 <p>There is no mechanism to record where the MBBB page is:</p>
 <ul>
 <li>The MBBB area is only consulted if a blank page is found in the page table</li>
-<li>&quot;Blankness&quot; of an area is determined by only consulting the first 16 bytes and checking if they are 0xFF. If it is, the entire page is considered blank.</li>
+<li>&quot;Blankness&quot; of an area is determined by only consulting the first 16 bytes and checking if they are 0xFF. If they are, the entire page is considered blank.</li>
 <li>The MBBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBBB page.</li>
 </ul>
 <h2><a class="header" href="#free-space" id="free-space">Free Space</a></h2>
@@ -321,7 +325,7 @@ you access to the full 32GiB file size limit.</p>
 <p>The PDDB's solution to this is to create a cache of free space that represents a defined fraction of the total true free space. The parameters are tunable, but in v0.9.9 the default parameters are to allocate up to 50% +/- 10% of the smaller of the true free space or the capacity of the FSCB toward the free space cache, known as the FSCB (&quot;Fast Space Cache Buffer&quot;). The +/-10% is a fudge factor that is determined by the TRNG. Note that most of the time, the capacity of the FSCB (about 2000 pages, or 7.5% of Precursor hardware capacity) is the limit of the trackable space, due to the capacity limit inherent in the FSCB.</p>
 <p>Thus, the situation for free space in the PDDB looks a bit like the schematic shown below, where the pink areas are &quot;maybe noise? maybe data?&quot; and the gray areas are &quot;definitely free space&quot; (the actual situation is much more fragmented, this is just a cartoon).</p>
 <p><img src="images/pddb-freespace.png" alt="schematic of free space handling in the PDDB" /></p>
-<p>An adversary can thus query the FSCB and know that, for example, a device may currently have about 7% of the total capacity marked as free space. However, they cannot say for sure that this means that the device is 93% full -- it could be that the device is brand new and has nothing allocated, but the free space has just hit the limit of the FSCB capacity. Or it could be any number of intermediate states in between: it would be hard to prove beyond a reasonable doubt the exact state of disk usage.</p>
+<p>An adversary can thus query the FSCB and know that, for example, a device may currently have about 7% of the total capacity marked as free space. However, they cannot say for sure that this means that the device is 93% full -- it could be that the device is brand new and has nothing allocated, but the free space has just hit the limit of the FSCB capacity. Or it could be any number of states in between: it would be hard to prove beyond a reasonable doubt the exact state of disk usage.</p>
 <p>In the case that the FSCB is exhausted, the user is greeted with a prompt that warns them that the FSCB has been exhausted, and in order to proceed without data loss, every secret Basis must be enumerated (that is, its name and password must be presented to unlock it; the distinction between enumeration and unlocking is that enumeration simply counts the pages used, without attempting to mount any filesystem structures). A user can bail out of enumeration, causing the operation that triggered the FSCB refill to fail with an out-of-memory error. Likewise, failure to present a secret Basis at this point could result in its data being pulled into the FSCB, and ultimately being deleted.</p>
 <p>The FSCB refill proceeds to enumerate every page in every Basis into a single &quot;master&quot; record of disk usage. It then randomly selects pages out of the unused pages (the inverse of the disk usage record) until the FSCB is full. The system consumes entries out of the FSCB in random order. Thus the FSCB is also a wear-levelling mechanism, since free blocks are handed out in random order.</p>
 <p>At the implementation level, each FSCB entry is a single <code>u32</code> that tracks the physical page number of a free page plus a few bits for flags to help with journaling (as described in the <code>SpaceUpdate</code> section below). There is a flag for 64-bit physical addresses too, so the FSCB can be upgraded to run on a 64-bit CPU. The entire FSCB is exactly 2 pages long on v0.9.9 (and adjustable with a <code>const</code>). The structure is padded with 0's to full length regardless of the amount of actual free space recorded in it; note that a 0-record is automatically ignored due due to the <code>valid</code> flag being 0. The fixed-length padded structure is encrypted with AES-GCM-SIV using the <code>.System</code> Basis' data key and written to the FSCB area at a random offset. The FSCB is later identified by querying the first 16 bytes of every page in the FSCB area and choosing the one that is not all <code>0xFF</code>.</p>
@@ -331,12 +335,12 @@ you access to the full 32GiB file size limit.</p>
 <p>The three types of records (<code>0xFF</code> empty space, <code>FastSpace</code> and <code>SpaceUpdate</code>) are differentiated by examining the first 32 bytes of a page:</p>
 <ul>
 <li>If bytes 0-31 are <code>0xFF</code>, the entire page must be blank (empty space)</li>
-<li>If any of bytes 0-15 are not 0xFF, the page must be the start of a <code>FastSpace</code> master record. The master record itself may span mulitple pages but it must be consecutive pages from its start.</li>
+<li>If any of bytes 0-15 are not 0xFF, the page must be the start of a <code>FastSpace</code> master record. The master record itself may span multiple pages but it must be consecutive pages from its start.</li>
 <li>If all bytes of 0-15 are 0xFF, <strong>and</strong> any bytes of 16-31 are not 0xFF, then the page marks the start of <code>SpaceUpdate</code> records. A <code>SpaceUpdate</code> record is similar to that of a page table entry, but with the flags set differently to indicate the life cycle of that space, and a larger <code>u64</code> nonce. From that page until the end of the <code>FastSpace</code> area, <code>SpaceUpdate</code> records may be written.</li>
 </ul>
 <p>The <code>SpaceUpdate</code> records are interpreted sequentially, from the lowest address to the highest address encountered. The latest record takes precedence. Thus, a single page could be allocated, de-allocated, and re-allocated in sequence, and the last re-allocation is the ultimate record that affects the net FSCB.</p>
 <p>When the <code>SpaceUpdate</code> record fills up the FSCB area (or it bumps into the existing FSCB), the records are automatically compacted; the FSCB is reduced by any allocated space at that time, the <code>SpaceUpdate</code> area is cleared, and a new random location is picked for the FSCB to wear-level the FSCB area. This all happens without user intervention or awareness, except for the fact that the operation which triggered the flush might take a bit longer than usual (about an extra 0.3s).</p>
-<p>Note that the <code>SpaceUpdate</code> journal by definition leaks information about the most recent few hundred block allocations, so in the event that the unlock PIN is compromised, it could represent a significant loss of deniability. In order to counter this, a user can manually run <code>pddb flush</code> at any time compact the <code>SpaceUpdate</code> records and effectively delete the journal. Note that this doesn't require enumerating any Bases, because this only clears a journal of operations on known free space, and it also does not attempt to allocate any new free space.</p>
+<p>Note that the <code>SpaceUpdate</code> journal by definition leaks information about the most recent few hundred block allocations, so in the event that the unlock PIN is compromised, it could represent a significant loss of deniability. In order to counter this, a user can manually run <code>pddb flush</code> at any time to compact the <code>SpaceUpdate</code> records and effectively delete the journal. Note that this doesn't require enumerating any Bases, because this only clears a journal of operations on known free space, and it also does not attempt to allocate any new free space.</p>
 <p>Note: the hotfix for v0.9.9 incorporates a call to flush the journal once every 24 hours of uptime automatically. The call should be safe to run asynchronously since the FSCB state is independent of filesystem state.</p>
 <h2><a class="header" href="#physical-layout" id="physical-layout">Physical Layout</a></h2>
 <p>The physical layout of the PDDB (as of v0.9.9) is as follows, from lowest to highest address:</p>

@@ -340,7 +340,7 @@ most syscalls (except ones that are explicitly fallible) and helper methods mean
 to transform <em>inter-process</em> messages and buffers into types (note that this does
 not include methods that receive, for example, arbitrary messages over network).</p>
 <p>A simple <code>.unwrap()</code> is probably sufficient to check the results of most infalliable operations,
-because the panic handler will print a panic on that line</p>
+because the panic handler will print a panic on that line.</p>
 <p><code>unwrap()</code> may even be preferable to a <code>.expect(&quot;helpful error message&quot;)</code> in most
 cases, because &quot;helpful error message&quot; takes memory to store, increases the
 binary size, and in most cases the line of code where the panic happened is the most
@@ -353,7 +353,7 @@ should be handled and/or passed up the stack.</p>
 <h2><a class="header" href="#what-is-the-difference-between-a-thread-and-a-server" id="what-is-the-difference-between-a-thread-and-a-server">What is the difference between a Thread and a Server?</a></h2>
 <p>A Server is a messaging construct, whereas threads refer to execution flow. You can have a thread without a Server, and you can have multiple Servers referenced in a thread.</p>
 <p>Threads in Xous are conventional: just a PC + stack that runs in a given process space. A single process can have up to 32 threads, and each thread will run until their time slice is up; or they yield their time slice by either explicitly yielding, or blocking on something (such as a blocking message).</p>
-<p>Blocking messages dovetails into the concept of servers: in Xous, server is basically just a 128-bit ID number that servers as a mailbox for incoming messages. There is a limit of 128 servers in Xous across all processes and threads. Within that limit, one can allocate all the servers they want for a given thread, although it's not terribly useful to do that.</p>
+<p>Blocking messages dovetails into the concept of servers: in Xous, a server is basically just a 128-bit ID number that servers as a mailbox for incoming messages. There is a limit of 128 servers in Xous across all processes and threads. Within that limit, one can allocate all the servers they want for a given thread, although it's not terribly useful to do that.</p>
 <p>Messages specify a 128-bit server ID as a recipient; and, the typical idiom (although it doesn't have to be this way) is for a thread to wake up, initialize, allocate a server ID, and then wait for a message to arrive in its inbox.</p>
 <p>If no message arrives, the thread consumes zero time.</p>
 <p>Once a message arrives, the thread will be unblocked to handle the message when its quantum comes up. The thread may receive a quantum through the normal round-robin pre-emptive scheduler, but it could also receive a quantum in the case that a blocking message is sent from another thread. What happens then is the sender yields the remainder of its time to the receiving server, so that the message may be handled immediately.</p>
@@ -410,8 +410,8 @@ xous::send_message(conn,
 ).unwrap();
 </code></pre>
 <p>The above <code>send_message()</code> would yield the remaining quantum of time for the parent thread, and dispatch into the child thread. The child would receive the message, do &quot;something useful&quot; and return a value to the caller. Assuming there was still time left in the quantum, this <code>return_scalar</code> would return execution back to the parent thread!</p>
-<p>If the message was not blocking, the parent thread would continue executing until its quantum is completed, and then the child thread would handle the message only then. Assuming the child  thread can handle the response very quickly, it would yield the remainder of its quantum once it completed doing &quot;something useful&quot; and it returned to the top of its loop where it calls <code>receive_message()</code>, and found its input queue to be empty.</p>
-<p>Thus, Xous is carefully coded such that everything blocks if it's not being used, using the idiom above. Crates like <code>crossbeam</code> are implemented using <code>condvar</code> which intenally uses servers and messages to ensure that blocking waits are efficient.</p>
+<p>If the message was not blocking, the parent thread would continue executing until its quantum is completed, and the child thread would handle the message only then. Assuming the child  thread can handle the response very quickly, it would yield the remainder of its quantum once it completed doing &quot;something useful&quot; and it returned to the top of its loop where it calls <code>receive_message()</code>, and found its input queue to be empty.</p>
+<p>Thus, Xous is carefully coded such that everything blocks if it's not being used, using the idiom above. Crates like <code>crossbeam</code> are implemented using <code>condvar</code> which internally uses servers and messages to ensure that blocking waits are efficient.</p>
 <p>So, in general, if the CPU load bar is pegged to 100% and nothing is &quot;going on&quot; (perhaps just a spin-wait), it's considered a bug.</p>
 <h1><a class="header" href="#synchronization-primitives" id="synchronization-primitives">Synchronization Primitives</a></h1>
 <p>Synchronization primitives are provided via the Ticktimer Server. This includes mutexes, process sleeping, and condvars.</p>
@@ -475,7 +475,7 @@ server with an <code>id</code> of <code>9</code>, and set <code>arg1</code> to t
 <code>arg2</code> should contain the number of blocked threads to wake up.
 In order to wake only one thread, pass <code>1</code>.</p>
 <h1><a class="header" href="#introducing-the-kernel" id="introducing-the-kernel">Introducing the Kernel</a></h1>
-<p>Xous is a microkernel design that tries to keep as little as possible inside the main kernel. Instead, programs can start &quot;Servers&quot; that process can connect to in order to accomplish a task.</p>
+<p>Xous is a microkernel design that tries to keep as little as possible inside the main kernel. Instead, programs can start &quot;Servers&quot; that processes can connect to in order to accomplish a task.</p>
 <p>Processes are isolated, and therefore an MMU is strongly recommended. One process can have multiple threads, and processes cannot interact with one another except by passing Messages.</p>
 <p>A Message is a piece of data that can be sent to a Server. Messages contain one <code>usize</code> ID field that may be used to identify an opcode, and may additionally contain some memory or some <code>usize</code> scalars.</p>
 <p>Additionally, a Message may be either blocking, in which case it will wait for the Server to respond, or non-blocking, where they will return immediately.</p>
@@ -700,7 +700,7 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 </code></pre>
 <p>This compiles down to a very efficient program that can be used to load a larger program into the new address space. Memory is written using the <code>WriteMemory</code> opcode to load new pages into the nascent process, and <code>FinishStartup</code> is used to shut down the server and jump to the new process entrypoint.</p>
 <h3><a class="header" href="#limitations-of-created-processes" id="limitations-of-created-processes">Limitations of Created Processes</a></h3>
-<p><strong>NOTE:</strong> The following is subject to fixes in the kernel, and do not currently apply. This information is presented here in order to explain oddities observed when these features are implemented.</p>
+<p><strong>NOTE:</strong> The following is subject to fixes in the kernel, and does not currently apply. This information is presented here in order to explain oddities observed when these features are implemented.</p>
 <p>Newly-created processes cannot create servers with a predefined Server ID. They can only create randomized servers.</p>
 <p>Processes created using <code>CreateProcess</code> are not ever scheduled to run. Parent processes must donate their quantum to child processes in order for them to run. This is done with a special syscall.</p>
 <p>When a parent process exits, all child processes will also exit. This is because those processes will not be scheduled anymore, so there's no point in letting them continue to run.</p>
@@ -786,7 +786,7 @@ Attaching to process 2
 474             match src[0] {
 (gdb)
 </code></pre>
-<p><strong>Important Note</strong>: GDB thread numbers are different from Xous thread numbers! GDB Always starts with <code>1</code>, but Xous may have any number of threads running. GDB pays attention to the first column, and you are most likely interested in the second column.</p>
+<p><strong>Important Note</strong>: GDB thread numbers are different from Xous thread numbers! GDB always starts with <code>1</code>, but Xous may have any number of threads running. GDB pays attention to the first column, and you are most likely interested in the second column.</p>
 <h1><a class="header" href="#renode-emulation" id="renode-emulation">Renode Emulation</a></h1>
 <p><a href="https://renode.io/">Renode</a> is a multi-device emulator written in C#. It is designed to assist in testing and development of software, and is also useful in developing new hardware blocks.</p>
 <p>The emulator is available for Windows, Mac, and Linux. It is designed to simulate whole systems of devices, meaning it can easily capture the interactions between devices on a network or bus. It allows you to pause the system and inspect memory, single-step, and watch various sections of the bus.</p>
@@ -1170,7 +1170,7 @@ The format for this tag consists of a single word defining how many additional s
 <p>Upon the conclusion of the signature check, the loader also does a quick check of the stack usage, to ensure that nothing ran out of bounds. This is important because the Kernel assumes that no memory pages are modified across a suspend/resume, except for the (currently) two pages of RAM allocated to the loader's stack.</p>
 <h2><a class="header" href="#loading-the-os" id="loading-the-os">Loading the OS</a></h2>
 <p>Once the image has been signature checked, the loader must set up the Xous kernel. Xous has a very regular structure, where everything is a process, including the kernel. What makes the kernel special is that it is process ID <code>1</code>, and its code is also mapped into the high 4 MiB of every other processes' memory space, allowing processes to run kernel code without having to swap out the <code>satp</code> (that is, the page table base).</p>
-<p>The loader's responsibility is to go from a machine that has essentially a zero-ized RAM space and a bunch of archives in FLASH, to one where physical pages of memory are mapped into the correct virtual address spaces for every process.</p>
+<p>The loader's responsibility is to go from a machine that has essentially a zeroized RAM space and a bunch of archives in FLASH, to one where physical pages of memory are mapped into the correct virtual address spaces for every process.</p>
 <p>This is done in several stages:</p>
 <ol>
 <li>Reading the configuration</li>
@@ -1182,10 +1182,10 @@ The format for this tag consists of a single word defining how many additional s
 <p>The loader needs to know basic information about the Arguments structure before it can begin. This includes information about the memory layout, extra memory regions, kernel offset, and the number of initial programs.</p>
 <p>The loader performs one pass through the Arguments structure to ensure that it contains the required fields before continuing.</p>
 <h3><a class="header" href="#loader-stage-1-copying-and-aligning-data" id="loader-stage-1-copying-and-aligning-data">Loader Stage 1: Copying and Aligning Data</a></h3>
-<p>Stage 1 copies and aligns all of the processes, such that the sub-page offsets for the code matches the expectations that the linker set up. It also copies any data requires write access, even if is already correctly aligned. The core routine is <code>copy_processes()</code>.</p>
+<p>Stage 1 copies and aligns all of the processes, such that the sub-page offsets for the code match the expectations that the linker set up. It also copies any data that requires write access, even if is already correctly aligned. The core routine is <code>copy_processes()</code>.</p>
 <p>In the case that the offsets for the memory image on FLASH line up with the virtual memory offsets, nothing needs to be done for the text, read-only data, and exception handler sections. In the case that they do not line up, a copy must be made in RAM of these sections to ensure correct alignment.</p>
-<p>Virtual sections marked as <code>NOCOPY</code> must be allocated and zero-ized, and sections marked with write access must always the copied.</p>
-<p>The loader reserves the top two pages for its own working stack space, and adds a configurable <code>GUARD_MEMORY_BYTES</code> buffer to determine the beginning of process space. Note that one page of the &quot;guard&quot; area is used to store a &quot;clean supend marker&quot;, which is used by the loader to check if the current power-on cycle is due to a resume, or a cold boot.</p>
+<p>Virtual sections marked as <code>NOCOPY</code> must be allocated and zeroized, and sections marked with write access must always the copied.</p>
+<p>The loader reserves the top two pages for its own working stack space, and adds a configurable <code>GUARD_MEMORY_BYTES</code> buffer to determine the beginning of process space. Note that one page of the &quot;guard&quot; area is used to store a &quot;clean suspend marker&quot;, which is used by the loader to check if the current power-on cycle is due to a resume, or a cold boot.</p>
 <p>Currently, the total works out to an offset of 16kiB reserved from top of RAM before processes are copied. These RAM pages are &quot;lost forever&quot; and not available to the Xous kernel for any purpose. This physical offset represents the start of the loader's workspace for setting up Xous.</p>
 <h4><a class="header" href="#process-copying" id="process-copying">Process Copying</a></h4>
 <p>The loader consumes RAM, page-by-page, starting from the highest available physical offset, working its way down.</p>
@@ -1306,7 +1306,7 @@ nominally triggered the exception) to the <code>entrypoint</code> of the kernel,
 <p>The <code>xtask</code> concept is simply an alias under <code>.cargo/config</code> that turns <code>cargo xtask</code> into <code>cargo run --package xtask --</code>.</p>
 <p>Therefore, all complex operations from building the kernel to constructing an output image are handled by <code>xtask/src/main.rs</code>, which is compiled and run as a normal Rust program.</p>
 <h2><a class="header" href="#building-images" id="building-images">Building Images</a></h2>
-<p>Generally, users will want to use <code>cargo xtask app-image [app 1] [app ..]</code> to build a Xous image that contains the desired list of applications. The applications are the names of crates contained in the &quot;apps/&quot; directory. Tesulting FLASH images will be called <a href="ch05-02-loader.html"><code>loader.bin</code></a> and <code>xous.img</code> in the <code>target/riscv32imac-unknown-xous-elf/release</code> directory.</p>
+<p>Generally, users will want to use <code>cargo xtask app-image [app 1] [app ..]</code> to build a Xous image that contains the desired list of applications. The applications are the names of crates contained in the &quot;apps/&quot; directory. Resulting FLASH images will be called <a href="ch05-02-loader.html"><code>loader.bin</code></a> and <code>xous.img</code> in the <code>target/riscv32imac-unknown-xous-elf/release</code> directory.</p>
 <p>There are also convenience commands to build emulation images, such as <code>cargo xtask run</code> (for hosted mode, where Xous runs directly on your native OS) and <code>cargo xtask renode-image</code> (for a Renode image, where a cycle accurate simulation can be run inside the Renode emulator). See Chapter 4 for more information about Renode.</p>
 <h3><a class="header" href="#build-command-syntax-details" id="build-command-syntax-details">Build Command Syntax Details</a></h3>
 <p>The general format of an <code>xtask</code> command is as follows:</p>
@@ -1322,12 +1322,12 @@ nominally triggered the exception) to the <code>entrypoint</code> of the kernel,
 <ul>
 <li><code>name</code>: crate 'name' to be built from local source</li>
 <li><code>name@version</code>: crate 'name' to be fetched from crates.io at the specified version</li>
-<li><code>name#URL</code>: pre-built binary crate of 'name', to be downloadeded from a server at 'URL' after the <code>#</code> separator</li>
+<li><code>name#URL</code>: pre-built binary crate of 'name', to be downloaed from a server at 'URL' after the <code>#</code> separator</li>
 <li><code>path-to-binary</code>: file path to a prebuilt binary image on local machine. Files in '.' must be specified as <code>./file</code> to avoid confusion with local source</li>
 </ul>
-<p>The exact meaning of a <code>cratespec</code> depends on the context of the verb. Generally, fully-configured builds interpret the <code>cratespec</code> as an <code>app</code>, and debug builds interpcet <code>cratepsec</code> as a <code>service</code>.</p>
+<p>The exact meaning of a <code>cratespec</code> depends on the context of the verb. Generally, fully-configured builds interpret the <code>cratespec</code> as an <code>app</code>, and debug builds interpret <code>cratespec</code> as a <code>service</code>.</p>
 <p>Both an <code>app</code> and a <code>service</code> are Xous binaries that are copied into the final disk image; however, there is an additional step that gets run in the build system for an <code>app</code> that looks up its description in <code>apps/manifest.json</code> and attempts to configure the launch menu for the app prior to running the build.</p>
-<p>Additional crates can be merged in with explicit app/service treatment by preceeding the crate name with either an <code>--app</code> flag or <code>---service</code> flag.</p>
+<p>Additional crates can be merged in with explicit app/service treatment by preceeding the crate name with either an <code>--app</code> flag or <code>--service</code> flag.</p>
 <h4><a class="header" href="#example-building-a-precursor-user-image" id="example-building-a-precursor-user-image">Example: Building a Precursor User Image</a></h4>
 <p>If one were building a user image for Precursor hardware, one could use the following command to build a base system that contains no apps.</p>
 <p><code>cargo xtask app-image</code></p>
@@ -1460,7 +1460,7 @@ $
 <p>An example of tags that do this include the kernel and the initial programs. They return the size of their payload in the <code>finalize()</code> call. They also use this call to update the tag data prior to writing it out.</p>
 <p>They also write the actual contents of the tag during the <code>last_data()</code> call.</p>
 <h1><a class="header" href="#target-specification-and-hardware-registers-with-utra" id="target-specification-and-hardware-registers-with-utra">Target Specification and Hardware Registers with UTRA</a></h1>
-<p>Xous isolates target-specific code, such as the location and fields of hardware registers, inside the Unambiguous Thin Register Astraction (UTRA).</p>
+<p>Xous isolates target-specific code, such as the location and fields of hardware registers, inside the Unambiguous Thin Register Abstraction (UTRA).</p>
 <p>The UTRA is contained in the <code>utralib</code> crate, and its contents are generated from <a href="https://www.keil.com/pack/doc/CMSIS/SVD/html/svd_Format_pg.html">SVD files</a> using <a href="https://crates.io/crates/svd2utra"><code>svd2utra</code></a>. SVD itself is an XML format commonly used by hardware vendors for the interchange of SoC registers, and is a native output format of SoC building tools such as LiteX. SVD files are also readily available for many commercial MCUs.</p>
 <h2><a class="header" href="#specifying-targets" id="specifying-targets">Specifying Targets</a></h2>
 <p>Services that talk to hardware will typically have one or more <code>implementation</code> modules that encapsulate the target-specific back ends. These are gated with <code>#[cfg(feature=&quot;X&quot;)]</code> directives, where &quot;X&quot; is the specific build target.</p>
@@ -1626,7 +1626,7 @@ fn test_fn() {
 <p>Messages form the basis of interprocess communication on Xous. A process exists in isolation and can only communicate to the outside world by sending messages. The limited API provided by the kernel means that almost all interactions are provided by userspace Servers, which must be communicated with using Messages.</p>
 <p><img src="images/messaging-arch.png" alt="overview of message passing" /></p>
 <h2><a class="header" href="#connecting-to-and-disconnecting-from-servers" id="connecting-to-and-disconnecting-from-servers">Connecting to and Disconnecting from Servers</a></h2>
-<p>To connect to a server you must supply it an <code>Server ID</code>. A <code>Server ID</code> is a 16-byte value of some sort that is shared in a universal namespace. If you know a Server's <code>Server ID</code> then you can connect to that Server.</p>
+<p>To connect to a server you must supply it a <code>Server ID</code>. A <code>Server ID</code> is a 16-byte value of some sort that is shared in a universal namespace. If you know a Server's <code>Server ID</code> then you can connect to that Server.</p>
 <p>There are a few well-known <code>Server ID</code>s. These include bare minimum IDs that are required by any process to do anything useful. They are:</p>
 <ul>
 <li><em>b&quot;xous-log-server &quot;</em>: Output log messages to the console, as well as basic <code>println!()</code> support</li>
@@ -1641,7 +1641,7 @@ fn test_fn() {
 <p>Connections are limited on a per-process basis. Each process may only establish a connection to at most 32 servers. When this number is exceeded, <code>xous::connect()</code> will return <code>Error::OutOfMemory</code>.</p>
 <p>If you call <code>xous::connect()</code> twice with the same <code>Server ID</code>, then you will get the same <code>connection_id</code>.</p>
 <h2><a class="header" href="#disconnecting" id="disconnecting">Disconnecting</a></h2>
-<p>To disconnect from a server, call <code>unsafe { xous::disconnect(connection_id)};</code>. This function is <code>unsafe</code> because you can copy connection IDs, so it is up to you to ensure that they are no longer in use when disconnecting.</p>
+<p>To disconnect from a server, call <code>unsafe { xous::disconnect(connection_id) };</code>. This function is <code>unsafe</code> because you can copy connection IDs, so it is up to you to ensure that they are no longer in use when disconnecting.</p>
 <p>For example, if you <code>connect()</code> to a Server and spawn a thread with that connection ID, you should only call <code>disconnect()</code> once that thread has finished with the connection. Similarly, if you <code>Copy</code> the connection ID to the thread, you must make sure that <strong>both</strong> uses of the Connection ID are destroyed prior to disposing of the connection.</p>
 <p>Because of this, it is recommended that you use an <code>ARC&lt;CID&gt;</code> in order to ensure that the connection is only closed when it is no longer in use.</p>
 <p>Furthermore, recall that subsequent calls to <code>connect()</code> with the same argument will reuse the <code>connection_id</code>. Because of this, it is vital that you only call <code>disconnect()</code> when you are certain that all instances are finished with the connection.</p>
@@ -1676,7 +1676,7 @@ fn test_fn() {
 <p>Well-known servers have a name like <code>b&quot;xous-name-server&quot;</code>, which reads like ASCII text but fits in exactly 128 bits: you just have to know the magic string, and you can connect to them.</p>
 <p>Application programers will never need to know this name, because it is encapsulated within the objects that access the servers. For example, <code>XousNames::new()</code> &quot;just knows&quot; the name, so to access <code>xous-names</code> one simply needs to create a new <code>XousNames</code> object.</p>
 <h2><a class="header" href="#discovered-names" id="discovered-names">Discovered Names</a></h2>
-<p>All other servers have their names registered as a 64-byte free-from <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a cryptographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the &quot;well known&quot; names, because the chance that the TRNG would output the string <code>b&quot;xous-name-server&quot;</code> by chance is vanishingly small.</p>
+<p>All other servers have their names registered as a 64-byte free-form <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a cryptographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the &quot;well known&quot; names, because the chance that the TRNG would output the string <code>b&quot;xous-name-server&quot;</code> by chance is vanishingly small.</p>
 <p>When registering a server, one might invoke a call like this:</p>
 <pre><code class="language-rust noplayground ignore">    let xns = xous_names::XousNames::new().unwrap();
     let net_sid = xns
@@ -1708,7 +1708,7 @@ fn test_fn() {
 <p>Before diving in, it is helpful to review the <a href="ch07-00-messages.html">messaging architecture</a> of Xous:</p>
 <p><img src="images/messaging-arch.png" alt="overview of message flow" /></p>
 <p>Each server consists at its core of an event loop. While event loops are allowed to be non-blocking, this is an edge case and in general all event loops are blocking: when an event loop blocks, it is de-scheduled and consumes zero CPU resources, allowing us to stop the CPU clock and save power.</p>
-<p>An incoming message will wake up the process, at which point the process shall decode and process the message. From here, the process may issue messages to other servers. Memory <code>send</code> and Scalar <code>scalar</code> messages will not stop the execution flow; the outgoing messages are simply placed in the destination queue and life goes on. However, blocking message types <code>lend</code>, <code>lend_mut</code>, and <code>blocking_scalar</code> will cause the message to be placed in the destination queue, and the current thread yields the remainder of its quanta to the destination thread. The blocked thread will remain stopped at that point of execution until the blocking message types are &quot;returned&quot;. At this point the blocked thread is re-queued for execution. Execution will resume either on a time-based pre-emption boundary, or possibly earlier if the returning process completes its task before its quanta is up and enters a blocking state (that is, waiting on a new incoming message, or a response to a new outgoing blocking message).</p>
+<p>An incoming message will wake up the process, at which point the process shall decode and process the message. From here, the process may issue messages to other servers. Memory <code>send</code> and Scalar <code>scalar</code> messages will not stop the execution flow; the outgoing messages are simply placed in the destination queue and life goes on. However, blocking message types <code>lend</code>, <code>lend_mut</code>, and <code>blocking_scalar</code> will cause the message to be placed in the destination queue, and the current thread yields the remainder of its quantum to the destination thread. The blocked thread will remain stopped at that point of execution until the blocking message types are &quot;returned&quot;. At this point the blocked thread is re-queued for execution. Execution will resume either on a time-based pre-emption boundary, or possibly earlier if the returning process completes its task before its quantum is up and enters a blocking state (that is, waiting on a new incoming message, or a response to a new outgoing blocking message).</p>
 <p>⚡ Key Concept ⚡</p>
 <p>Memory messages implicitly return to callers on <code>Drop</code>. Thus, there is no explicit &quot;return&quot; call in Xous for memory messages. Thus, one must use Rust's borrow checker to schedule the return. Specifically:</p>
 <ul>
@@ -1717,7 +1717,7 @@ fn test_fn() {
 <ul>
 <li>By sticking the message into a <code>Some()</code>, the message is not allowed to go out of scope, the <code>Drop</code> is never called, and thus the caller blocks.</li>
 <li>However, the callee is free to continue on with its processing.</li>
-<li>A return is triggered by calling <code>take()</code> on the enclosing <code>Option</code>. This moves the message out of the <code>Option</code> and into the current scope, where the message can now be modified with a return value. Once that operation ends, the message goes out of scope, <code>Drop</code> is called, and likewise, data is returned to the caller</li>
+<li>A return is triggered by calling <code>take()</code> on the enclosing <code>Option</code>. This moves the message out of the <code>Option</code> and into the current scope, where the message can now be modified with a return value. Once that operation ends, the message goes out of scope, <code>Drop</code> is called, and likewise, data is returned to the caller.</li>
 </ul>
 </li>
 </ul>
@@ -1728,7 +1728,7 @@ fn test_fn() {
 <p>With this overview, we can now give an example of each of the four types of messages. In general, we assume that services are organized into at least three files:</p>
 <ul>
 <li><code>lib.rs</code> -- the caller-side API that formats native Rust data into IPC messages</li>
-<li><code>main.rs</code> the server-side API that unpacks IPC messages and acts on them</li>
+<li><code>main.rs</code> -- the server-side API that unpacks IPC messages and acts on them</li>
 <li><code>api.rs</code> -- data structures &amp; definitions shared between caller and callee</li>
 </ul>
 <p>Note that none of these are mandatory -- for example, a pure client-side library like our AES implementation has only a <code>lib.rs</code>; and, an application that offers no services and has only a main function would have only a <code>main.rs</code>.</p>
@@ -2064,7 +2064,7 @@ pub struct CompoundData {
     pub description: xous_ipc::String::&lt;128&gt;,
 }
 /// For a memory structure to be remapped between processes, it must be page-aligned,
-/// and the mapped region will always round up to the neareest page boundary.
+/// and the mapped region will always round up to the nearest page boundary.
 ///
 /// Therefore, the minimum size serialized is always one page (4096 bytes). Even if
 /// we made this smaller, a full 4096 bytes are always allocated and cleared.
@@ -2182,7 +2182,7 @@ fn xmain() -&gt; ! {
                 data.data[0] = 42;
                 // Note that you can stick *any* `rkyv`-derived struct
                 // into the buffer as a return &quot;value&quot;. We just happen to re-use
-                // the same structure defintion here for expedience
+                // the same structure definition here for expedience.
                 // However, it's up to the recipient to know the returned type,
                 // and to deserialize it correctly. Nothing prevents type mismatches
                 // across IPC boundaries!
@@ -2530,7 +2530,7 @@ fn xmain() -&gt; ! {
 }
 </code></pre>
 <h1><a class="header" href="#forwarding-messages" id="forwarding-messages">Forwarding Messages</a></h1>
-<p>Because server IDs are used to protect APIs, there arises occasions where
+<p>Because server IDs are used to protect APIs, there arise occasions where
 servers need to be firewalled: a private server within a crate may implement
 a range of powerful and dangerous APIs, of which only a small portion should
 be revealed to external callers.</p>
@@ -2874,8 +2874,8 @@ let modals = modals::Modals::new(&amp;xns).unwrap();
 <h2><a class="header" href="#static-notification" id="static-notification">Static Notification</a></h2>
 <pre><code class="language-rust noplayground ignore">modals.show_notification(&quot;This is a test!&quot;).expect(&quot;notification failed&quot;);
 </code></pre>
-<p>This will pop up a notification that says &quot;This is a test!&quot;. Execution blocks at this line until the user pressses any key to acknowledge the notification.</p>
-<h2><a class="header" href="#progress-bar" id="progress-bar">Progress bar</a></h2>
+<p>This will pop up a notification that says &quot;This is a test!&quot;. Execution blocks at this line until the user presses any key to acknowledge the notification.</p>
+<h2><a class="header" href="#progress-bar" id="progress-bar">Progress Bar</a></h2>
 <p>One can create a progress bar using the <code>start_progress()</code> method, with the following parameters:</p>
 <ul>
 <li><code>name</code>: A <code>&amp;str</code> that is the title of the progress bar</li>
@@ -2909,14 +2909,14 @@ waiting for a user to hit &quot;OK&quot;.</p>
 and close phases:</p>
 <ul>
 <li>To pop up the dynamic notification, use the <code>dynamic_notification(title: Option&lt;&amp;str&gt;, text: Option&lt;&amp;str&gt;)</code>
-method. The both <code>title</code> and <code>text</code> are optional, but at least one is recommended, otherwise
+method. Both <code>title</code> and <code>text</code> are optional, but at least one is recommended, otherwise
 you get an empty notification.</li>
 <li>Updates to the notification are done using <code>dynamic_notification_update(title: Option&lt;&amp;str&gt;, text: Option&lt;&amp;str&gt;)</code>.
 Arguments that are <code>None</code> do not update, and show the same text as before.</li>
 <li>Once you are finished showing the set of notifications, you must close the
 dialog with <code>dynamic_notification_close()</code>.</li>
 </ul>
-<h2><a class="header" href="#text-entry" id="text-entry">Text entry</a></h2>
+<h2><a class="header" href="#text-entry" id="text-entry">Text Entry</a></h2>
 <p>One can request text entry using the <code>get_text()</code> method. This takes the following parameters:</p>
 <ul>
 <li><code>prompt</code>: A <code>&amp;str</code> that is the prompt to the user</li>
@@ -3088,7 +3088,7 @@ are rendered in the order that the <code>MenuItem</code>s are added to the list.
 <ul>
 <li><code>add_item(MenuItem)</code> - adds the <code>MenuItem</code> specified to the end of the menu list, returning <code>true</code> to indicate success.</li>
 <li><code>delete_item(&amp;str)</code> - deletes an item with a <code>name</code> specified as the argument. Returns <code>true</code> to indicate success.</li>
-<li><code>set_index(usize)</code> - sets the index pointer of the menu to the specified offset. Typically ued to create a &quot;default&quot; position for the menu before it is raised.</li>
+<li><code>set_index(usize)</code> - sets the index pointer of the menu to the specified offset. Typically used to create a &quot;default&quot; position for the menu before it is raised.</li>
 <li><code>quit()</code> - exit and destory the <code>MenuMatic</code> server</li>
 </ul>
 <p>If you don't need the above functionality, it's recommended that you do not create the server, as it consumes memory and eats up connection and server name space.</p>
@@ -3139,10 +3139,10 @@ are rendered in the order that the <code>MenuItem</code>s are added to the list.
 <h2><a class="header" href="#orthogonal-virtual-page-table-structure" id="orthogonal-virtual-page-table-structure">Orthogonal Virtual Page Table Structure</a></h2>
 <h3><a class="header" href="#page-table-format" id="page-table-format">Page Table Format</a></h3>
 <p>The simplified diagram above would require a user to scan every page of storage and trial-decrypt each page to discover the full extent of user data. It also lacks an index to track what data goes where.</p>
-<p>These two problems are solved by using a classic &quot;page table&quot; mechanism to map Basis data onto the actual storage array. The virtual memory space of any given Basis is 64 bits, with pages that are 4064 bytes long (this is 4096 physical bytes less a per-page overhead for AEC-GCM-SIV + journaling)</p>
+<p>These two problems are solved by using a classic &quot;page table&quot; mechanism to map Basis data onto the actual storage array. The virtual memory space of any given Basis is 64 bits, with pages that are 4064 bytes long (this is 4096 physical bytes less a per-page overhead for AEC-GCM-SIV + journaling).</p>
 <p>The page table itself consists of entries that are 128-bits long (sized to match the length of an AES block), that are encrypted with AES-ECB.</p>
 <p><img src="images/pddb-details.png" alt="details of the PDDB implementation" /></p>
-<p>Each page table entry is encodes the following data:</p>
+<p>Each page table entry encodes the following data:</p>
 <ul>
 <li>52-bit virtual page number of the physical page corresponding to the offset of the page table, stored as a 56-bit zero-padded field.</li>
 <li>8 bits of flags</li>
@@ -3191,11 +3191,12 @@ but of course, the DNA ID can be forged)</li>
 <ul>
 <li>Most mutability happens on the data keys themselves (keys are read/write/modify routinely).</li>
 <li>Dictionary modifications (key addition or removal) are about 20x less frequent than key mods.</li>
-<li>Basis modifications (creation/removal of dictionaries) is about 10x less frequent than dictionary .</li>
-<li>According to https://www.pdl.cmu.edu/PDL-FTP/HECStorage/Yifan_Final.pdf, 0.01% of files (1 in 10,
-require a name over 100 bytes long; 0.1% require longer than 64 bytes. There longest filename tified
-was 143 bytes long. Study surveys ~14M files on the LANL network.</li>
-<li>Same study says 99.9% of directories have under 1k files, 99.999% under 10k</li>
+<li>Basis modifications (creation/removal of dictionaries) are about 10x less frequent than dictionary mods.</li>
+<li><a href="https://www.pdl.cmu.edu/PDL-FTP/HECStorage/Yifan_Final.pdf">This study</a> surveys &gt;250M files in
+22 file systems in use at LANL and PDL (table 1). For most file systems in LANL, 0.01% of names
+require over 60 bytes, while in PDL file systems, ~0.1% of names are longer than 100 bytes (figure 13).
+The longest filename identified was 143 bytes long.</li>
+<li>The same study says that 99.9% of directories have under 1k files and 99.999% under 10k files (figure 15).</li>
 </ul>
 <h3><a class="header" href="#basis-virtual-memory-layout" id="basis-virtual-memory-layout">Basis Virtual Memory Layout</a></h3>
 <table><thead><tr><th align="right">Start Address</th><th>Description</th></tr></thead><tbody>
@@ -3233,11 +3234,14 @@ and we just rely on the space being &quot;huge&quot; to save us.</p>
 <p>Small keys are kept in <code>VPAGE</code>-sized pools of data, and compacted together in RAM. The initial, naive
 implementation simply keeps all small keys in a <code>HashMap</code> in RAM, and when it comes time to sync them
 to disk, they are sorted by update count, and written to disk in ascending order.</p>
-<p>Medium keys have a TBD implementation, and are currently directed to the large pool for now.</p>
+<p>Medium keys have a TBD implementation, and are directed to the large pool for now.</p>
 <h3><a class="header" href="#size-limits" id="size-limits">Size Limits</a></h3>
-<p>The biggest key the PDDB can handle, at least in this version, 32GiB. No, this is not
+<p>The biggest key the PDDB can handle, at least in this version, is 32GiB. No, this is not
 web scale, but it's big enough to hold a typical blu-ray movie as a single key.</p>
-<p>One can adjust this constant up or down, and the trade-off is, you get more or less total number of large keys allocated over the life of the filesystem. This is because we simply &quot;increment a pointer&quot; when a new large key is added to create the next virtual memory spot for the large file, meaning each key get allocated a full 32GiB of virtual memory space for it to grow into.</p>
+<p>You can adjust this constant up or down, trading off the maximum key size against the total possible
+number of large keys allocated over the lifetime of the filesystem. This is because we simply &quot;increment
+a pointer&quot; when a new large key is added to create the next virtual memory spot for the large file,
+meaning each key gets allocated a full 32GiB of virtual memory space for it to grow into.</p>
 <p>At 32GiB, you can create a lifetime total of about 200 million keys (this includes keys you've previously deleted, until we create a mechanism for sweeping through the memory space and tracking de-allocations).</p>
 <p>Note that a &quot;large&quot; keys includes anything over 4kiB, so if you create a 5kiB file, it can potentially grow to 32 GiB without bumping into the next large file.</p>
 <p>This is a very &quot;lazy&quot; way to deal with large files. Given that the PDDB is initially designed for a 32-bit device with only 128MiB of memory and a read/write lifetime of 100k cycles for the FLASH, 200 million file allocations is probably greater than the lifetime of the device itself. If the PDDB migrates to a larger handphone-style application, I think it'll probably still hold up OK with 200 million total large file allocations over the device lifetime and a limit of 32GiB. That's about 73k files created per day for 10 years, or about 50 files per minute -- roughly one new file per second for 10 years straight before the PDDB runs out of virtual memory space.</p>
@@ -3255,19 +3259,19 @@ because the <code>usize</code> type isn't big enough. Recompiling for a 64-bit t
 you access to the full 32GiB file size limit.</p>
 <h3><a class="header" href="#ram-pressure" id="ram-pressure">RAM Pressure</a></h3>
 <p>The PDDB retains in RAM a page table for every Basis. There are about 25,000 potential pages on a Precursor device, and there are no duplicate pages between Bases; thus, it's estimated that the page table structure may take about 500kiB of space at its largest.</p>
-<p>In addition to the page tables, the PDDB agressively caches all &quot;small&quot; keys. The current implementation assumes that any small key is always &quot;hot&quot; in cache, and the disk is just a write-through backing store in case power is lost. In practice, the heap size limit of the PDDB server is about 2MiB, so, the system should crash if one starts to push around a megabyte total of small key data. That's about 256 exactly 4k-sized keys, but typically small keys are very small, about 32 bytes, so the practical limit is probably closer to 10k-20k 32-byte keys.</p>
+<p>In addition to the page tables, the PDDB agressively caches all &quot;small&quot; keys. The current implementation assumes that any small key is always &quot;hot&quot; in cache, and the disk is just a write-through backing store in case power is lost. In practice, the heap size limit of the PDDB server is about 2MiB, so the system should crash if one starts to push around a megabyte total of small key data. That's about 256 exactly 4k-sized keys, but typically small keys are very small, about 32 bytes, so the practical limit is probably closer to 10k-20k 32-byte keys.</p>
 <p>Large keys consume about one 4k-page per key, regardless of the key size. Large keys only retrieve their data when requested, and will keep only the most recently accessed page in RAM, regardless of the size of the large key. Thus one could store a several-megabyte file in a large key, and not worry about blowing out the cache.</p>
 <p>However, because the large key cache is so simple, it has performance problems, especially for situations where one plans to access large key data randomly, or in the worst case, they are accessing bytes that happen to cross a page boundary -- every time you cross the boundary, the old page is forgotten, and the new page is read in.</p>
 <p>The caching mechanism can be improved down the road, but, at the moment for an application like <code>vault</code>, the current implementation should be more than adequate to handle hundreds of password records.</p>
 <h3><a class="header" href="#the-make-before-break-mbbb-structure" id="the-make-before-break-mbbb-structure">The &quot;Make Before Break&quot; (MBBB) Structure</a></h3>
-<p>In order to protect against data loss in case of an untimely power outage, several pages of FLASH is devoted to the &quot;make before break&quot; feature. The core problem is that a single erase page of the page table contains records for 256 page table entres. If there is a power outage while updating one of the entries, all of the other 255 entries are also lost.</p>
+<p>In order to protect against data loss in case of an untimely power outage, several pages of FLASH are devoted to the &quot;make before break&quot; feature. The core problem is that a single page of the page table contains records for 256 page table entries. If there is a power outage while updating one of the entries, all of the other 255 entries are also lost.</p>
 <p>Thus, the MBBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.</p>
 <p>Initially, the MBBB area is blank (all <code>FF</code>'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBBB (the randomness is for wear-levelling, not security) <em>with</em> the changes applied, and then the page containing the page table entry is erased.</p>
-<p>When the next page table entry needs to be updated, the MBBB page table image is then written to the blank slot in the page table, and the process repeats.</p>
+<p>When the next page table entry needs to be updated, the MBBB page table image is written to the blank slot in the page table, and the process repeats.</p>
 <p>There is no mechanism to record where the MBBB page is:</p>
 <ul>
 <li>The MBBB area is only consulted if a blank page is found in the page table</li>
-<li>&quot;Blankness&quot; of an area is determined by only consulting the first 16 bytes and checking if they are 0xFF. If it is, the entire page is considered blank.</li>
+<li>&quot;Blankness&quot; of an area is determined by only consulting the first 16 bytes and checking if they are 0xFF. If they are, the entire page is considered blank.</li>
 <li>The MBBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBBB page.</li>
 </ul>
 <h2><a class="header" href="#free-space" id="free-space">Free Space</a></h2>
@@ -3275,7 +3279,7 @@ you access to the full 32GiB file size limit.</p>
 <p>The PDDB's solution to this is to create a cache of free space that represents a defined fraction of the total true free space. The parameters are tunable, but in v0.9.9 the default parameters are to allocate up to 50% +/- 10% of the smaller of the true free space or the capacity of the FSCB toward the free space cache, known as the FSCB (&quot;Fast Space Cache Buffer&quot;). The +/-10% is a fudge factor that is determined by the TRNG. Note that most of the time, the capacity of the FSCB (about 2000 pages, or 7.5% of Precursor hardware capacity) is the limit of the trackable space, due to the capacity limit inherent in the FSCB.</p>
 <p>Thus, the situation for free space in the PDDB looks a bit like the schematic shown below, where the pink areas are &quot;maybe noise? maybe data?&quot; and the gray areas are &quot;definitely free space&quot; (the actual situation is much more fragmented, this is just a cartoon).</p>
 <p><img src="images/pddb-freespace.png" alt="schematic of free space handling in the PDDB" /></p>
-<p>An adversary can thus query the FSCB and know that, for example, a device may currently have about 7% of the total capacity marked as free space. However, they cannot say for sure that this means that the device is 93% full -- it could be that the device is brand new and has nothing allocated, but the free space has just hit the limit of the FSCB capacity. Or it could be any number of intermediate states in between: it would be hard to prove beyond a reasonable doubt the exact state of disk usage.</p>
+<p>An adversary can thus query the FSCB and know that, for example, a device may currently have about 7% of the total capacity marked as free space. However, they cannot say for sure that this means that the device is 93% full -- it could be that the device is brand new and has nothing allocated, but the free space has just hit the limit of the FSCB capacity. Or it could be any number of states in between: it would be hard to prove beyond a reasonable doubt the exact state of disk usage.</p>
 <p>In the case that the FSCB is exhausted, the user is greeted with a prompt that warns them that the FSCB has been exhausted, and in order to proceed without data loss, every secret Basis must be enumerated (that is, its name and password must be presented to unlock it; the distinction between enumeration and unlocking is that enumeration simply counts the pages used, without attempting to mount any filesystem structures). A user can bail out of enumeration, causing the operation that triggered the FSCB refill to fail with an out-of-memory error. Likewise, failure to present a secret Basis at this point could result in its data being pulled into the FSCB, and ultimately being deleted.</p>
 <p>The FSCB refill proceeds to enumerate every page in every Basis into a single &quot;master&quot; record of disk usage. It then randomly selects pages out of the unused pages (the inverse of the disk usage record) until the FSCB is full. The system consumes entries out of the FSCB in random order. Thus the FSCB is also a wear-levelling mechanism, since free blocks are handed out in random order.</p>
 <p>At the implementation level, each FSCB entry is a single <code>u32</code> that tracks the physical page number of a free page plus a few bits for flags to help with journaling (as described in the <code>SpaceUpdate</code> section below). There is a flag for 64-bit physical addresses too, so the FSCB can be upgraded to run on a 64-bit CPU. The entire FSCB is exactly 2 pages long on v0.9.9 (and adjustable with a <code>const</code>). The structure is padded with 0's to full length regardless of the amount of actual free space recorded in it; note that a 0-record is automatically ignored due due to the <code>valid</code> flag being 0. The fixed-length padded structure is encrypted with AES-GCM-SIV using the <code>.System</code> Basis' data key and written to the FSCB area at a random offset. The FSCB is later identified by querying the first 16 bytes of every page in the FSCB area and choosing the one that is not all <code>0xFF</code>.</p>
@@ -3285,12 +3289,12 @@ you access to the full 32GiB file size limit.</p>
 <p>The three types of records (<code>0xFF</code> empty space, <code>FastSpace</code> and <code>SpaceUpdate</code>) are differentiated by examining the first 32 bytes of a page:</p>
 <ul>
 <li>If bytes 0-31 are <code>0xFF</code>, the entire page must be blank (empty space)</li>
-<li>If any of bytes 0-15 are not 0xFF, the page must be the start of a <code>FastSpace</code> master record. The master record itself may span mulitple pages but it must be consecutive pages from its start.</li>
+<li>If any of bytes 0-15 are not 0xFF, the page must be the start of a <code>FastSpace</code> master record. The master record itself may span multiple pages but it must be consecutive pages from its start.</li>
 <li>If all bytes of 0-15 are 0xFF, <strong>and</strong> any bytes of 16-31 are not 0xFF, then the page marks the start of <code>SpaceUpdate</code> records. A <code>SpaceUpdate</code> record is similar to that of a page table entry, but with the flags set differently to indicate the life cycle of that space, and a larger <code>u64</code> nonce. From that page until the end of the <code>FastSpace</code> area, <code>SpaceUpdate</code> records may be written.</li>
 </ul>
 <p>The <code>SpaceUpdate</code> records are interpreted sequentially, from the lowest address to the highest address encountered. The latest record takes precedence. Thus, a single page could be allocated, de-allocated, and re-allocated in sequence, and the last re-allocation is the ultimate record that affects the net FSCB.</p>
 <p>When the <code>SpaceUpdate</code> record fills up the FSCB area (or it bumps into the existing FSCB), the records are automatically compacted; the FSCB is reduced by any allocated space at that time, the <code>SpaceUpdate</code> area is cleared, and a new random location is picked for the FSCB to wear-level the FSCB area. This all happens without user intervention or awareness, except for the fact that the operation which triggered the flush might take a bit longer than usual (about an extra 0.3s).</p>
-<p>Note that the <code>SpaceUpdate</code> journal by definition leaks information about the most recent few hundred block allocations, so in the event that the unlock PIN is compromised, it could represent a significant loss of deniability. In order to counter this, a user can manually run <code>pddb flush</code> at any time compact the <code>SpaceUpdate</code> records and effectively delete the journal. Note that this doesn't require enumerating any Bases, because this only clears a journal of operations on known free space, and it also does not attempt to allocate any new free space.</p>
+<p>Note that the <code>SpaceUpdate</code> journal by definition leaks information about the most recent few hundred block allocations, so in the event that the unlock PIN is compromised, it could represent a significant loss of deniability. In order to counter this, a user can manually run <code>pddb flush</code> at any time to compact the <code>SpaceUpdate</code> records and effectively delete the journal. Note that this doesn't require enumerating any Bases, because this only clears a journal of operations on known free space, and it also does not attempt to allocate any new free space.</p>
 <p>Note: the hotfix for v0.9.9 incorporates a call to flush the journal once every 24 hours of uptime automatically. The call should be safe to run asynchronously since the FSCB state is independent of filesystem state.</p>
 <h2><a class="header" href="#physical-layout" id="physical-layout">Physical Layout</a></h2>
 <p>The physical layout of the PDDB (as of v0.9.9) is as follows, from lowest to highest address:</p>
@@ -3604,7 +3608,7 @@ match record.read_to_end(&amp;mut data) {
 </code></pre>
 <p>The example above shows the process of creating, reading from, and deleting a file.</p>
 <p>The main difference from a Unix-like or Windows interface is that the path separator on Xous is <code>:</code>.</p>
-<p>At this time, PDDB has no restrictions on dict or key names, meaning it's possible to create a key with a <code>:</code> in the name. The standard library functions won't be able to disambiguate these paths at this time, and so this character will likely be made illegal in key names. This is somewhat remeniscent of the Windows Registry where \ is a path separator that is illegal in path names yet is allowed in key names.</p>
+<p>At this time, PDDB has no restrictions on dict or key names, meaning it's possible to create a key with a <code>:</code> in the name. The standard library functions won't be able to disambiguate these paths at this time, and so this character will likely be made illegal in key names. This is somewhat reminiscent of the Windows Registry where \ is a path separator that is illegal in path names yet is allowed in key names.</p>
 <h2><a class="header" href="#path-conventions" id="path-conventions">Path Conventions</a></h2>
 <p>A PDDB Path may be a dict, a dict + a key, a basis + dict, or a basis + dict + key.
 In the following examples, the given Basis, Dict, and Key are as follows:</p>
@@ -3692,7 +3696,7 @@ the basis &quot;bar&quot;, or a dict called &quot;lorem.ipsum:foo:baz&quot;. Leg
 <h2><a class="header" href="#the-autobasis-feature" id="the-autobasis-feature">The &quot;autobasis&quot; Feature</a></h2>
 <p>This feature will automatically create and enumerate a couple dozen Bases in the PDDB, according to an algorithm to derive names and passwords. This is meant to accelerate stress testing of scenarios covering resource exhausting in the presence of secret Bases.</p>
 <h1><a class="header" href="#backups" id="backups">Backups</a></h1>
-<p>Users can make backups of the PDDB, and restore it to the same or new device, by following the <a href="https://github.com/betrusted-io/betrusted-wiki/wiki/Backups">instructions on the wiki</a>.</p>
+<p>Users can make backups of the PDDB, and restore it to the same or a new device, by following the <a href="https://github.com/betrusted-io/betrusted-wiki/wiki/Backups">instructions on the wiki</a>.</p>
 <h2><a class="header" href="#analysis" id="analysis">Analysis</a></h2>
 <p>Offline analysis of a PDDB backup image is now possible thanks to the <code>backalyzer.py</code> script, found in the <code>tools/</code> directory. This script can take a backup PDDB image, and along with the BIP-39 key, boot password, and any basis name/password combos, decrypt the entire PDDB image, and perform a consistency check of all the Basis structures, dictionaries and keys. It can also be instructed to dump all the data.</p>
 <p>This tool could potentially be run in an &quot;air-gapped&quot; environment to securely access PDDB contents from a backup in case a Precursor device is not available or damaged. However, it is not recommended to run this script on a regular, untrusted computer since you will have to share with it all the relevant security credentials to perform an analysis.</p>
@@ -3861,20 +3865,20 @@ in the image creator to catch this issue.</p>
 </ul>
 <p>The SPT has the same structure as system page tables. However, SPT entries are only allocated on-demand for processes that have swap; it is not a full copy of every page in the system page table.</p>
 <h4><a class="header" href="#inif-handling" id="inif-handling">INIF handling</a></h4>
-<p>Regions marked as <code>xip</code> (i.e, marked as <code>inif</code> type) are assumed to FLASH that is contained within the secure perimeter of the microcontroller. These regions are mapped directly and unencrypted into the kernel memory space.</p>
+<p>Regions marked as <code>xip</code> (i.e, marked as <code>inif</code> type) are assumed to be FLASH that is contained within the secure perimeter of the microcontroller. These regions are mapped directly and unencrypted into the kernel memory space.</p>
 <p>These boot-critical processes must be <code>xip</code>, and are never swapped out:</p>
 <ul>
 <li>kernel</li>
 <li>swapper</li>
 <li>ticktimer</li>
 </ul>
-<p>More regions can be marked as <code>xip</code>; this is preferable, because if the code is resident in on-chip FLASH, they aren't taking up working-set RAM and things will run faster.</p>
+<p>More regions can be marked as <code>xip</code>; this is preferable, because if the code is resident in on-chip FLASH, it isn't taking up working-set RAM and things will run faster.</p>
 <p>The initial data set of <code>inif</code> processes are considered to be <code>wired</code>; however, their reserved memory regions can be swapped after allocation.</p>
 <h4><a class="header" href="#inie-handling" id="inie-handling">INIE handling</a></h4>
 <p>Regions marked as <code>inie</code> are copied to the working set RAM and executed out of RAM. It is assumed this tag is mostly unused in microcontrollers with a small internal working set, but the behavior is not modified because it is a valid and useful tag for devices with large, trusted RAMs.</p>
 <h4><a class="header" href="#inis-handling" id="inis-handling">INIS handling</a></h4>
-<p>Regions marked as <code>inis</code> are copied into encrypted swap on boot. The kernel page table state start out with the correct <code>R</code>/<code>W</code>/<code>X</code>/<code>U</code> values, but <code>V</code> is not set, and <code>P</code> is set. Entries are created in the SPT to inform the tracker where to find the pages.</p>
-<p>An kernel argument of type <code>swap</code> is provided, which is a base and bounds to the SPT/SMT region. This is meant to passed to the <code>swapper</code> process when it registers to the kernel.</p>
+<p>Regions marked as <code>inis</code> are copied into encrypted swap on boot. The kernel page table state starts out with the correct <code>R</code>/<code>W</code>/<code>X</code>/<code>U</code> values, but <code>V</code> is not set, and <code>P</code> is set. Entries are created in the SPT to inform the tracker where to find the pages.</p>
+<p>An kernel argument of type <code>swap</code> is provided, which is a base and bounds to the SPT/SMT region. This is meant to be passed to the <code>swapper</code> process when it registers to the kernel.</p>
 <p>The image creation routine and kernel arguments need to be extended to support <code>inis</code> regions located in off-chip SPI FLASH. The off-chip data is not encrypted, but it is signature checked with a dedicated signature block. Note that the off-chip SPI FLASH does not need to be memory mapped: the loader may read the memory through a register interface.</p>
 <h3><a class="header" href="#kernel-abi" id="kernel-abi">Kernel ABI</a></h3>
 <p>Systems with <code>swap</code> enabled must have a process located at <code>PID</code> 2 that is the <code>swapper</code>. The kernel will only recognize <code>swap</code> extension syscalls originating from <code>PID</code> 2. The kernel page fault handler must also be extended to handle swapped pages by invoking the swapper to recover the contents.</p>
@@ -3890,14 +3894,14 @@ in the image creator to catch this issue.</p>
 <li>The userspace swapper handler is registered. This must happen as early in the boot process as possible.</li>
 <li>An event generates a swap exception. Sources of events include page faults on a swappable page, out of memory, and garbage collection events.</li>
 <li>Events from within the kernel must issue a <code>swap_reentrant_syscall()</code> call, instead of a regular syscall.</li>
-<li>The swapper handles the events, and returns</li>
+<li>The swapper handles the events, and returns.</li>
 </ul>
 <h4><a class="header" href="#swap_reentrant_syscall" id="swap_reentrant_syscall"><code>swap_reentrant_syscall</code></a></h4>
 <p><code>swap_reentrant_syscall()</code> allows the kernel to use the <code>SwapOp</code> API via a syscall interface. This is important because anything can run out of memory, and anything can encounter a swapped page, including the kernel in its most tender moments (such as an OOM while allocating new page table entries).</p>
 <p>Thus in order to make the swap implementation sane, we need to be able to make system calls from inside the kernel and from inside interrupt handlers.</p>
 <p>Xous has an &quot;exception handler&quot; context for system calls. It is not set up for nested operations. In implementing swap, we could either introduce nesting by allocating a separate stack space for nested calls and return vectors for the same, or we could just fake it by backing up the stack before doing a re-entrant call.</p>
 <p>While the former strategy sounds elegant, it would require patching every syscall path with something that reads a piece of state to determine which level of the nesting stack you're on. In particular, the assembly stub that is responsible for setting up the exceptions would need to be reworked to do this. This was deemed to be more invasive and more bug-prone than the alternative.</p>
-<p>So, in this implementation, <code>swap_reentrant_sycall</code> has an assembly stub which runs just before entering a re-entrant syscall, and also just after. The routine reads the current stack pointer, copies the exception handler entire stack to a backup location, does the syscall, and then on return, restores the stack's contents. This minimizes code changes to other code paths (reducing analytical complexity) in exchange for an operation that is extremely risky but analytically tractable.</p>
+<p>So, in this implementation, <code>swap_reentrant_sycall</code> has an assembly stub which runs just before entering a re-entrant syscall, and also just after. The routine reads the current stack pointer, copies the exception handler's entire stack to a backup location, does the syscall, and then on return, restores the stack's contents. This minimizes code changes to other code paths (reducing analytical complexity) in exchange for an operation that is extremely risky but analytically tractable.</p>
 <h4><a class="header" href="#registerswapper-syscall" id="registerswapper-syscall">RegisterSwapper Syscall</a></h4>
 <p>The <code>swapper</code> registers with the kernel on a TOFU basis. Note that all the data necessary to setup the swapper is placed in the swapper's memory space by the loader, so the kernel does not need to marshall this.</p>
 <p>The arguments to <code>RegisterSwapper</code> are as follows:</p>
@@ -3907,7 +3911,7 @@ in the image creator to catch this issue.</p>
 </ul>
 <p>All communications between the kernel and the swapper happen through the <code>handler</code> entry point.</p>
 <h4><a class="header" href="#swapop-syscall" id="swapop-syscall">SwapOp Syscall</a></h4>
-<p>The <code>SwapOp</code> syscall that encodes a private ABI between the swapper and the kernel. The idea is that this ABI can rapidly evolve without having to update the syscall table, which would require an update to the Xous package itself. The <code>SwapOp</code> syscall has arguments consisting of the op itself, which is coded as the numerical representation of <code>SwapAbi</code> (below), and up to 6 generic <code>usize</code> arguments that have a meaning depending on the <code>SwapAbi</code> code.</p>
+<p>The <code>SwapOp</code> syscall encodes a private ABI between the swapper and the kernel. The idea is that this ABI can rapidly evolve without having to update the syscall table, which would require an update to the Xous package itself. The <code>SwapOp</code> syscall has arguments consisting of the op itself, which is coded as the numerical representation of <code>SwapAbi</code> (below), and up to 6 generic <code>usize</code> arguments that have a meaning depending on the <code>SwapAbi</code> code.</p>
 <p>The <code>SwapAbi</code> may change rapidly, so please refer to the code for the latest details, but below gives you an idea of what is inside the ABI.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]

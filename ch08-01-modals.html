@@ -192,8 +192,8 @@ let modals = modals::Modals::new(&amp;xns).unwrap();
 <h2><a class="header" href="#static-notification" id="static-notification">Static Notification</a></h2>
 <pre><code class="language-rust noplayground ignore">modals.show_notification(&quot;This is a test!&quot;).expect(&quot;notification failed&quot;);
 </code></pre>
-<p>This will pop up a notification that says &quot;This is a test!&quot;. Execution blocks at this line until the user pressses any key to acknowledge the notification.</p>
-<h2><a class="header" href="#progress-bar" id="progress-bar">Progress bar</a></h2>
+<p>This will pop up a notification that says &quot;This is a test!&quot;. Execution blocks at this line until the user presses any key to acknowledge the notification.</p>
+<h2><a class="header" href="#progress-bar" id="progress-bar">Progress Bar</a></h2>
 <p>One can create a progress bar using the <code>start_progress()</code> method, with the following parameters:</p>
 <ul>
 <li><code>name</code>: A <code>&amp;str</code> that is the title of the progress bar</li>
@@ -227,14 +227,14 @@ waiting for a user to hit &quot;OK&quot;.</p>
 and close phases:</p>
 <ul>
 <li>To pop up the dynamic notification, use the <code>dynamic_notification(title: Option&lt;&amp;str&gt;, text: Option&lt;&amp;str&gt;)</code>
-method. The both <code>title</code> and <code>text</code> are optional, but at least one is recommended, otherwise
+method. Both <code>title</code> and <code>text</code> are optional, but at least one is recommended, otherwise
 you get an empty notification.</li>
 <li>Updates to the notification are done using <code>dynamic_notification_update(title: Option&lt;&amp;str&gt;, text: Option&lt;&amp;str&gt;)</code>.
 Arguments that are <code>None</code> do not update, and show the same text as before.</li>
 <li>Once you are finished showing the set of notifications, you must close the
 dialog with <code>dynamic_notification_close()</code>.</li>
 </ul>
-<h2><a class="header" href="#text-entry" id="text-entry">Text entry</a></h2>
+<h2><a class="header" href="#text-entry" id="text-entry">Text Entry</a></h2>
 <p>One can request text entry using the <code>get_text()</code> method. This takes the following parameters:</p>
 <ul>
 <li><code>prompt</code>: A <code>&amp;str</code> that is the prompt to the user</li>

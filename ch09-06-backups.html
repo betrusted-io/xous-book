@@ -168,7 +168,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#backups" id="backups">Backups</a></h1>
-<p>Users can make backups of the PDDB, and restore it to the same or new device, by following the <a href="https://github.com/betrusted-io/betrusted-wiki/wiki/Backups">instructions on the wiki</a>.</p>
+<p>Users can make backups of the PDDB, and restore it to the same or a new device, by following the <a href="https://github.com/betrusted-io/betrusted-wiki/wiki/Backups">instructions on the wiki</a>.</p>
 <h2><a class="header" href="#analysis" id="analysis">Analysis</a></h2>
 <p>Offline analysis of a PDDB backup image is now possible thanks to the <code>backalyzer.py</code> script, found in the <code>tools/</code> directory. This script can take a backup PDDB image, and along with the BIP-39 key, boot password, and any basis name/password combos, decrypt the entire PDDB image, and perform a consistency check of all the Basis structures, dictionaries and keys. It can also be instructed to dump all the data.</p>
 <p>This tool could potentially be run in an &quot;air-gapped&quot; environment to securely access PDDB contents from a backup in case a Precursor device is not available or damaged. However, it is not recommended to run this script on a regular, untrusted computer since you will have to share with it all the relevant security credentials to perform an analysis.</p>

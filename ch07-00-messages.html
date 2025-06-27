@@ -171,7 +171,7 @@
 <p>Messages form the basis of interprocess communication on Xous. A process exists in isolation and can only communicate to the outside world by sending messages. The limited API provided by the kernel means that almost all interactions are provided by userspace Servers, which must be communicated with using Messages.</p>
 <p><img src="images/messaging-arch.png" alt="overview of message passing" /></p>
 <h2><a class="header" href="#connecting-to-and-disconnecting-from-servers" id="connecting-to-and-disconnecting-from-servers">Connecting to and Disconnecting from Servers</a></h2>
-<p>To connect to a server you must supply it an <code>Server ID</code>. A <code>Server ID</code> is a 16-byte value of some sort that is shared in a universal namespace. If you know a Server's <code>Server ID</code> then you can connect to that Server.</p>
+<p>To connect to a server you must supply it a <code>Server ID</code>. A <code>Server ID</code> is a 16-byte value of some sort that is shared in a universal namespace. If you know a Server's <code>Server ID</code> then you can connect to that Server.</p>
 <p>There are a few well-known <code>Server ID</code>s. These include bare minimum IDs that are required by any process to do anything useful. They are:</p>
 <ul>
 <li><em>b&quot;xous-log-server &quot;</em>: Output log messages to the console, as well as basic <code>println!()</code> support</li>
@@ -186,7 +186,7 @@
 <p>Connections are limited on a per-process basis. Each process may only establish a connection to at most 32 servers. When this number is exceeded, <code>xous::connect()</code> will return <code>Error::OutOfMemory</code>.</p>
 <p>If you call <code>xous::connect()</code> twice with the same <code>Server ID</code>, then you will get the same <code>connection_id</code>.</p>
 <h2><a class="header" href="#disconnecting" id="disconnecting">Disconnecting</a></h2>
-<p>To disconnect from a server, call <code>unsafe { xous::disconnect(connection_id)};</code>. This function is <code>unsafe</code> because you can copy connection IDs, so it is up to you to ensure that they are no longer in use when disconnecting.</p>
+<p>To disconnect from a server, call <code>unsafe { xous::disconnect(connection_id) };</code>. This function is <code>unsafe</code> because you can copy connection IDs, so it is up to you to ensure that they are no longer in use when disconnecting.</p>
 <p>For example, if you <code>connect()</code> to a Server and spawn a thread with that connection ID, you should only call <code>disconnect()</code> once that thread has finished with the connection. Similarly, if you <code>Copy</code> the connection ID to the thread, you must make sure that <strong>both</strong> uses of the Connection ID are destroyed prior to disposing of the connection.</p>
 <p>Because of this, it is recommended that you use an <code>ARC&lt;CID&gt;</code> in order to ensure that the connection is only closed when it is no longer in use.</p>
 <p>Furthermore, recall that subsequent calls to <code>connect()</code> with the same argument will reuse the <code>connection_id</code>. Because of this, it is vital that you only call <code>disconnect()</code> when you are certain that all instances are finished with the connection.</p>

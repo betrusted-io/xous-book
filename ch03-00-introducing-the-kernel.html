@@ -168,7 +168,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#introducing-the-kernel" id="introducing-the-kernel">Introducing the Kernel</a></h1>
-<p>Xous is a microkernel design that tries to keep as little as possible inside the main kernel. Instead, programs can start &quot;Servers&quot; that process can connect to in order to accomplish a task.</p>
+<p>Xous is a microkernel design that tries to keep as little as possible inside the main kernel. Instead, programs can start &quot;Servers&quot; that processes can connect to in order to accomplish a task.</p>
 <p>Processes are isolated, and therefore an MMU is strongly recommended. One process can have multiple threads, and processes cannot interact with one another except by passing Messages.</p>
 <p>A Message is a piece of data that can be sent to a Server. Messages contain one <code>usize</code> ID field that may be used to identify an opcode, and may additionally contain some memory or some <code>usize</code> scalars.</p>
 <p>Additionally, a Message may be either blocking, in which case it will wait for the Server to respond, or non-blocking, where they will return immediately.</p>

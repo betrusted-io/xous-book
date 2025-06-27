@@ -168,7 +168,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#target-specification-and-hardware-registers-with-utra" id="target-specification-and-hardware-registers-with-utra">Target Specification and Hardware Registers with UTRA</a></h1>
-<p>Xous isolates target-specific code, such as the location and fields of hardware registers, inside the Unambiguous Thin Register Astraction (UTRA).</p>
+<p>Xous isolates target-specific code, such as the location and fields of hardware registers, inside the Unambiguous Thin Register Abstraction (UTRA).</p>
 <p>The UTRA is contained in the <code>utralib</code> crate, and its contents are generated from <a href="https://www.keil.com/pack/doc/CMSIS/SVD/html/svd_Format_pg.html">SVD files</a> using <a href="https://crates.io/crates/svd2utra"><code>svd2utra</code></a>. SVD itself is an XML format commonly used by hardware vendors for the interchange of SoC registers, and is a native output format of SoC building tools such as LiteX. SVD files are also readily available for many commercial MCUs.</p>
 <h2><a class="header" href="#specifying-targets" id="specifying-targets">Specifying Targets</a></h2>
 <p>Services that talk to hardware will typically have one or more <code>implementation</code> modules that encapsulate the target-specific back ends. These are gated with <code>#[cfg(feature=&quot;X&quot;)]</code> directives, where &quot;X&quot; is the specific build target.</p>

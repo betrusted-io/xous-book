@@ -204,7 +204,7 @@ most syscalls (except ones that are explicitly fallible) and helper methods mean
 to transform <em>inter-process</em> messages and buffers into types (note that this does
 not include methods that receive, for example, arbitrary messages over network).</p>
 <p>A simple <code>.unwrap()</code> is probably sufficient to check the results of most infalliable operations,
-because the panic handler will print a panic on that line</p>
+because the panic handler will print a panic on that line.</p>
 <p><code>unwrap()</code> may even be preferable to a <code>.expect(&quot;helpful error message&quot;)</code> in most
 cases, because &quot;helpful error message&quot; takes memory to store, increases the
 binary size, and in most cases the line of code where the panic happened is the most
