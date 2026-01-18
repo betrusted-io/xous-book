@@ -14,13 +14,16 @@ rust-lang/rust uses in [this file][rust-mdbook]. To get it:
 [mdBook]: https://github.com/rust-lang-nursery/mdBook
 [rust-mdbook]: https://github.com/rust-lang/rust/blob/master/src/tools/rustbook/Cargo.toml
 
+Run these steps from your home directory, not the project directory.
+
 ```bash
 $ cargo install mdbook --vers [version-num]
+$ cargo install mdbook-pdf # to generate pdf
 ```
 
 ## Building
 
-To build the book, type:
+Run this step from the project directory. To build the book, type:
 
 ```bash
 $ mdbook build
@@ -28,6 +31,8 @@ $ mdbook build
 
 The output will be in the `book` subdirectory. To check it out, open it in
 your web browser.
+
+You'll also find a book/pdf/output.pdf PDF file.
 
 _Firefox:_
 ```bash

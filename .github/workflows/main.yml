@@ -1,6 +1,5 @@
 name: CI
 on: [push, pull_request]
-
 jobs:
   test:
     name: Run tests
@@ -12,12 +11,12 @@ jobs:
     - name: Install Rust
       run: |
         rustup set profile minimal
-        rustup toolchain install 1.54 -c rust-docs
-        rustup default 1.54
+        rustup toolchain install 1.88 -c rust-docs
+        rustup default 1.88
     - name: Install mdbook
       run: |
         mkdir bin
-        curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.5/mdbook-v0.4.5-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+        curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
         echo "$(pwd)/bin" >> ${GITHUB_PATH}
     - name: Report versions
       run: |
@@ -41,8 +40,12 @@ jobs:
     - name: Install mdbook
       run: |
         mkdir bin
-        curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.5/mdbook-v0.4.5-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+        curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
         echo "$(pwd)/bin" >> ${GITHUB_PATH}
+    - name: Install Chromium
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser
     - name: Report versions
       run: |
         rustup --version
@@ -62,6 +65,22 @@ jobs:
           https://raw.githubusercontent.com/rust-lang/rust/master/src/tools/linkchecker/linkcheck.sh
         # Cannot use --all here because of the generated redirect pages aren't available.
         sh linkcheck.sh book
+    - name: Generate PDF from HTML
+      run: |
+        # Create PDF directory
+        mkdir -p book/pdf
+        # Use Chromium to convert the print.html to PDF
+        chromium-browser --headless --disable-gpu --no-sandbox --print-to-pdf=book/pdf/xous-book.pdf book/print.html
+    - name: Verify PDF was created
+      run: |
+        ls -lah book/pdf/
+        echo "PDF generated successfully"
+    - name: Upload PDF as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: book-pdf
+        path: book/pdf/*.pdf
+        retention-days: 30
     - name: Deploy Book
       uses: peaceiris/actions-gh-pages@v3
       with:
