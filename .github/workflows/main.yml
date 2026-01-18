@@ -77,7 +77,7 @@ jobs:
         mkdir -p book/pdf
         find . -name "*.pdf" -type f -exec cp {} book/pdf/ \;
     - name: Upload PDF as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: book-pdf
         path: book/pdf/*.pdf
