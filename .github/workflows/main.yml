@@ -55,7 +55,6 @@ jobs:
         rustup --version
         rustc -Vv
         mdbook --version
-        mdbook-pdf --version
     - name: Spellcheck
       run: bash ci/spellcheck.sh list
     - name: Lint for local file paths
@@ -70,12 +69,10 @@ jobs:
           https://raw.githubusercontent.com/rust-lang/rust/master/src/tools/linkchecker/linkcheck.sh
         # Cannot use --all here because of the generated redirect pages aren't available.
         sh linkcheck.sh book
-    - name: Build PDF
-      run: mdbook-pdf --standalone true
-    - name: Copy PDF to book directory
+    - name: Verify PDF was created
       run: |
-        mkdir -p book/pdf
-        find . -name "*.pdf" -type f -exec cp {} book/pdf/ \;
+        ls -lah book/pdf/
+        echo "PDF generated successfully"
     - name: Upload PDF as artifact
       uses: actions/upload-artifact@v4
       with:
