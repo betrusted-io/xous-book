@@ -64,13 +64,13 @@ jobs:
         curl -sSLo linkcheck.sh \
           https://raw.githubusercontent.com/rust-lang/rust/master/src/tools/linkchecker/linkcheck.sh
         # Cannot use --all here because of the generated redirect pages aren't available.
-        sh linkcheck.sh book/html
+        sh linkcheck.sh book
     - name: Generate PDF from HTML
       run: |
         # Create PDF directory
         mkdir -p book/pdf
         # Use Chromium to convert the print.html to PDF
-        chromium-browser --headless --disable-gpu --no-sandbox --print-to-pdf=book/pdf/xous-book.pdf book/html/print.html
+        chromium-browser --headless --disable-gpu --no-sandbox --print-to-pdf=book/pdf/xous-book.pdf book/print.html
     - name: Verify PDF was created
       run: |
         ls -lah book/pdf/
