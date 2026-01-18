@@ -9,6 +9,3 @@ git-repository-url = "https://github.com/betrusted-io/xous-book"
 
 [output.html.print]
 enable = true
-
-[output.pdf]
-
