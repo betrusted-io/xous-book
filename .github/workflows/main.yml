@@ -1,6 +1,5 @@
 name: CI
 on: [push, pull_request]
-
 jobs:
   test:
     name: Run tests
@@ -12,8 +11,8 @@ jobs:
     - name: Install Rust
       run: |
         rustup set profile minimal
-        rustup toolchain install 1.54 -c rust-docs
-        rustup default 1.54
+        rustup toolchain install 1.88 -c rust-docs
+        rustup default 1.88
     - name: Install mdbook
       run: |
         mkdir bin
@@ -43,11 +42,20 @@ jobs:
         mkdir bin
         curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.5/mdbook-v0.4.5-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
         echo "$(pwd)/bin" >> ${GITHUB_PATH}
+    - name: Install mdbook-pdf
+      run: |
+        curl -sSL https://github.com/HollowMan6/mdbook-pdf/releases/latest/download/mdbook-pdf-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+        chmod +x bin/mdbook-pdf
+    - name: Install wkhtmltopdf
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wkhtmltopdf
     - name: Report versions
       run: |
         rustup --version
         rustc -Vv
         mdbook --version
+        mdbook-pdf --version
     - name: Spellcheck
       run: bash ci/spellcheck.sh list
     - name: Lint for local file paths
@@ -62,6 +70,18 @@ jobs:
           https://raw.githubusercontent.com/rust-lang/rust/master/src/tools/linkchecker/linkcheck.sh
         # Cannot use --all here because of the generated redirect pages aren't available.
         sh linkcheck.sh book
+    - name: Build PDF
+      run: mdbook-pdf --standalone true
+    - name: Copy PDF to book directory
+      run: |
+        mkdir -p book/pdf
+        find . -name "*.pdf" -type f -exec cp {} book/pdf/ \;
+    - name: Upload PDF as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: book-pdf
+        path: book/pdf/*.pdf
+        retention-days: 30
     - name: Deploy Book
       uses: peaceiris/actions-gh-pages@v3
       with:
