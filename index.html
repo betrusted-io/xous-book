@@ -1,40 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Introduction - The Xous Operating System</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,19 +29,18 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -70,83 +56,107 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-04-coding-style.html"><strong aria-hidden="true">1.2.</strong> Coding Style</a></li><li class="chapter-item expanded "><a href="ch01-03-xous-by-example.html"><strong aria-hidden="true">1.3.</strong> Xous by example</a></li><li class="chapter-item expanded "><a href="ch01-04-glossary.html"><strong aria-hidden="true">1.4.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li><li class="chapter-item expanded "><a href="ch03-02-hosted-mode.html"><strong aria-hidden="true">3.2.</strong> Hosted Mode</a></li><li class="chapter-item expanded "><a href="ch03-03-process-creation.html"><strong aria-hidden="true">3.3.</strong> Process Creation</a></li><li class="chapter-item expanded "><a href="ch03-04-debugging-programs.html"><strong aria-hidden="true">3.4.</strong> Debugging Programs with GDB</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.1.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-testing-crates.html"><strong aria-hidden="true">6.1.</strong> Testing Crates</a></li><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.2.</strong> Image Creation</a></li><li class="chapter-item expanded "><a href="ch06-03-target-specification.html"><strong aria-hidden="true">6.3.</strong> Target Specification, UTRA</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li><li class="chapter-item expanded "><a href="ch07-07-forwarding.html"><strong aria-hidden="true">7.2.5.</strong> Forwarding</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-08-performance.html"><strong aria-hidden="true">7.3.</strong> Performance</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li><li class="chapter-item expanded "><a href="ch08-02-menus.html"><strong aria-hidden="true">8.2.</strong> Menus</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-pddb-overview.html"><strong aria-hidden="true">9.</strong> Plausibly Deniable DataBase (PDDB)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-basis.html"><strong aria-hidden="true">9.1.</strong> Basis Internal Structure</a></li><li class="chapter-item expanded "><a href="ch09-02-rootkeys.html"><strong aria-hidden="true">9.2.</strong> Key Derivation</a></li><li class="chapter-item expanded "><a href="ch09-03-api-native.html"><strong aria-hidden="true">9.3.</strong> Native API</a></li><li class="chapter-item expanded "><a href="ch09-04-api-std.html"><strong aria-hidden="true">9.4.</strong> std API</a></li><li class="chapter-item expanded "><a href="ch09-05-testing.html"><strong aria-hidden="true">9.5.</strong> Testing and CI</a></li><li class="chapter-item expanded "><a href="ch09-06-backups.html"><strong aria-hidden="true">9.6.</strong> Backups</a></li><li class="chapter-item expanded "><a href="ch09-07-discussion.html"><strong aria-hidden="true">9.7.</strong> Security and Deniability</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-swap-overview.html"><strong aria-hidden="true">10.</strong> Swap Extensions</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html" class="active">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-04-coding-style.html"><strong aria-hidden="true">1.2.</strong> Coding Style</a></li><li class="chapter-item expanded "><a href="ch01-03-xous-by-example.html"><strong aria-hidden="true">1.3.</strong> Xous by example</a></li><li class="chapter-item expanded "><a href="ch01-04-glossary.html"><strong aria-hidden="true">1.4.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li><li class="chapter-item expanded "><a href="ch03-02-hosted-mode.html"><strong aria-hidden="true">3.2.</strong> Hosted Mode</a></li><li class="chapter-item expanded "><a href="ch03-03-process-creation.html"><strong aria-hidden="true">3.3.</strong> Process Creation</a></li><li class="chapter-item expanded "><a href="ch03-04-debugging-programs.html"><strong aria-hidden="true">3.4.</strong> Debugging Programs with GDB</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.1.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-testing-crates.html"><strong aria-hidden="true">6.1.</strong> Testing Crates</a></li><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.2.</strong> Image Creation</a></li><li class="chapter-item expanded "><a href="ch06-03-target-specification.html"><strong aria-hidden="true">6.3.</strong> Target Specification, UTRA</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li><li class="chapter-item expanded "><a href="ch07-07-forwarding.html"><strong aria-hidden="true">7.2.5.</strong> Forwarding</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-08-performance.html"><strong aria-hidden="true">7.3.</strong> Performance</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li><li class="chapter-item expanded "><a href="ch08-02-menus.html"><strong aria-hidden="true">8.2.</strong> Menus</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-pddb-overview.html"><strong aria-hidden="true">9.</strong> Plausibly Deniable DataBase (PDDB)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-basis.html"><strong aria-hidden="true">9.1.</strong> Basis Internal Structure</a></li><li class="chapter-item expanded "><a href="ch09-02-rootkeys.html"><strong aria-hidden="true">9.2.</strong> Key Derivation</a></li><li class="chapter-item expanded "><a href="ch09-03-api-native.html"><strong aria-hidden="true">9.3.</strong> Native API</a></li><li class="chapter-item expanded "><a href="ch09-04-api-std.html"><strong aria-hidden="true">9.4.</strong> std API</a></li><li class="chapter-item expanded "><a href="ch09-05-testing.html"><strong aria-hidden="true">9.5.</strong> Testing and CI</a></li><li class="chapter-item expanded "><a href="ch09-06-backups.html"><strong aria-hidden="true">9.6.</strong> Backups</a></li><li class="chapter-item expanded "><a href="ch09-07-discussion.html"><strong aria-hidden="true">9.7.</strong> Security and Deniability</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-swap-overview.html"><strong aria-hidden="true">10.</strong> Swap Extensions</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">The Xous Operating System</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -154,10 +164,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -167,7 +176,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>Xous is a microkernel operating system with processes, threads, and
 messages. It is designed to have an extremely small kernel that
 delegates as much as possible to userspace. This book describes
@@ -178,37 +187,37 @@ normal operating system behavior.</p>
 <p>Chapters <a href="ch02-00-server-architecture.html">2 (Server Architecture)</a>, <a href="ch03-00-introducing-the-kernel.html">3 (Introducing the Kernel)</a>, and <a href="ch05-00-system-startup.html">5 (System Startup)</a> are primarily for kernel maintainers and system programmers.</p>
 <p>Chapters <a href="ch01-00-getting-started.html">1 (Getting Started)</a>, <a href="ch04-00-renode-emulation.html">4 (Renode Emulation)</a>, <a href="ch06-00-build-system-overview.html">6 (Build System Overview)</a>, <a href="ch07-00-messages.html">7 (Messages)</a> and <a href="ch08-00-graphics.html">8 (Graphics)</a> are more appropriate for application developers.</p>
 <p>Chapter <a href="ch09-00-pddb-overview.html">9 (PDDB)</a> covers the Plausibly Deniable DataBase, and has sub-sections for both kernel and application developers.</p>
-<h2><a class="header" href="#getting-help-on-devices" id="getting-help-on-devices">Getting Help on Devices</a></h2>
+<h2 id="getting-help-on-devices"><a class="header" href="#getting-help-on-devices">Getting Help on Devices</a></h2>
 <p>This book focuses on the Xous kernel.</p>
 <ul>
 <li>Precursor users please <a href="https://github.com/betrusted-io/betrusted-wiki/wiki">visit our wiki</a>. You can also <a href="https://matrix.to/#/#precursor.dev:matrix.org">join our Matrix community</a> and chat with our community members for help.</li>
 <li>Baochip users please <a href="https://discord.gg/c7YKtTWx">join our discord</a> and also see <a href="https://github.com/betrusted-io/xous-core/blob/main/README-baochip.md">Getting started with Baochip Targets</a>. There is also a <code>vscode</code> extension named <code>baochip</code>.</li>
 </ul>
 <hr />
-<h2><a class="header" href="#architecture" id="architecture">Architecture</a></h2>
+<h2 id="architecture"><a class="header" href="#architecture">Architecture</a></h2>
 <p><strong>Xous</strong> is a collection of small, single purpose <strong>Servers</strong> which respond to <strong>Messages</strong>. The Xous <strong>Kernel</strong> delivers Messages to Servers, allocates processing time to Servers, and transfers memory ownership from one Server to another. Every Xous Server contains a central loop that receives a Message, matches the Message <strong>Opcode</strong>, and runs the corresponding rust code. When the operation is completed, the Server waits to receive the next Message at the top of the loop, and processing capacity is released to other Servers. Every service available in Xous is implemented as a Server. Every user application in Xous is implemented as a Server.</p>
 <p>Architecturally, Xous is most similar to <a href="https://www.qnx.com/developers/docs/6.4.1/neutrino/getting_started/s1_msg.html">QNX</a>, another microkernel message-passing OS.</p>
-<h3><a class="header" href="#servers" id="servers">Servers</a></h3>
-<p>There are only a few &quot;well known&quot; Servers which are always available to receive Messages, and run the requested Opcode:</p>
+<h3 id="servers"><a class="header" href="#servers">Servers</a></h3>
+<p>There are only a few "well known" Servers which are always available to receive Messages, and run the requested Opcode:</p>
 <ul>
 <li>The <code>xous-name-server</code> maintains a list of all registered Servers by name, and guards a randomized 128-bit <strong>Server ID</strong> for each of the Servers. The xous-name-server arbitrates the flow of Messages between Servers.</li>
 <li>The <code>ticktimer-server</code> provides time and time-out related services.</li>
 <li>The <code>xous-log-server </code> provides logging services.</li>
 <li>The <code>timeserverpublic</code> provides real-time (wall-clock time) services. It is only accessed via <code>std::time</code> bindings.</li>
 </ul>
-<p>The remaining servers are not &quot;well known&quot; - meaning that the <code>xous-name-server</code> must be consulted to obtain a Connection ID in order to send the Server a Message. Such Servers include <code>aes</code> <code>com</code> <code>dns</code> <code>gam</code> <code>jtag</code> <code>keyboard</code> <code>llio</code> <code>modals</code> <code>net</code> <code>pddb</code> <code>trng</code>.</p>
-<h3><a class="header" href="#messages-aka-ipc" id="messages-aka-ipc">Messages, aka IPC</a></h3>
-<p>Every <strong>Message</strong> contains a <strong>Connection ID</strong> and an <strong>Opcode</strong>. The Connection ID is a &quot;delivery address&quot; for the recipient Server, and the Opcode specifies a particular operation provided by the recipient Server. There are two flavours of messages in Xous:</p>
+<p>The remaining servers are not "well known" - meaning that the <code>xous-name-server</code> must be consulted to obtain a Connection ID in order to send the Server a Message. Such Servers include <code>aes</code> <code>com</code> <code>dns</code> <code>gam</code> <code>jtag</code> <code>keyboard</code> <code>llio</code> <code>modals</code> <code>net</code> <code>pddb</code> <code>trng</code>.</p>
+<h3 id="messages-aka-ipc"><a class="header" href="#messages-aka-ipc">Messages, aka IPC</a></h3>
+<p>Every <strong>Message</strong> contains a <strong>Connection ID</strong> and an <strong>Opcode</strong>. The Connection ID is a "delivery address" for the recipient Server, and the Opcode specifies a particular operation provided by the recipient Server. There are two flavours of messages in Xous:</p>
 <ul>
 <li><strong>Scalar messages</strong> are very simple and very fast. Scalar messages can transmit only 4 u32 sized arguments.</li>
-<li><strong>Memory messages</strong> can contain larger structures, but they are slower. They &quot;transmit&quot; page-sized (4096-byte) memory chunks.</li>
+<li><strong>Memory messages</strong> can contain larger structures, but they are slower. They "transmit" page-sized (4096-byte) memory chunks.</li>
 </ul>
 <p>Rust <code>struct</code>s need to be serialized into bytes before they can be passed using Memory Messages. Xous provides convenience bindings for <code>rkyv</code>, so any <code>struct</code> fully-annotated with <code>#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]</code> can be serialized into a buffer by the sender and deserialized by the recipient.</p>
-<p>The most simple Server communication involves a <strong>non-synchronizing</strong> &quot;fire and forget&quot; style of Messaging. The Sender sends a Message and continues processing immediately. The Recipient will receive the Message when it arrives, and process the Opcode accordingly. End of story. The ownership of the Message memory passes from the Sender to the Recipient and is Dropped by the Recipient. While there will be a delay before the Message is received - the sequence is assured. In the code, these are referred to as either <code>Scalar</code> Scalar Messages or <code>Send</code> Memory Messages.</p>
-<p>Alternatively, A Server can send a <strong>synchronous</strong> Message, and wait (block) until the Recipient completes the operation and responds. In this arrangement, the Message memory is merely lent to the Recipient (read-only or read-write) and returned to the Sender on completion. While the sender Server &quot;blocks&quot;, its processing quanta is not wasted, but also &quot;lent&quot; to the Recipient Server to complete the request promptly. In the code, these are referred to as either <code>BlockingScalar</code> Scalar Messages, or <code>Borrow</code> or <code>MutableBorrow</code> Memory Messages. <code>Borrow</code> messages are read-only, <code>MutableBorrow</code> are read-write, with semantics enforced by the Rust borrow checker.</p>
-<p><strong>asynchronous</strong> Message flow is also possible. The Sender will send a non-synchronous Message, which the kernel will amend with a &quot;return token&quot;. The Recipient Server will complete the operation, and then send a non-synchronous Message in reply to this return token.</p>
-<p>A Server may also send a synchronous Message and wait for a <strong>deferred-response</strong>. This setup is needed when the recipient Server cannot formulate a reply within a single pass of the event loop. Rather, the recipient Server must &quot;park&quot; the request and continue to process subsequent Messages until the original request can be satisfied. The request is &quot;parked&quot; by either saving the <code>msg.sender</code> field (for Scalar messages) or keeping a reference to the <code>MessageEnvelope</code> (for Memory messages). Memory Messages automatically return-on-Drop, relying on the Rust borrow checker and reference counting system to enforce implicit return semantics.</p>
-<h2><a class="header" href="#acknowledgement" id="acknowledgement">Acknowledgement</a></h2>
+<p>The most simple Server communication involves a <strong>non-synchronizing</strong> "fire and forget" style of Messaging. The Sender sends a Message and continues processing immediately. The Recipient will receive the Message when it arrives, and process the Opcode accordingly. End of story. The ownership of the Message memory passes from the Sender to the Recipient and is Dropped by the Recipient. While there will be a delay before the Message is received - the sequence is assured. In the code, these are referred to as either <code>Scalar</code> Scalar Messages or <code>Send</code> Memory Messages.</p>
+<p>Alternatively, A Server can send a <strong>synchronous</strong> Message, and wait (block) until the Recipient completes the operation and responds. In this arrangement, the Message memory is merely lent to the Recipient (read-only or read-write) and returned to the Sender on completion. While the sender Server "blocks", its processing quanta is not wasted, but also "lent" to the Recipient Server to complete the request promptly. In the code, these are referred to as either <code>BlockingScalar</code> Scalar Messages, or <code>Borrow</code> or <code>MutableBorrow</code> Memory Messages. <code>Borrow</code> messages are read-only, <code>MutableBorrow</code> are read-write, with semantics enforced by the Rust borrow checker.</p>
+<p><strong>asynchronous</strong> Message flow is also possible. The Sender will send a non-synchronous Message, which the kernel will amend with a "return token". The Recipient Server will complete the operation, and then send a non-synchronous Message in reply to this return token.</p>
+<p>A Server may also send a synchronous Message and wait for a <strong>deferred-response</strong>. This setup is needed when the recipient Server cannot formulate a reply within a single pass of the event loop. Rather, the recipient Server must "park" the request and continue to process subsequent Messages until the original request can be satisfied. The request is "parked" by either saving the <code>msg.sender</code> field (for Scalar messages) or keeping a reference to the <code>MessageEnvelope</code> (for Memory messages). Memory Messages automatically return-on-Drop, relying on the Rust borrow checker and reference counting system to enforce implicit return semantics.</p>
+<h2 id="acknowledgement"><a class="header" href="#acknowledgement">Acknowledgement</a></h2>
 <p>This project is funded through the NGI0 PET Fund, a fund established by NLnet
 with financial support from the European Commission's Next Generation Internet
 programme, under the aegis of DG Communications Networks, Content and Technology
@@ -223,13 +232,10 @@ under grant agreement No 825310.</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
 
-                        
-                            <a rel="next" href="ch01-00-getting-started.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="ch01-00-getting-started.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -237,45 +243,33 @@ under grant agreement No 825310.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
 
-                
-                    <a rel="next" href="ch01-00-getting-started.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="ch01-00-getting-started.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
+    </div>
     </body>
 </html>

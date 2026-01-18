@@ -1,40 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Modals - The Xous Operating System</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,19 +29,18 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -70,83 +56,107 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-04-coding-style.html"><strong aria-hidden="true">1.2.</strong> Coding Style</a></li><li class="chapter-item expanded "><a href="ch01-03-xous-by-example.html"><strong aria-hidden="true">1.3.</strong> Xous by example</a></li><li class="chapter-item expanded "><a href="ch01-04-glossary.html"><strong aria-hidden="true">1.4.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li><li class="chapter-item expanded "><a href="ch03-02-hosted-mode.html"><strong aria-hidden="true">3.2.</strong> Hosted Mode</a></li><li class="chapter-item expanded "><a href="ch03-03-process-creation.html"><strong aria-hidden="true">3.3.</strong> Process Creation</a></li><li class="chapter-item expanded "><a href="ch03-04-debugging-programs.html"><strong aria-hidden="true">3.4.</strong> Debugging Programs with GDB</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.1.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-testing-crates.html"><strong aria-hidden="true">6.1.</strong> Testing Crates</a></li><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.2.</strong> Image Creation</a></li><li class="chapter-item expanded "><a href="ch06-03-target-specification.html"><strong aria-hidden="true">6.3.</strong> Target Specification, UTRA</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li><li class="chapter-item expanded "><a href="ch07-07-forwarding.html"><strong aria-hidden="true">7.2.5.</strong> Forwarding</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-08-performance.html"><strong aria-hidden="true">7.3.</strong> Performance</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html" class="active"><strong aria-hidden="true">8.1.</strong> Modals</a></li><li class="chapter-item expanded "><a href="ch08-02-menus.html"><strong aria-hidden="true">8.2.</strong> Menus</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-pddb-overview.html"><strong aria-hidden="true">9.</strong> Plausibly Deniable DataBase (PDDB)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-basis.html"><strong aria-hidden="true">9.1.</strong> Basis Internal Structure</a></li><li class="chapter-item expanded "><a href="ch09-02-rootkeys.html"><strong aria-hidden="true">9.2.</strong> Key Derivation</a></li><li class="chapter-item expanded "><a href="ch09-03-api-native.html"><strong aria-hidden="true">9.3.</strong> Native API</a></li><li class="chapter-item expanded "><a href="ch09-04-api-std.html"><strong aria-hidden="true">9.4.</strong> std API</a></li><li class="chapter-item expanded "><a href="ch09-05-testing.html"><strong aria-hidden="true">9.5.</strong> Testing and CI</a></li><li class="chapter-item expanded "><a href="ch09-06-backups.html"><strong aria-hidden="true">9.6.</strong> Backups</a></li><li class="chapter-item expanded "><a href="ch09-07-discussion.html"><strong aria-hidden="true">9.7.</strong> Security and Deniability</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-swap-overview.html"><strong aria-hidden="true">10.</strong> Swap Extensions</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">The Xous Operating System</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -154,10 +164,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -167,12 +176,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#modals" id="modals">Modals</a></h1>
+                        <h1 id="modals"><a class="header" href="#modals">Modals</a></h1>
 <p>You can use the <code>Modals</code> server to pop up the following objects:</p>
 <ul>
 <li>Notifications
 <ul>
-<li>Static: shows a message plus an &quot;Okay&quot; button</li>
+<li>Static: shows a message plus an "Okay" button</li>
 <li>Dynamic: can sequence through multiple messages</li>
 </ul>
 </li>
@@ -182,18 +191,16 @@
 <li>Progress bars</li>
 </ul>
 <p>To use <code>Modals</code> in your code, you will need to add <code>modals</code> to your <code>Cargo.toml</code> file. From an application in the <code>apps</code> directory:</p>
-<pre><code class="language-toml">modals = {path = &quot;../../services/modals&quot;}
+<pre><code class="language-toml">modals = {path = "../../services/modals"}
 </code></pre>
 <p>In all of the examples, you will need this pre-amble to create the <code>modals</code> object. The object can be re-used as many times as you like.</p>
 <pre><code class="language-rust noplayground ignore">// connect to the modals object through the name resolver
 let xns = XousNames::new().unwrap();
-let modals = modals::Modals::new(&amp;xns).unwrap();
-</code></pre>
-<h2><a class="header" href="#static-notification" id="static-notification">Static Notification</a></h2>
-<pre><code class="language-rust noplayground ignore">modals.show_notification(&quot;This is a test!&quot;).expect(&quot;notification failed&quot;);
-</code></pre>
-<p>This will pop up a notification that says &quot;This is a test!&quot;. Execution blocks at this line until the user presses any key to acknowledge the notification.</p>
-<h2><a class="header" href="#progress-bar" id="progress-bar">Progress Bar</a></h2>
+let modals = modals::Modals::new(&amp;xns).unwrap();</code></pre>
+<h2 id="static-notification"><a class="header" href="#static-notification">Static Notification</a></h2>
+<pre><code class="language-rust noplayground ignore">modals.show_notification("This is a test!").expect("notification failed");</code></pre>
+<p>This will pop up a notification that says "This is a test!". Execution blocks at this line until the user presses any key to acknowledge the notification.</p>
+<h2 id="progress-bar"><a class="header" href="#progress-bar">Progress Bar</a></h2>
 <p>One can create a progress bar using the <code>start_progress()</code> method, with the following parameters:</p>
 <ul>
 <li><code>name</code>: A <code>&amp;str</code> that is the title of the progress bar</li>
@@ -209,20 +216,19 @@ let tt = ticktimer_server::Ticktimer::new().unwrap();
 
 let start = 1;
 let end = 20;
-modals.start_progress(&quot;Progress Quest&quot;, start, end, start).expect(&quot;couldn't raise progress bar&quot;);
+modals.start_progress("Progress Quest", start, end, start).expect("couldn't raise progress bar");
 
 for i in (start..end).step_by(2) {
-    modals.update_progress(i).expect(&quot;couldn't update progress bar&quot;);
+    modals.update_progress(i).expect("couldn't update progress bar");
     tt.sleep_ms(100).unwrap();
 }
-modals.finish_progress().expect(&quot;couldn't dismiss progress bar&quot;);
-</code></pre>
-<h2><a class="header" href="#dynamic-notifications" id="dynamic-notifications">Dynamic Notifications</a></h2>
+modals.finish_progress().expect("couldn't dismiss progress bar");</code></pre>
+<h2 id="dynamic-notifications"><a class="header" href="#dynamic-notifications">Dynamic Notifications</a></h2>
 <p>Dynamic notifications are notifications which don't have an option for the user
 to close them; instead, the calling program controls when the dialog can
 be closed, and can also dynamically update the message. This is useful for
 displaying, for example, multi-phase progress updates without stopping and
-waiting for a user to hit &quot;OK&quot;.</p>
+waiting for a user to hit "OK".</p>
 <p>The API is similar to that of the Progress Bar, in that there are start, update,
 and close phases:</p>
 <ul>
@@ -234,7 +240,7 @@ Arguments that are <code>None</code> do not update, and show the same text as be
 <li>Once you are finished showing the set of notifications, you must close the
 dialog with <code>dynamic_notification_close()</code>.</li>
 </ul>
-<h2><a class="header" href="#text-entry" id="text-entry">Text Entry</a></h2>
+<h2 id="text-entry"><a class="header" href="#text-entry">Text Entry</a></h2>
 <p>One can request text entry using the <code>get_text()</code> method. This takes the following parameters:</p>
 <ul>
 <li><code>prompt</code>: A <code>&amp;str</code> that is the prompt to the user</li>
@@ -250,20 +256,20 @@ enum ValidatorOp {
 //
 fn my_code() {
     // ... insert code to create modals object, etc.
-    match modals.get_text(&quot;Input an integer greater than 2&quot;, Some(test_validator), Some(ValidatorOp::Int2 as u32)) {
+    match modals.get_text("Input an integer greater than 2", Some(test_validator), Some(ValidatorOp::Int2 as u32)) {
         Ok(text) =&gt; {
-            log::info!(&quot;Input: {}&quot;, text.0);
+            log::info!("Input: {}", text.0);
         }
         _ =&gt; {
-            log::error!(&quot;get_text failed&quot;);
+            log::error!("get_text failed");
         }
     }
-    match modals.get_text(&quot;Input any integer&quot;, Some(test_validator), Some(ValidatorOp::Int2 as u32)) {
+    match modals.get_text("Input any integer", Some(test_validator), Some(ValidatorOp::Int2 as u32)) {
         Ok(text) =&gt; {
-            log::info!(&quot;Input: {}&quot;, text.0);
+            log::info!("Input: {}", text.0);
         }
         _ =&gt; {
-            log::error!(&quot;get_text failed&quot;);
+            log::error!("get_text failed");
         }
     }
 }
@@ -274,20 +280,19 @@ fn test_validator(input: TextEntryPayload, opcode: u32) -&gt; Option&lt;xous_ipc
         Ok(input_int) =&gt;
         if opcode == ValidatorOp::Int2 as u32 {
             if input_int &lt;= 2 {
-                return Some(xous_ipc::String::&lt;256&gt;::from_str(&quot;input must be larger than 2&quot;))
+                return Some(xous_ipc::String::&lt;256&gt;::from_str("input must be larger than 2"))
             } else {
                 return None
             }
         } else if opcode == ValidatorOp::Int as u32 {
             return None
         } else {
-            panic!(&quot;unknown discriminant&quot;);
+            panic!("unknown discriminant");
         }
-        _ =&gt; return Some(xous_ipc::String::&lt;256&gt;::from_str(&quot;enter an integer value&quot;))
+        _ =&gt; return Some(xous_ipc::String::&lt;256&gt;::from_str("enter an integer value"))
     }
-}
-</code></pre>
-<h2><a class="header" href="#radio-box" id="radio-box">Radio Box</a></h2>
+}</code></pre>
+<h2 id="radio-box"><a class="header" href="#radio-box">Radio Box</a></h2>
 <p>A radio box is a mechanism to force a user to pick exactly one item from a list of options.</p>
 <p>One can construct a radio box by first repeatedly calling <code>add_list_item()</code> with a <code>&amp;str</code>
 description of the items to select, and then calling <code>get_radiobutton()</code> with a <code>&amp;str</code> of
@@ -295,62 +300,56 @@ the prompt. The returned value will be the <code>&amp;str</code> description of 
 <p>Note that upon completion of the radio box, the list of items is automatically cleared
 in preparation for another invocation of <code>modals</code>.</p>
 <pre><code class="language-rust noplayground ignore">const RADIO_TEST: [&amp;'static str; 4] = [
-    &quot;zebra&quot;,
-    &quot;cow&quot;,
-    &quot;horse&quot;,
-    &quot;cat&quot;,
+    "zebra",
+    "cow",
+    "horse",
+    "cat",
 ];
 
 for item in RADIO_TEST {
-    modals.add_list_item(item).expect(&quot;couldn't build radio item list&quot;);
+    modals.add_list_item(item).expect("couldn't build radio item list");
 }
-match modals.get_radiobutton(&quot;Pick an animal&quot;) {
-    Ok(animal) =&gt; log::info!(&quot;{} was picked&quot;, animal),
-    _ =&gt; log::error!(&quot;get_radiobutton failed&quot;),
-}
-</code></pre>
-<h2><a class="header" href="#check-box" id="check-box">Check Box</a></h2>
+match modals.get_radiobutton("Pick an animal") {
+    Ok(animal) =&gt; log::info!("{} was picked", animal),
+    _ =&gt; log::error!("get_radiobutton failed"),
+}</code></pre>
+<h2 id="check-box"><a class="header" href="#check-box">Check Box</a></h2>
 <p>A check box is a mechanism to present a user with a list of several options, of which
 they can select none, some, or all of them.</p>
 <p>The usage is nearly identical to the Radio Box above, except that the return value
 is a <code>Vec::&lt;String&gt;</code>. The <code>Vec</code> will be empty if no elements are selected.</p>
 <pre><code class="language-rust noplayground ignore">const CHECKBOX_TEST: [&amp;'static str; 5] = [
-    &quot;happy&quot;,
-    &quot;😃&quot;,
-    &quot;安&quot;,
-    &quot;peaceful&quot;,
-    &quot;...something else!&quot;,
+    "happy",
+    "😃",
+    "安",
+    "peaceful",
+    "...something else!",
 ];
 
 for item in CHECKBOX_TEST {
-    modals.add_list_item(item).expect(&quot;couldn't build checkbox list&quot;);
+    modals.add_list_item(item).expect("couldn't build checkbox list");
 }
-match modals.get_checkbox(&quot;You can have it all:&quot;) {
+match modals.get_checkbox("You can have it all:") {
     Ok(things) =&gt; {
-        log::info!(&quot;The user picked {} things:&quot;, things.len());
+        log::info!("The user picked {} things:", things.len());
         for thing in things {
-            log::info!(&quot;{}&quot;, thing);
+            log::info!("{}", thing);
         }
     },
-    _ =&gt; log::error!(&quot;get_checkbox failed&quot;),
-}
-</code></pre>
+    _ =&gt; log::error!("get_checkbox failed"),
+}</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="ch08-00-graphics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
-                            <a rel="next" href="ch08-02-menus.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="ch08-02-menus.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -358,49 +357,36 @@ match modals.get_checkbox(&quot;You can have it all:&quot;) {
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="ch08-00-graphics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
-                    <a rel="next" href="ch08-02-menus.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="ch08-02-menus.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
+    </div>
     </body>
 </html>

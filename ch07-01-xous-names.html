@@ -1,40 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Xous Names - The Xous Operating System</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,19 +29,18 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -70,83 +56,107 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.1.</strong> Hello, World!</a></li><li class="chapter-item expanded "><a href="ch01-04-coding-style.html"><strong aria-hidden="true">1.2.</strong> Coding Style</a></li><li class="chapter-item expanded "><a href="ch01-03-xous-by-example.html"><strong aria-hidden="true">1.3.</strong> Xous by example</a></li><li class="chapter-item expanded "><a href="ch01-04-glossary.html"><strong aria-hidden="true">1.4.</strong> Glossary</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-server-architecture.html"><strong aria-hidden="true">2.</strong> Server Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch02-04-synchronization.html"><strong aria-hidden="true">2.1.</strong> Synchronization</a></li></ol></li><li class="chapter-item expanded "><a href="ch03-00-introducing-the-kernel.html"><strong aria-hidden="true">3.</strong> Introducing the Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-memory-layout.html"><strong aria-hidden="true">3.1.</strong> Memory Layout</a></li><li class="chapter-item expanded "><a href="ch03-02-hosted-mode.html"><strong aria-hidden="true">3.2.</strong> Hosted Mode</a></li><li class="chapter-item expanded "><a href="ch03-03-process-creation.html"><strong aria-hidden="true">3.3.</strong> Process Creation</a></li><li class="chapter-item expanded "><a href="ch03-04-debugging-programs.html"><strong aria-hidden="true">3.4.</strong> Debugging Programs with GDB</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-renode-emulation.html"><strong aria-hidden="true">4.</strong> Renode Emulation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-04-writing-cs-peripherals.html"><strong aria-hidden="true">4.1.</strong> Writing C# Peripherals</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-system-startup.html"><strong aria-hidden="true">5.</strong> System Startup</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-arguments.html"><strong aria-hidden="true">5.1.</strong> Arguments Structure</a></li><li class="chapter-item expanded "><a href="ch05-02-loader.html"><strong aria-hidden="true">5.2.</strong> Xous Loader</a></li><li class="chapter-item expanded "><a href="ch05-03-minielf.html"><strong aria-hidden="true">5.3.</strong> MiniELF Format</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-build-system-overview.html"><strong aria-hidden="true">6.</strong> Build System</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-testing-crates.html"><strong aria-hidden="true">6.1.</strong> Testing Crates</a></li><li class="chapter-item expanded "><a href="ch06-02-create-image.html"><strong aria-hidden="true">6.2.</strong> Image Creation</a></li><li class="chapter-item expanded "><a href="ch06-03-target-specification.html"><strong aria-hidden="true">6.3.</strong> Target Specification, UTRA</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-messages.html"><strong aria-hidden="true">7.</strong> Messages</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-xous-names.html" class="active"><strong aria-hidden="true">7.1.</strong> Xous Names</a></li><li class="chapter-item expanded "><a href="ch07-02-caller-idioms.html"><strong aria-hidden="true">7.2.</strong> Caller Idioms</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-03-nonsynchronizing.html"><strong aria-hidden="true">7.2.1.</strong> Non-synchronizing</a></li><li class="chapter-item expanded "><a href="ch07-04-synchronizing.html"><strong aria-hidden="true">7.2.2.</strong> Synchronous</a></li><li class="chapter-item expanded "><a href="ch07-05-asynchronous.html"><strong aria-hidden="true">7.2.3.</strong> Asynchronous</a></li><li class="chapter-item expanded "><a href="ch07-06-deferred.html"><strong aria-hidden="true">7.2.4.</strong> Deferred Response</a></li><li class="chapter-item expanded "><a href="ch07-07-forwarding.html"><strong aria-hidden="true">7.2.5.</strong> Forwarding</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-08-performance.html"><strong aria-hidden="true">7.3.</strong> Performance</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-graphics.html"><strong aria-hidden="true">8.</strong> Graphics Toolkit</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-modals.html"><strong aria-hidden="true">8.1.</strong> Modals</a></li><li class="chapter-item expanded "><a href="ch08-02-menus.html"><strong aria-hidden="true">8.2.</strong> Menus</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-pddb-overview.html"><strong aria-hidden="true">9.</strong> Plausibly Deniable DataBase (PDDB)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-basis.html"><strong aria-hidden="true">9.1.</strong> Basis Internal Structure</a></li><li class="chapter-item expanded "><a href="ch09-02-rootkeys.html"><strong aria-hidden="true">9.2.</strong> Key Derivation</a></li><li class="chapter-item expanded "><a href="ch09-03-api-native.html"><strong aria-hidden="true">9.3.</strong> Native API</a></li><li class="chapter-item expanded "><a href="ch09-04-api-std.html"><strong aria-hidden="true">9.4.</strong> std API</a></li><li class="chapter-item expanded "><a href="ch09-05-testing.html"><strong aria-hidden="true">9.5.</strong> Testing and CI</a></li><li class="chapter-item expanded "><a href="ch09-06-backups.html"><strong aria-hidden="true">9.6.</strong> Backups</a></li><li class="chapter-item expanded "><a href="ch09-07-discussion.html"><strong aria-hidden="true">9.7.</strong> Security and Deniability</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-swap-overview.html"><strong aria-hidden="true">10.</strong> Swap Extensions</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">The Xous Operating System</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/betrusted-io/xous-book" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -154,10 +164,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -167,13 +176,13 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#xous-names" id="xous-names">Xous Names</a></h1>
+                        <h1 id="xous-names"><a class="header" href="#xous-names">Xous Names</a></h1>
 <p>Servers are identified by a 128-bit ID number in Xous. Anyone with knowledge of the 128-bit ID number can make requests to that server.</p>
-<p>Some servers have &quot;well-known names&quot;. These servers are designed to accept any number of connections and all of its APIs are considered safe for public use.</p>
+<p>Some servers have "well-known names". These servers are designed to accept any number of connections and all of its APIs are considered safe for public use.</p>
 <p>Other servers may have sensitive API calls. Their 128-bit IDs are treated as a secret.</p>
 <p>In order to discover their ID, these servers register their ID in <code>xous-names</code>, along with a 64-byte <code>server name</code> which is a unique plaintext description of the server, and a <code>MaxConnections</code> which is the maximum number of processes allowed to connect to the registered server.</p>
 <p><img src="images/xous-names.png" alt="overview of Xous names" /></p>
-<h2><a class="header" href="#well-known-names" id="well-known-names">Well-Known Names</a></h2>
+<h2 id="well-known-names"><a class="header" href="#well-known-names">Well-Known Names</a></h2>
 <p>A few servers have well-known names:</p>
 <ul>
 <li>log server: needed to debug name resolution issues</li>
@@ -181,24 +190,22 @@
 <li>Xous Names: the name server itself has a well known name</li>
 <li>Some <code>std</code> library servers, which should not be connected to directly by user processes but instead through <code>libstd</code> calls.</li>
 </ul>
-<p>Well-known servers have a name like <code>b&quot;xous-name-server&quot;</code>, which reads like ASCII text but fits in exactly 128 bits: you just have to know the magic string, and you can connect to them.</p>
-<p>Application programers will never need to know this name, because it is encapsulated within the objects that access the servers. For example, <code>XousNames::new()</code> &quot;just knows&quot; the name, so to access <code>xous-names</code> one simply needs to create a new <code>XousNames</code> object.</p>
-<h2><a class="header" href="#discovered-names" id="discovered-names">Discovered Names</a></h2>
-<p>All other servers have their names registered as a 64-byte free-form <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a cryptographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the &quot;well known&quot; names, because the chance that the TRNG would output the string <code>b&quot;xous-name-server&quot;</code> by chance is vanishingly small.</p>
+<p>Well-known servers have a name like <code>b"xous-name-server"</code>, which reads like ASCII text but fits in exactly 128 bits: you just have to know the magic string, and you can connect to them.</p>
+<p>Application programers will never need to know this name, because it is encapsulated within the objects that access the servers. For example, <code>XousNames::new()</code> "just knows" the name, so to access <code>xous-names</code> one simply needs to create a new <code>XousNames</code> object.</p>
+<h2 id="discovered-names"><a class="header" href="#discovered-names">Discovered Names</a></h2>
+<p>All other servers have their names registered as a 64-byte free-form <code>u8</code> array, which by convention maps to ASCII text (nothing prevents you from doing weird things that don't map to unicode, but, please don't). The resulting server ID is a cryptographically random 128-bit ID, which makes it effectively unguessable. Note that no checks are done for collisions with the "well known" names, because the chance that the TRNG would output the string <code>b"xous-name-server"</code> by chance is vanishingly small.</p>
 <p>When registering a server, one might invoke a call like this:</p>
 <pre><code class="language-rust noplayground ignore">    let xns = xous_names::XousNames::new().unwrap();
     let net_sid = xns
         .register_name(api::SERVER_NAME_NET, None)
-        .expect(&quot;can't register server&quot;);
-</code></pre>
+        .expect("can't register server");</code></pre>
 <p>or this:</p>
 <pre><code class="language-rust noplayground ignore">    let xns = xous_names::XousNames::new().unwrap();
     let keys_sid = xns
         .register_name(api::SERVER_NAME_KEYS, Some(3))
-        .expect(&quot;can't register server&quot;);
-</code></pre>
+        .expect("can't register server");</code></pre>
 <p>Generally, the server name is defined as a string within the <code>api.rs</code> section, so that other crates can refer to it via the API. In the case of the <code>net</code> crate, the maximum connection limit is <code>None</code>, which means that any processes may connect to the <code>net</code> crate. In the case of the <code>root keys</code> crate, the number of connections to it is limited to 3 by the <code>Some(3)</code> argument.</p>
-<p>In this case, the first three processes that attempt to connect to the <code>root keys</code> crate are handed out it's 128-bit server ID. Later processes that attempt to connect will be denied. This is a &quot;trust on first use&quot; model similar to how SSH maps host public keys to IP addresses.</p>
+<p>In this case, the first three processes that attempt to connect to the <code>root keys</code> crate are handed out it's 128-bit server ID. Later processes that attempt to connect will be denied. This is a "trust on first use" model similar to how SSH maps host public keys to IP addresses.</p>
 <p>Generally, sensitive servers like <code>root keys</code> are encapsulated by other processes that act as firewalls to it. So, if there were a hypothetical need to dole out derived keys from the <code>root keys</code> set, a second <code>derived keys</code> server might be created which can accept any number of connections, and one more connection would be added to the <code>root keys</code> connection count for the <code>derived keys</code> server. The <code>derived keys</code> server would thus act as a firewall to the <code>root keys</code> server.</p>
 <p>Furthermore, as a rule, the number of processes created by a system must be static and known on boot in order for this system to work. This is because the most secure operations will not be allowed to be conducted until all of the servers that have specified a connection limit have their connection tables fully occuppied. Therefore it is not allowed to, for example for the hypothetical <code>derived keys</code> to connect to the <code>root keys</code> server at some point during runtime, and then de-allocate its connection when it no longer needs it. Instead, <code>dervied keys</code> should eagerly connect to the <code>root keys</code> on boot so that it can reserve and permanently hold its slot in the connection table.</p>
 <p>The goal of this is to disallow a rogue or unexpected process from connecting to sensitive servers through the Xous Names discovery mechanism.</p>
@@ -207,17 +214,13 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="ch07-00-messages.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
-                            <a rel="next" href="ch07-02-caller-idioms.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="ch07-02-caller-idioms.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -225,49 +228,36 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="ch07-00-messages.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
-                    <a rel="next" href="ch07-02-caller-idioms.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="ch07-02-caller-idioms.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
+    </div>
     </body>
 </html>
