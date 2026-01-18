@@ -44,7 +44,7 @@ jobs:
         echo "$(pwd)/bin" >> ${GITHUB_PATH}
     - name: Install mdbook-pdf
       run: |
-        curl -sSL https://github.com/HollowMan6/mdbook-pdf/releases/latest/download/mdbook-pdf-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+        curl -sSL https://github.com/HollowMan6/mdbook-pdf/releases/download/v0.1.13/mdbook-pdf-v0.1.13-x86_64-unknown-linux-gnu -o bin/mdbook-pdf
         chmod +x bin/mdbook-pdf
     - name: Install wkhtmltopdf
       run: |
