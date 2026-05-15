@@ -161,7 +161,7 @@ Regions marked as `inie` are copied to the working set RAM and executed out of R
 
 Regions marked as `inis` are copied into encrypted swap on boot. The kernel page table state starts out with the correct `R`/`W`/`X`/`U` values, but `V` is not set, and `P` is set. Entries are created in the SPT to inform the tracker where to find the pages.
 
-An kernel argument of type `swap` is provided, which is a base and bounds to the SPT/SMT region. This is meant to be passed to the `swapper` process when it registers to the kernel.
+A kernel argument of type `swap` is provided, which is a base and bounds to the SPT/SMT region. This is meant to be passed to the `swapper` process when it registers to the kernel.
 
 The image creation routine and kernel arguments need to be extended to support `inis` regions located in off-chip SPI FLASH. The off-chip data is not encrypted, but it is signature checked with a dedicated signature block. Note that the off-chip SPI FLASH does not need to be memory mapped: the loader may read the memory through a register interface.
 
@@ -195,7 +195,7 @@ Xous has an "exception handler" context for system calls. It is not set up for n
 
 While the former strategy sounds elegant, it would require patching every syscall path with something that reads a piece of state to determine which level of the nesting stack you're on. In particular, the assembly stub that is responsible for setting up the exceptions would need to be reworked to do this. This was deemed to be more invasive and more bug-prone than the alternative.
 
-So, in this implementation, `swap_reentrant_sycall` has an assembly stub which runs just before entering a re-entrant syscall, and also just after. The routine reads the current stack pointer, copies the exception handler's entire stack to a backup location, does the syscall, and then on return, restores the stack's contents. This minimizes code changes to other code paths (reducing analytical complexity) in exchange for an operation that is extremely risky but analytically tractable.
+So, in this implementation, `swap_reentrant_syscall` has an assembly stub which runs just before entering a re-entrant syscall, and also just after. The routine reads the current stack pointer, copies the exception handler's entire stack to a backup location, does the syscall, and then on return, restores the stack's contents. This minimizes code changes to other code paths (reducing analytical complexity) in exchange for an operation that is extremely risky but analytically tractable.
 
 #### RegisterSwapper Syscall
 

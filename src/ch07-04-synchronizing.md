@@ -1,7 +1,7 @@
 # Synchronizing
 
 ## Scalar Pattern
-A scalar synchronizing call has the following characterisics:
+A scalar synchronizing call has the following characteristics:
 
 - Up to 4 `u32`-sized arguments
 - Caller blocks until the callee returns
@@ -76,7 +76,7 @@ fn xmain() -> ! {
 ```
 
 ## Memory Pattern
-A memory synchronizing call has the following characterisics:
+A memory synchronizing call has the following characteristics:
 
 - Messages are sent in blocks rounded up to the nearest 4096-byte page size
 - Caller blocks until the data is returned

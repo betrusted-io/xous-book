@@ -16,7 +16,7 @@ There are a few well-known `Server ID`s. These include bare minimum IDs that are
 
 To connect to a Server, call `xous::connect()`. For example, to connect to the `ticktimer-server`, call:
 
-```cs
+```rust,noplayground,ignore
 let connection_id = xous::connect(xous::SID::from_bytes(b"ticktimer-server").unwrap())?;
 ```
 
@@ -34,7 +34,7 @@ To disconnect from a server, call `unsafe { xous::disconnect(connection_id) };`.
 
 For example, if you `connect()` to a Server and spawn a thread with that connection ID, you should only call `disconnect()` once that thread has finished with the connection. Similarly, if you `Copy` the connection ID to the thread, you must make sure that **both** uses of the Connection ID are destroyed prior to disposing of the connection.
 
-Because of this, it is recommended that you use an `ARC<CID>` in order to ensure that the connection is only closed when it is no longer in use.
+Because of this, it is recommended that you use an `Arc<CID>` in order to ensure that the connection is only closed when it is no longer in use.
 
 Furthermore, recall that subsequent calls to `connect()` with the same argument will reuse the `connection_id`. Because of this, it is vital that you only call `disconnect()` when you are certain that all instances are finished with the connection.
 

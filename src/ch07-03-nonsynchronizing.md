@@ -1,6 +1,6 @@
 # Non-Synchronizing Idioms
 ## Scalar Pattern
-A scalar non-synchronizing call has the following characterisics:
+A scalar non-synchronizing call has the following characteristics:
 
 - Up to 4 `u32`-sized arguments
 - Caller does not block
@@ -62,7 +62,7 @@ fn xmain() -> ! {
 ```
 
 ## Memory Pattern
-A memory non-synchronizing call has the following characterisics:
+A memory non-synchronizing call has the following characteristics:
 
 - Messages are sent in blocks rounded up to the nearest 4096-byte page size
 - Caller does not block
