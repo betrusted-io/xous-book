@@ -2,7 +2,7 @@
 
 Xous isolates target-specific code, such as the location and fields of hardware registers, inside the Unambiguous Thin Register Abstraction (UTRA).
 
-The UTRA is contained in the `utralib` crate, and its contents are generated from [SVD files](https://www.keil.com/pack/doc/CMSIS/SVD/html/svd_Format_pg.html) using [`svd2utra`](https://crates.io/crates/svd2utra). SVD itself is an XML format commonly used by hardware vendors for the interchange of SoC registers, and is a native output format of SoC building tools such as LiteX. SVD files are also readily available for many commercial MCUs.
+The UTRA is contained in the `utralib` crate, and its contents are generated from [SVD files](https://open-cmsis-pack.github.io/svd-spec/main/svd_Format_pg.html) using [`svd2utra`](https://crates.io/crates/svd2utra). SVD itself is an XML format commonly used by hardware vendors for the interchange of SoC registers, and is a native output format of SoC building tools such as LiteX. SVD files are also readily available for many commercial MCUs.
 
 ## Specifying Targets
 
