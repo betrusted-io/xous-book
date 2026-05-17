@@ -16,7 +16,7 @@ The entire Xous operating system is built from these small servers, making it ea
 
 Memory is obtained by issuing a `MapMemory` syscall. This call can optionally provide a physical address to map. If no memory is specified, a random physical page is provided. The process has no way of knowing the physical address of the page.
 
-If the caller allocates memory from the primary region, it will be zeroed. If it allocates memory from an ancillary region such as a registor or a framebuffer, then that memory will not be initialized.
+If the caller allocates memory from the primary region, it will be zeroed. If it allocates memory from an ancillary region such as a register or a framebuffer, then that memory will not be initialized.
 
 Processes can use this to allocate memory-mapped regions in order to create drivers.
 

@@ -50,7 +50,7 @@ pub fn create_kbd_menu(status_conn: xous::CID, kbd_mgr: xous::SID) -> MenuMatic 
 
 ```
 
-This will create a menu with three items, "QWERTY", "Dvorak", and "Close Menu". When, for example, the "QWERTY" item is selected, it will send a message to the server pointed to be `status_conn`, with the argument of `StatusOpcode::SetKeyboard` as a`u32`, and an argument consisting of `[code, 0, 0, 0,]`. In this case, only `code` has meaning, and the other three are just placeholders.
+This will create a menu with three items, "QWERTY", "Dvorak", and "Close Menu". When, for example, the "QWERTY" item is selected, it will send a message to the server pointed to be `status_conn`, with the argument of `StatusOpcode::SetKeyboard` as a `u32`, and an argument consisting of `[code, 0, 0, 0,]`. In this case, only `code` has meaning, and the other three are just placeholders.
 
 The third menu item has `None` for the connection, so when it is selected, no messages are sent and the menu is simply closed.
 
@@ -93,6 +93,6 @@ let kbd_mgr = xous::create_server().unwrap();
 - `add_item(MenuItem)` - adds the `MenuItem` specified to the end of the menu list, returning `true` to indicate success.
 - `delete_item(&str)` - deletes an item with a `name` specified as the argument. Returns `true` to indicate success.
 - `set_index(usize)` - sets the index pointer of the menu to the specified offset. Typically used to create a "default" position for the menu before it is raised.
-- `quit()` - exit and destory the `MenuMatic` server
+- `quit()` - exit and destroy the `MenuMatic` server
 
 If you don't need the above functionality, it's recommended that you do not create the server, as it consumes memory and eats up connection and server name space.

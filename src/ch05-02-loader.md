@@ -80,7 +80,7 @@ Stage 1 copies and aligns all of the processes, such that the sub-page offsets f
 
 In the case that the offsets for the memory image on FLASH line up with the virtual memory offsets, nothing needs to be done for the text, read-only data, and exception handler sections. In the case that they do not line up, a copy must be made in RAM of these sections to ensure correct alignment.
 
-Virtual sections marked as `NOCOPY` must be allocated and zeroized, and sections marked with write access must always the copied.
+Virtual sections marked as `NOCOPY` must be allocated and zeroized, and sections marked with write access must always be copied.
 
 The loader reserves the top two pages for its own working stack space, and adds a configurable `GUARD_MEMORY_BYTES` buffer to determine the beginning of process space. Note that one page of the "guard" area is used to store a "clean suspend marker", which is used by the loader to check if the current power-on cycle is due to a resume, or a cold boot.
 
@@ -203,7 +203,7 @@ Thus one can effectively think of this entire "boot process" as just one big mac
 
 ## Resuming from Suspend
 
-The operating system supports resuming from a cold poweroff. In order to get into this state, a program in the operating system wrote some values into RAM, then issued a command to power of the CPU in the middle of an interrupt handler.
+The operating system supports resuming from a cold poweroff. In order to get into this state, a program in the operating system wrote some values into RAM, then issued a command to power off the CPU in the middle of an interrupt handler.
 
 A system is considered to be suspended when RAM contains a valid group of murmur3-signed hashes located at the 3rd page from the end of memory. If these hashes match, then the system is considered to be in suspend.
 

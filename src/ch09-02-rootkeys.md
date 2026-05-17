@@ -1,6 +1,6 @@
 # Deriving The PDDB's Keys
 
-This chapter examines the cryptopraphic material used to encrypt the PDDB, and traces its origin all the way back to the hardware root of trust. It assumes you are familiar with the general structure of the PDDB.
+This chapter examines the cryptographic material used to encrypt the PDDB, and traces its origin all the way back to the hardware root of trust. It assumes you are familiar with the general structure of the PDDB.
 
 ## Basis Keys
 
@@ -32,7 +32,7 @@ The PDDB has a default Basis called `.System`, which has its page table and data
 
 ### Secret Basis Key Derivation
 
-A secret Basis key derivation is performed using the folowing algorithm, implemented in Rust but presented here in Python for clarity:
+A secret Basis key derivation is performed using the following algorithm, implemented in Rust but presented here in Python for clarity:
 
 ```python
 for name, pw in basis_credentials.items():
@@ -71,7 +71,7 @@ for name, pw in basis_credentials.items():
     hkdf = HKDF(algorithm=hashes.SHA256(), length=32, salt=pddb_salt[:32], info=b"pddb page table key")
     pt_key = hkdf.derive(hashed_pw)
 
-    # Derive a key for the data pages, using KHDF/SHA256, plus teh first 32 bytes of salt,
+    # Derive a key for the data pages, using HKDF/SHA256, plus the first 32 bytes of salt,
     # and an info word of "pddb data key"
     hkdf = HKDF(algorithm=hashes.SHA256(), length=32, salt=pddb_salt[:32], info=b"pddb data key")
     data_key = hkdf.derive(hashed_pw)

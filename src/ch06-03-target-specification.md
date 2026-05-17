@@ -75,7 +75,7 @@ a crate which consists of:
 1. A library which is used to perform register accesses
 2. A "header file" (library) that is auto-generated from a given `soc.svd` file
 
-The library provides the a function template for `CSR` that provides the following
+The library provides a function template for `CSR` that provides the following
 methods:
 
 * `.r(reg: Register) -> T` - Read. Reads the entire contents of a CSR

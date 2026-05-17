@@ -262,7 +262,7 @@ In this case, the server is directly accessing the page of memory lent from
 the client, and copying the return data into the underlying `[u8]` of the memory
 message. It uses one of the advisory fields (in this case, `valid`) to note
 how long the return data is (recall that `valid` and `size` have no fixed
-meaning are are available to the API writer to annotate the contents of the
+meaning and are available to the API writer to annotate the contents of the
 re-mapped memory page).
 
 Fortunately for this example, we're just returning a `String`, which deserializes
