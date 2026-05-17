@@ -1329,7 +1329,7 @@ The format for this tag consists of a single word defining how many additional s
 </tbody></table>
 </div>
 <p>Exactly every byte in the signed region, including the Version and Length, are signed. By including the Version and Length field in the signed region, we can mitigate downgrade and length extension attacks.</p>
-<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/ed25519-dalek">Dalek Cryptography Ed25519</a> crate.</p>
+<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/curve25519-dalek">Dalek Cryptography Curve25519</a> crate.</p>
 <p>The public key used to check the signature can come from one of three sources:</p>
 <ol>
 <li>A self-generated key. This is the "most trusted" source. Ultimately, every device should self-sign its code.</li>
@@ -3387,16 +3387,16 @@ you access to the full 32GiB file size limit.</p>
 <p>Large keys consume about one 4k-page per key, regardless of the key size. Large keys only retrieve their data when requested, and will keep only the most recently accessed page in RAM, regardless of the size of the large key. Thus one could store a several-megabyte file in a large key, and not worry about blowing out the cache.</p>
 <p>However, because the large key cache is so simple, it has performance problems, especially for situations where one plans to access large key data randomly, or in the worst case, they are accessing bytes that happen to cross a page boundary -- every time you cross the boundary, the old page is forgotten, and the new page is read in.</p>
 <p>The caching mechanism can be improved down the road, but, at the moment for an application like <code>vault</code>, the current implementation should be more than adequate to handle hundreds of password records.</p>
-<h3 id="the-make-before-break-mbbb-structure"><a class="header" href="#the-make-before-break-mbbb-structure">The "Make Before Break" (MBBB) Structure</a></h3>
+<h3 id="the-make-before-break-mbb-structure"><a class="header" href="#the-make-before-break-mbb-structure">The "Make Before Break" (MBB) Structure</a></h3>
 <p>In order to protect against data loss in case of an untimely power outage, several pages of FLASH are devoted to the "make before break" feature. The core problem is that a single page of the page table contains records for 256 page table entries. If there is a power outage while updating one of the entries, all of the other 255 entries are also lost.</p>
-<p>Thus, the MBBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.</p>
-<p>Initially, the MBBB area is blank (all <code>FF</code>'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBBB (the randomness is for wear-levelling, not security) <em>with</em> the changes applied, and then the page containing the page table entry is erased.</p>
-<p>When the next page table entry needs to be updated, the MBBB page table image is written to the blank slot in the page table, and the process repeats.</p>
-<p>There is no mechanism to record where the MBBB page is:</p>
+<p>Thus, the MBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.</p>
+<p>Initially, the MBB area is blank (all <code>FF</code>'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBB (the randomness is for wear-levelling, not security) <em>with</em> the changes applied, and then the page containing the page table entry is erased.</p>
+<p>When the next page table entry needs to be updated, the MBB page table image is written to the blank slot in the page table, and the process repeats.</p>
+<p>There is no mechanism to record where the MBB page is:</p>
 <ul>
-<li>The MBBB area is only consulted if a blank page is found in the page table</li>
+<li>The MBB area is only consulted if a blank page is found in the page table</li>
 <li>"Blankness" of an area is determined by only consulting the first 16 bytes and checking if they are 0xFF. If they are, the entire page is considered blank.</li>
-<li>The MBBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBBB page.</li>
+<li>The MBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBB page.</li>
 </ul>
 <h2 id="free-space"><a class="header" href="#free-space">Free Space</a></h2>
 <p>Plausible deniability is all about reducing the number of side channels that can leak information about the existence or non-existence of secret data. The amount of free space in the PDDB is a potent side channel. If the true amount of free space could be known, an adversary can use that to deduce the existence or non-existence of additional secrets within the PDDB beyond the ones revealed to the adversary.</p>
@@ -3425,7 +3425,7 @@ you access to the full 32GiB file size limit.</p>
 <ul>
 <li>Page tables</li>
 <li>Static crypto data (one page)</li>
-<li>MBBB area (10 pages)</li>
+<li>MBB area (10 pages)</li>
 <li>FSCB (16 pages)</li>
 <li>Data pages (1:1 map to page table entries)</li>
 </ul>

@@ -210,7 +210,7 @@
 </tbody></table>
 </div>
 <p>Exactly every byte in the signed region, including the Version and Length, are signed. By including the Version and Length field in the signed region, we can mitigate downgrade and length extension attacks.</p>
-<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/ed25519-dalek">Dalek Cryptography Ed25519</a> crate.</p>
+<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/curve25519-dalek">Dalek Cryptography Curve25519</a> crate.</p>
 <p>The public key used to check the signature can come from one of three sources:</p>
 <ol>
 <li>A self-generated key. This is the "most trusted" source. Ultimately, every device should self-sign its code.</li>
