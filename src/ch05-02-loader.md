@@ -41,7 +41,7 @@ The signed region has the following format:
 
 Exactly every byte in the signed region, including the Version and Length, are signed. By including the Version and Length field in the signed region, we can mitigate downgrade and length extension attacks.
 
-Signatures are computed using the [Dalek Cryptography Ed25519](https://github.com/dalek-cryptography/ed25519-dalek) crate.
+Signatures are computed using the [Dalek Cryptography Curve25519](https://github.com/dalek-cryptography/curve25519-dalek) crate.
 
 The public key used to check the signature can come from one of three sources:
 

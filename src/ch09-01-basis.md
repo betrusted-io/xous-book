@@ -196,20 +196,20 @@ However, because the large key cache is so simple, it has performance problems, 
 
 The caching mechanism can be improved down the road, but, at the moment for an application like `vault`, the current implementation should be more than adequate to handle hundreds of password records.
 
-### The "Make Before Break" (MBBB) Structure
+### The "Make Before Break" (MBB) Structure
 
 In order to protect against data loss in case of an untimely power outage, several pages of FLASH are devoted to the "make before break" feature. The core problem is that a single page of the page table contains records for 256 page table entries. If there is a power outage while updating one of the entries, all of the other 255 entries are also lost.
 
-Thus, the MBBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.
+Thus, the MBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.
 
-Initially, the MBBB area is blank (all `FF`'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBBB (the randomness is for wear-levelling, not security) *with* the changes applied, and then the page containing the page table entry is erased.
+Initially, the MBB area is blank (all `FF`'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBB (the randomness is for wear-levelling, not security) *with* the changes applied, and then the page containing the page table entry is erased.
 
-When the next page table entry needs to be updated, the MBBB page table image is written to the blank slot in the page table, and the process repeats.
+When the next page table entry needs to be updated, the MBB page table image is written to the blank slot in the page table, and the process repeats.
 
-There is no mechanism to record where the MBBB page is:
-- The MBBB area is only consulted if a blank page is found in the page table
+There is no mechanism to record where the MBB page is:
+- The MBB area is only consulted if a blank page is found in the page table
 - "Blankness" of an area is determined by only consulting the first 16 bytes and checking if they are 0xFF. If they are, the entire page is considered blank.
-- The MBBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBBB page.
+- The MBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBB page.
 
 ## Free Space
 
@@ -255,7 +255,7 @@ The physical layout of the PDDB (as of v0.9.9) is as follows, from lowest to hig
 
 - Page tables
 - Static crypto data (one page)
-- MBBB area (10 pages)
+- MBB area (10 pages)
 - FSCB (16 pages)
 - Data pages (1:1 map to page table entries)
 
