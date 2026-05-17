@@ -72,7 +72,7 @@ Processes are launched in the kernel by setting a series of environment variable
 
 A thread is created for this process to handle it and to route messages within the kernel. The `XOUS_PROCESS_KEY` is effectively a single-use token that is unique per process and is used to match a process within the kernel.
 
-When the process launches it should establish a connection to the kernel by connecting to `XOUS_SERVER` and sending `XOUS_PROCESS_KEY`. This will authenticate the process with the kernel ane enable it to send and receive messages.
+When the process launches it should establish a connection to the kernel by connecting to `XOUS_SERVER` and sending `XOUS_PROCESS_KEY`. This will authenticate the process with the kernel and enable it to send and receive messages.
 
 The initial handshake has the following layout:
 

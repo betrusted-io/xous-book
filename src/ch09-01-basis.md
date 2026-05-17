@@ -20,7 +20,7 @@ If the user were to lock `Basis B`, the "User View" would now lack the data cont
 
 ![example of the PDDB with one secret basis locked](images/pddb-example2.png)
 
-Furthermore, each Basis is implemented using ciphers that have a particular characteristic, namely, [IND$-CPA](https://web.cs.ucdavis.edu/~rogaway/papers/ad.pdf): the ciphertext is indistinguishable from random noise. AES-GCM-SIV has this property (and if I'm not mistaken, provably indistingishable, but ask a cryptographer for the latest research).
+Furthermore, each Basis is implemented using ciphers that have a particular characteristic, namely, [IND$-CPA](https://web.cs.ucdavis.edu/~rogaway/papers/ad.pdf): the ciphertext is indistinguishable from random noise. AES-GCM-SIV has this property (and if I'm not mistaken, provably indistinguishable, but ask a cryptographer for the latest research).
 
 ![the role of provable indistinguishability](images/pddb-basic-idea.png)
 
@@ -34,7 +34,7 @@ This quality of indistinguishability from free space is the source of plausible 
 
 The simplified diagram above would require a user to scan every page of storage and trial-decrypt each page to discover the full extent of user data. It also lacks an index to track what data goes where.
 
-These two problems are solved by using a classic "page table" mechanism to map Basis data onto the actual storage array. The virtual memory space of any given Basis is 64 bits, with pages that are 4064 bytes long (this is 4096 physical bytes less a per-page overhead for AEC-GCM-SIV + journaling).
+These two problems are solved by using a classic "page table" mechanism to map Basis data onto the actual storage array. The virtual memory space of any given Basis is 64 bits, with pages that are 4064 bytes long (this is 4096 physical bytes less a per-page overhead for AES-GCM-SIV + journaling).
 
 The page table itself consists of entries that are 128-bits long (sized to match the length of an AES block), that are encrypted with AES-ECB.
 
@@ -49,7 +49,7 @@ Each page table entry encodes the following data:
 
 AES-ECB is tricky to use. However, it is fast, and requires no dependency to adjacent blocks. A nonce is provided to frustrate known-plaintext attacks. There is a trade-off between nonce size, checksum length, and fitting everything within a single AES block. The 32-bit nonce does not provide perfect collision resistance, but the potential leakage is hypothesized to be much smaller than other known side channels in the architecture. The impact of a collision is also negligible: an attacker will know that they have discovered a ciphertext that corresponds to a valid page table entry, but they don't know to which Basis or to what address.
 
-The page table entry is also protected with a 32-bit murmur3 hash checksum that is not meant to be a cryptographic check; it is instead a fast "go/no-go" check on the potential validity of a page table entry. A page table entry is only considered fully valid until the corresponding data section also decrypts to the data key. The data sections are protected with a proper cryptographic-strength MAC via AES-GCM-SIV, so it's not a problem if we get occassional false-positives on the page table. In practice, false-positives turn into pages that are allocated-to-nowhere, e.g. the space never gets used to store useful data.
+The page table entry is also protected with a 32-bit murmur3 hash checksum that is not meant to be a cryptographic check; it is instead a fast "go/no-go" check on the potential validity of a page table entry. A page table entry is only considered fully valid until the corresponding data section also decrypts to the data key. The data sections are protected with a proper cryptographic-strength MAC via AES-GCM-SIV, so it's not a problem if we get occasional false-positives on the page table. In practice, false-positives turn into pages that are allocated-to-nowhere, e.g. the space never gets used to store useful data.
 
 Thus the page table entry has the following characteristics:
 
@@ -68,7 +68,7 @@ Thus, when a Basis is "mounted", the first operation is to take the `page table 
 
 The virtual memory layout of every Basis is identical.
 
-A `VPAGE` in Basis space is is 0xFE0 (4,064) bytes long, which is equal to a `PAGE` of 4096 minus 32 bytes of encryption + journal overhead.
+A `VPAGE` in Basis space is 0xFE0 (4,064) bytes long, which is equal to a `PAGE` of 4096 minus 32 bytes of encryption + journal overhead.
 
 4064 is nice because it has convenient factors: 1, 2, 4, 8, 16, 32, 127, 254, 508, 1016, 2032, 4064.
 
@@ -77,7 +77,7 @@ The BasisRoot is located at `VPAGE` #1 (`VPAGE` #0 is always invalid, to make `O
 It contains a count of the number of valid dictionaries in the Basis. Dictionaries are found at
 fixed offsets starting at 0xFE_0000 and repeating every 0xFE_0000 intervals, with up to 16383 dictionaries
 allowed. A naive linear search is used to scan for dictionaries, starting at the lowest address,
-scanning every 0xFE_0000, until the correct number of dictionares have been discovered. A dictionary can be effectively deleted by marking its descriptor as invalid.
+scanning every 0xFE_0000, until the correct number of dictionaries have been discovered. A dictionary can be effectively deleted by marking its descriptor as invalid.
 
 A stride of 0xFE_0000 means that dictionary descriptors can be up to 4096 VPAGEs long. A dictionary
 descriptor consists of a `DictDescriptor` header, some bookkeeping data, plus a count of the number
@@ -188,7 +188,7 @@ you access to the full 32GiB file size limit.
 
 The PDDB retains in RAM a page table for every Basis. There are about 25,000 potential pages on a Precursor device, and there are no duplicate pages between Bases; thus, it's estimated that the page table structure may take about 500kiB of space at its largest.
 
-In addition to the page tables, the PDDB agressively caches all "small" keys. The current implementation assumes that any small key is always "hot" in cache, and the disk is just a write-through backing store in case power is lost. In practice, the heap size limit of the PDDB server is about 2MiB, so the system should crash if one starts to push around a megabyte total of small key data. That's about 256 exactly 4k-sized keys, but typically small keys are very small, about 32 bytes, so the practical limit is probably closer to 10k-20k 32-byte keys.
+In addition to the page tables, the PDDB aggressively caches all "small" keys. The current implementation assumes that any small key is always "hot" in cache, and the disk is just a write-through backing store in case power is lost. In practice, the heap size limit of the PDDB server is about 2MiB, so the system should crash if one starts to push around a megabyte total of small key data. That's about 256 exactly 4k-sized keys, but typically small keys are very small, about 32 bytes, so the practical limit is probably closer to 10k-20k 32-byte keys.
 
 Large keys consume about one 4k-page per key, regardless of the key size. Large keys only retrieve their data when requested, and will keep only the most recently accessed page in RAM, regardless of the size of the large key. Thus one could store a several-megabyte file in a large key, and not worry about blowing out the cache.
 
@@ -196,20 +196,20 @@ However, because the large key cache is so simple, it has performance problems, 
 
 The caching mechanism can be improved down the road, but, at the moment for an application like `vault`, the current implementation should be more than adequate to handle hundreds of password records.
 
-### The "Make Before Break" (MBBB) Structure
+### The "Make Before Break" (MBB) Structure
 
 In order to protect against data loss in case of an untimely power outage, several pages of FLASH are devoted to the "make before break" feature. The core problem is that a single page of the page table contains records for 256 page table entries. If there is a power outage while updating one of the entries, all of the other 255 entries are also lost.
 
-Thus, the MBBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.
+Thus, the MBB mechanism creates a shadow area where the page table page being updated can be copied, prior to erasing it.
 
-Initially, the MBBB area is blank (all `FF`'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBBB (the randomness is for wear-levelling, not security) *with* the changes applied, and then the page containing the page table entry is erased.
+Initially, the MBB area is blank (all `FF`'s). When a page table entry needs to be updated, the whole page containing the entry is copied to a random sector in the MBB (the randomness is for wear-levelling, not security) *with* the changes applied, and then the page containing the page table entry is erased.
 
-When the next page table entry needs to be updated, the MBBB page table image is written to the blank slot in the page table, and the process repeats.
+When the next page table entry needs to be updated, the MBB page table image is written to the blank slot in the page table, and the process repeats.
 
-There is no mechanism to record where the MBBB page is:
-- The MBBB area is only consulted if a blank page is found in the page table
+There is no mechanism to record where the MBB page is:
+- The MBB area is only consulted if a blank page is found in the page table
 - "Blankness" of an area is determined by only consulting the first 16 bytes and checking if they are 0xFF. If they are, the entire page is considered blank.
-- The MBBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBBB page.
+- The MBB area may only contain 0 or 1 backup pages. Thus, when it is consulted, the algorithm searches for the first non-blank page and uses that as the MBB page.
 
 ## Free Space
 
@@ -227,7 +227,7 @@ In the case that the FSCB is exhausted, the user is greeted with a prompt that w
 
 The FSCB refill proceeds to enumerate every page in every Basis into a single "master" record of disk usage. It then randomly selects pages out of the unused pages (the inverse of the disk usage record) until the FSCB is full. The system consumes entries out of the FSCB in random order. Thus the FSCB is also a wear-levelling mechanism, since free blocks are handed out in random order.
 
-At the implementation level, each FSCB entry is a single `u32` that tracks the physical page number of a free page plus a few bits for flags to help with journaling (as described in the `SpaceUpdate` section below). There is a flag for 64-bit physical addresses too, so the FSCB can be upgraded to run on a 64-bit CPU. The entire FSCB is exactly 2 pages long on v0.9.9 (and adjustable with a `const`). The structure is padded with 0's to full length regardless of the amount of actual free space recorded in it; note that a 0-record is automatically ignored due due to the `valid` flag being 0. The fixed-length padded structure is encrypted with AES-GCM-SIV using the `.System` Basis' data key and written to the FSCB area at a random offset. The FSCB is later identified by querying the first 16 bytes of every page in the FSCB area and choosing the one that is not all `0xFF`.
+At the implementation level, each FSCB entry is a single `u32` that tracks the physical page number of a free page plus a few bits for flags to help with journaling (as described in the `SpaceUpdate` section below). There is a flag for 64-bit physical addresses too, so the FSCB can be upgraded to run on a 64-bit CPU. The entire FSCB is exactly 2 pages long on v0.9.9 (and adjustable with a `const`). The structure is padded with 0's to full length regardless of the amount of actual free space recorded in it; note that a 0-record is automatically ignored due to the `valid` flag being 0. The fixed-length padded structure is encrypted with AES-GCM-SIV using the `.System` Basis' data key and written to the FSCB area at a random offset. The FSCB is later identified by querying the first 16 bytes of every page in the FSCB area and choosing the one that is not all `0xFF`.
 
 ### SpaceUpdate Records
 
@@ -255,7 +255,7 @@ The physical layout of the PDDB (as of v0.9.9) is as follows, from lowest to hig
 
 - Page tables
 - Static crypto data (one page)
-- MBBB area (10 pages)
+- MBB area (10 pages)
 - FSCB (16 pages)
 - Data pages (1:1 map to page table entries)
 

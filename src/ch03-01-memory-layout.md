@@ -17,7 +17,7 @@ A program rarely needs to access physical addresses, and in most operating syste
 
 The trick is that you can only request physical addresses that actually exist. For example, you cannot request a physical address for a mirrored region of a peripheral because that is not a valid address.
 
-**If you request a physical address from main RAM, the memory will be zeroed when you receive it**. Peripherals and ares that are not in main RAM will not be zeroed. It is for this reason that system services are recommended to claim all peripherals before running user programs.
+**If you request a physical address from main RAM, the memory will be zeroed when you receive it**. Peripherals and areas that are not in main RAM will not be zeroed. It is for this reason that system services are recommended to claim all peripherals before running user programs.
 
 ## Virtual Addresses
 
@@ -43,7 +43,7 @@ Address 0x60026000 (#38) is mapped to the process and has a valid physical addre
 
 Addresses 0x60029000 (#41) and 0x6002a000 (#42) are still owned by the kernel, likely because they were being cleared.
 
-Addresses 0x6002b000 (#43) and 0x6003c000 (#44) are on-demand allocated. They have no physical backing, and attempting to access them will result in a kernel fault where they will be allocated. When the page is allocated, it will be given the flags `R | W` in addition to default kernel flags.
+Addresses 0x6002b000 (#43) and 0x6002c000 (#44) are on-demand allocated. They have no physical backing, and attempting to access them will result in a kernel fault where they will be allocated. When the page is allocated, it will be given the flags `R | W` in addition to default kernel flags.
 
 ### The Heap
 

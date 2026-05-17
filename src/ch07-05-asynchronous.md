@@ -14,7 +14,7 @@ The example below is taken from the `NetManager`'s wifi state change subscriptio
 
 ```rust,noplayground,ignore
 // inside api.rs
-// used for managing susbscriptions
+// used for managing subscriptions
 #[derive(Debug, Archive, Serialize, Deserialize, Copy, Clone)]
 pub(crate) struct WifiStateSubscription {
     // this is the "single-purpose" SID
@@ -84,7 +84,7 @@ impl NetManager {
 
             // this thread is the "bouncer" that takes the status data and sends it on
             // to our local private server. Note that it only has two opcodes, which limits
-            // the attack surface exposed to a ptoentially untrusted subscriber.
+            // the attack surface exposed to a potentially untrusted subscriber.
             self.wifi_state_cid = Some(xous::connect(onetime_sid).unwrap());
             self.wifi_state_sid = Some(onetime_sid);
             let _ = std::thread::spawn({

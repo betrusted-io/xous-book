@@ -49,13 +49,13 @@ A canonical path looks like:
 * `:Home Wifi` -- A basis named "Home Wifi"
 * `:.System:` -- A basis named ".System"
 * `wlan.networks` -- A dict named "wlan.networks" in the default basis
-* `wlan.networks:recent` -- A dict named "wlan.networks:recent", which may be considered a path, in the default basis. This also describes a key called "recent" in the dict "wlan.networks", depending on whether
+* `wlan.networks:recent` -- A dict named "wlan.networks:recent", which may be considered a path, in the default basis. This also describes a key called "recent" in the dict "wlan.networks".
 * `:.System:wlan.networks` -- A dict named "wlan.networks" in the basis ".System"
-* `:.System:wlan.networks:recent` -- a fully-qualified path, describing a key "recent" in the dict "wlan.networks" in the basis ".System". Also describes a dict "wlan.networks:recent" in the basis ".System" when
+* `:.System:wlan.networks:recent` -- a fully-qualified path, describing a key "recent" in the dict "wlan.networks" in the basis ".System". Also describes a dict "wlan.networks:recent" in the basis ".System".
 * `:` -- The root, which lists every basis. Files cannot be created here. "Directories" can be
             created and destroyed, which corresponds to creating and destroying bases.
 * `::` -- An empty basis is a synonym for all bases, so this corresponds to listing all dicts in the root of the default basis.
-*  -- An empty string corresponds to listing all dicts in root the union basis.
+*  -- An empty string corresponds to listing all dicts in the root of the union basis.
 
 ### Corner cases
 
@@ -65,8 +65,8 @@ A canonical path looks like:
 * ` : ` -- A key named " " in a dict called " ". Legal.
 * `baz:` -- A dict named "baz" in the default basis with an extra ":" following. Legal.
 * `baz:foo:` -- Currently illegal, but may become equal to `baz:foo` in the future.
-* `:::` -- An key named ":" in an empty dict in the default basis. Illegal.
-* `::::` -- An key named "::" in an empty dict in the default basis. Illegal.
+* `:::` -- A key named ":" in an empty dict in the default basis. Illegal.
+* `::::` -- A key named "::" in an empty dict in the default basis. Illegal.
 * `::foo` -- A key "foo" in the default basis.
 * `:lorem.ipsum:foo:baz` -- A key called "foo:baz" in the basis "lorem.ipsum". May also describe a dict "foo:baz" in the basis "lorem.ipsum" if treated as a directory.
 * `:bar:lorem.ipsum:foo:baz` -- A key called "baz" in the dict "lorem.ipsum:foo" in

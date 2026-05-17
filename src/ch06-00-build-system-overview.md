@@ -25,19 +25,19 @@ cargo xtask [verb] [cratespecs ..]
     [--no-timestamp]
 ```
 
-After `xtask`, a `verb` will select one of several pre-configured sets of packages and build targets. Immediately after `verb`, one can specifay a list of 0 or more items that are interpreted as `cratespecs`.
+After `xtask`, a `verb` will select one of several pre-configured sets of packages and build targets. Immediately after `verb`, one can specify a list of 0 or more items that are interpreted as `cratespecs`.
 
 The binary images merged into a FLASH image is usually built from local source, but it can actually come from many locations. Thus each `cratespec` has the following syntax:
 - `name`: crate 'name' to be built from local source
 - `name@version`: crate 'name' to be fetched from crates.io at the specified version
-- `name#URL`: pre-built binary crate of 'name', to be downloaed from a server at 'URL' after the `#` separator
+- `name#URL`: pre-built binary crate of 'name', to be downloaded from a server at 'URL' after the `#` separator
 - `path-to-binary`: file path to a prebuilt binary image on local machine. Files in '.' must be specified as `./file` to avoid confusion with local source
 
 The exact meaning of a `cratespec` depends on the context of the verb. Generally, fully-configured builds interpret the `cratespec` as an `app`, and debug builds interpret `cratespec` as a `service`.
 
 Both an `app` and a `service` are Xous binaries that are copied into the final disk image; however, there is an additional step that gets run in the build system for an `app` that looks up its description in `apps/manifest.json` and attempts to configure the launch menu for the app prior to running the build.
 
-Additional crates can be merged in with explicit app/service treatment by preceeding the crate name with either an `--app` flag or `--service` flag.
+Additional crates can be merged in with explicit app/service treatment by preceding the crate name with either an `--app` flag or `--service` flag.
 
 #### Example: Building a Precursor User Image
 
