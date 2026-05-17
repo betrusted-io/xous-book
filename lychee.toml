@@ -1,0 +1,26 @@
+# Configuration for the lychee external-link checker.
+# See https://lychee.cli.rs/usage/config/ for all options.
+
+no_progress = true
+verbose = "info"
+
+max_retries = 3
+retry_wait_time = 5
+timeout = 30
+
+cache = true
+max_cache_age = "1d"
+
+# 429 = rate-limited (not actually broken).
+accept = [200, 206, 429]
+
+# Known false-positives — these URLs work in a browser but reject HEAD
+# requests or bot user agents (Cloudflare challenges, client-side fragment
+# routing, HEAD-vs-GET differences). Investigated in PR #13.
+exclude = [
+    "^https://matrix\\.to/",
+    "^https://eprint\\.iacr\\.org/",
+    "^https://crates\\.io/crates/",
+    "^https://marketplace\\.visualstudio\\.com/",
+    "^https://discord\\.gg/",
+]

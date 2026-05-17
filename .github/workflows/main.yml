@@ -59,6 +59,11 @@ jobs:
         cargo run --bin lfp src
     - name: Validate references
       run: bash ci/validate.sh
+    - name: Check external links (lychee)
+      uses: lycheeverse/lychee-action@v2
+      with:
+        args: --config lychee.toml './src/**/*.md'
+        fail: true
     - name: Check for broken links
       run: |
         curl -sSLo linkcheck.sh \
