@@ -87,7 +87,7 @@ In Hosted mode, syscalls are sent via a network connection. Because pointers are
 
 Messages function normally in Hosted mode, however they are more expensive than on real hardware. Because messages get sent via the network, the entire contents of a Memory message must be sent across the wire.
 
-Eight 32-bit values are sent, and these may be followed by any data in case there is a Memory message.
+Nine 32-bit values are sent, and these may be followed by any data in case there is a Memory message.
 
 | Offset (Bytes) | Usage (Calling)                           |
 | -------------- | ----------------------------------------- |
