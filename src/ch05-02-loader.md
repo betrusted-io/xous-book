@@ -29,7 +29,7 @@ Signatures for both the loader and the kernel share a common structure. They con
 | 0      | 4               | Version   | Version number of the signature record. Currently `1`                                                               |
 | 4      | 4               | Length    | Length of the signed region (should be exactly +4 over the Length field in the signed region)                       |
 | 8      | 64              | Signature | 64-byte Ed25519 signature of the signed region                                                                      |
-| 12     | pad             | Padding   | 0-pad up to 4096 bytes                                                                                              |
+| 72     | pad             | Padding   | 0-pad up to 4096 bytes                                                                                              |
 
 The signed region has the following format:
 
