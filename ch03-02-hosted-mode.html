@@ -242,7 +242,7 @@ INFO:xous_names: started (services/xous-names/src/main.rs:375)
 <h2 id="sending-and-receiving-syscalls"><a class="header" href="#sending-and-receiving-syscalls">Sending and Receiving Syscalls</a></h2>
 <p>In Hosted mode, syscalls are sent via a network connection. Because pointers are unsafe to send, <code>usize</code> is defined on Hosted mode as being 32-bits. Additionally, most syscalls will return <code>NotImplemented</code>, for example it does not make sense to create syscalls such as <code>MapMemory</code>.</p>
 <p>Messages function normally in Hosted mode, however they are more expensive than on real hardware. Because messages get sent via the network, the entire contents of a Memory message must be sent across the wire.</p>
-<p>Eight 32-bit values are sent, and these may be followed by any data in case there is a Memory message.</p>
+<p>Nine 32-bit values are sent, and these may be followed by any data in case there is a Memory message.</p>
 <div class="table-wrapper"><table><thead><tr><th>Offset (Bytes)</th><th>Usage (Calling)</th></tr></thead><tbody>
 <tr><td>0</td><td>Source thread ID</td></tr>
 <tr><td>4</td><td>Syscall Number</td></tr>
