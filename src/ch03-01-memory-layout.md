@@ -71,7 +71,7 @@ There are different memory regions in virtual address space:
 | 0x6000_0000 | default | DEFAULT_BASE | Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here
 | 0x7fff_ffff | stack   | - | The default stack for the first thread - grows downwards from 0x8000_0000 not inclusive
 | 0xa000_0000 | swhal   | SWAP_HAL_VADDR | Hardware-specific pages for the swapper. For configs that use memory-mapped swap, contains the memory mapping (and thus constrains total swap size). For configs that use register-mapped swap, contains the HAL structures for the register driver. These configurations could potentially have effectively unlimited swap.
-| 0xb000_0000 | mmap    | MMAP_VIRT_BASE | Base of the virtual region used for `mmap`-style mappings. Shares the 0xA000_0000 - 0xE000_0000 aperture with the swap HAL region.
+| 0xb000_0000 | vxip    | MMAP_VIRT_BASE | Virtual XIP memory base. Off-chip SPI flash is "parked" into this memory range and XIP behavior is emulated by fetching each page by fetching the offset from this base from the SPI device and mapping it into physical RAM.
 | 0xe000_0000 | swpt    | SWAP_PT_VADDR | Swap page table roots. One page per process, contains virtual addresses (meant to be walked with code)
 | 0xe100_0000 | swcfg   | SWAP_CFG_VADDR | Swap configuration page. Contains all the arguments necessary to set up the swapper.
 | 0xe100_1000 | swrpt   | SWAP_RPT_VADDR | Location where the memory allocation tracker (runtime page tracker) is mapped when it is shared into userspace.
