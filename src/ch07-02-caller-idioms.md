@@ -141,3 +141,8 @@ With the above template in mind, click on the following for examples of each of 
 - [Asynchronous](ch07-05-asynchronous.md) or "push notifications"
 - [Deferred response](ch07-06-deferred.md)
 - [Forwarding messages](ch07-07-forwarding.md)
+
+Two further server patterns exist as raw syscalls without dedicated example chapters:
+
+- [`ReplyAndReceiveNext`](https://github.com/betrusted-io/xous-core/blob/5397e1b488c081566cef2c0e597e05426f67c1c3/xous-rs/src/syscall.rs#L457-L492) replies to the just-handled message and blocks waiting for the next one in a single syscall. This is the high-throughput server inner loop; see the discussion of `scalar5` messaging in [Messaging Performance](ch07-08-performance.md) for the performance-oriented usage.
+- [`TryReceiveMessage`](https://github.com/betrusted-io/xous-core/blob/5397e1b488c081566cef2c0e597e05426f67c1c3/xous-rs/src/syscall.rs#L161-L175) is the non-blocking variant of `ReceiveMessage`, returning `Result::None` immediately when the queue is empty. Useful for poll-style servers that need to interleave message handling with other work.

@@ -27,9 +27,9 @@ pub fn get(
 ) -> Result<PddbKey>
 ```
 
-`dict_name` and `key_name` are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the `:` character as that is the path separator. Dictionary names can be up to 111 bytes long, and key names up to 95 bytes long.
+`dict_name` and `key_name` are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the `:` character as that is the path separator. Dictionary names can be up to 110 bytes long, and key names up to 94 bytes long. (The `DICT_NAME_LEN` and `KEY_NAME_LEN` constants in `services/pddb/src/api.rs` give the slot size — 111 and 95 — but `Pddb::get` rejects names equal to or longer than the slot, so the accepted maximum is one less.)
 
-`basis_name` is an optional Basis name, that can be any valid UTF-8 string that avoids `:`. Basis names can be up to 64 bytes long. If `basis_name` is `None`, then the Basis to use will be computed as follows:
+`basis_name` is an optional Basis name, that can be any valid UTF-8 string that avoids `:`. Basis names can be up to 63 bytes long. If `basis_name` is `None`, then the Basis to use will be computed as follows:
 
 - If the key exists in any Basis, the most recently open Basis is accessed for that key.
 - If the key does not exist, then either it returns an error (depending on the flags), or it creates the key in the most recently opened Basis.
@@ -160,13 +160,13 @@ The Pddb object also has methods to help manage the PDDB, including:
 
 - [`list_basis(..)`](https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L163)
 - [`create_basis(..)`](https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L208)
-- [`unlock_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L230)
-- [`lock_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L252)
-- [`delete_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L274)
-- [`delete_key(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L386)
-- [`delete_dict(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L435)
-- [`list_keys(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L498)
-- [`list_dict(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L560)
+- [`unlock_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L408)
+- [`lock_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L472)
+- [`delete_basis(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L499)
+- [`delete_key(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L624)
+- [`delete_dict(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L737)
+- [`list_keys(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L831)
+- [`list_dict(..)`](https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L950)
 - [`is_mounted_blocking(..)`](https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L143) - blocks until the PDDB is mounted
 
 For non-blocking queries of PDDB mount status, there is an object called `PddbMountPoller` which has a method [`is_mounted_nonblocking()`](https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L44).

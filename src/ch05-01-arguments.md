@@ -71,9 +71,9 @@ Following this is a list of *section definitions*. Section definitions must be s
 
 | Offset | Size | Name            | Description                                  |
 | ------ | ---- | --------------- | -------------------------------------------- |
-| n*3+8  | 8    | SECTIONn_OFFSET | Virtual memory address of memory section _n_ |
-| n*3+12 | 3    | SECTIONn_SIZE   | Size of memory section _n_                   |
-| n*3+15 | 1    | SECTIONn_FLAGS  | Flags describing memory section _n_          |
+| 8n+8   | 4    | SECTIONn_OFFSET | Virtual memory address of memory section _n_ |
+| 8n+12  | 3    | SECTIONn_SIZE   | Size of memory section _n_                   |
+| 8n+15  | 1    | SECTIONn_FLAGS  | Flags describing memory section _n_          |
 
 The fields `size`, `flags`, and `offset` together occupy 64 bits (8 bytes). The
 `OFFSET` is a full 32-bit address.  The `SIZE` field is in units of
@@ -146,8 +146,8 @@ Each additional memory entry is 3 words of 4-bytes each:
 
 | Offset   | Size | Name   | Description                                                                        |
 | -------- | ---- | ------ | ---------------------------------------------------------------------------------- |
-| n*3 + 4  | 4    | Start  | The start offset of this additional region                                         |
-| n*3 + 8  | 4    | Length | The length of this additional region                                               |
-| n*3 + 12 | 4    | Name   | A 4-character name of this region that should be printable -- useful for debugging |
+| 12n + 4  | 4    | Start  | The start offset of this additional region                                         |
+| 12n + 8  | 4    | Length | The length of this additional region                                               |
+| 12n + 12 | 4    | Name   | A 4-character name of this region that should be printable -- useful for debugging |
 
 Additional memory regions should be non-overlapping. Creating overlapping memory regions will simply waste memory, as the loader will allocate multiple regions to track the memory yet will only allow it to be shared once.

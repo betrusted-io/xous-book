@@ -1,6 +1,6 @@
 # The Plausibly Deniable DataBase (PDDB) Overview
 
-The Plausibly Deniable DataBase ([PDDB](https://www.bunniestudios.com/blog/?p=6307)) is Xous' filesystem abstraction. It plays the role that a filesystem like `FAT` or `ext4` might play in other OSes, combined with full disk encryption like `LUKS` or `VeraCrypt`. It also features "plausible deniability", which aims to make it difficult to prove "beyond a reasonable doubt" that additional secrets exist on the disk, even in the face of forensic evidence.
+The Plausibly Deniable DataBase ([PDDB](https://www.bunniestudios.com/blog/2022/the-plausibly-deniable-database-pddb/)) is Xous' filesystem abstraction. It plays the role that a filesystem like `FAT` or `ext4` might play in other OSes, combined with full disk encryption like `LUKS` or `VeraCrypt`. It also features "plausible deniability", which aims to make it difficult to prove "beyond a reasonable doubt" that additional secrets exist on the disk, even in the face of forensic evidence.
 
 The PDDB can be accessed through a native API, or through Rust's `std::fs::File` layer. `std::fs::File` enables applications and libraries that are "naive" to deniability to run. Applications are free to mix-and-match between native and `std::fs::File` calls, and in most cases will deliver a less confusing and safer user experience if they are written with deniability built into the user work flow.
 

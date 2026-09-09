@@ -29,7 +29,7 @@ Signatures for both the loader and the kernel share a common structure. They con
 | 0      | 4               | Version   | Version number of the signature record. Currently `1`                                                               |
 | 4      | 4               | Length    | Length of the signed region (should be exactly +4 over the Length field in the signed region)                       |
 | 8      | 64              | Signature | 64-byte Ed25519 signature of the signed region                                                                      |
-| 12     | pad             | Padding   | 0-pad up to 4096 bytes                                                                                              |
+| 72     | pad             | Padding   | 0-pad up to 4096 bytes                                                                                              |
 
 The signed region has the following format:
 
@@ -41,7 +41,7 @@ The signed region has the following format:
 
 Exactly every byte in the signed region, including the Version and Length, are signed. By including the Version and Length field in the signed region, we can mitigate downgrade and length extension attacks.
 
-Signatures are computed using the [Dalek Cryptography Curve25519](https://github.com/dalek-cryptography/curve25519-dalek) crate.
+Signatures are computed using the [Dalek Cryptography Ed25519](https://github.com/dalek-cryptography/curve25519-dalek/tree/main/ed25519-dalek) crate.
 
 The public key used to check the signature can come from one of three sources:
 
@@ -197,7 +197,7 @@ Execution continues in `start_kernel`, which is currently located in `asm.S` (bu
 In order to allow interrupts and exceptions to be handled by the kernel, which runs in Supervisor mode, the loader sets `mideleg` to `0xffffffff` in order to delegate all interrupts to Supervisor mode, and it sets `medeleg` to `0xffffffff` in order to delegate all CPU exceptions to the kernel.
 
 The loader then does the handover by setting `mepc` (the exception return program counter - contains the virtual address of the instruction that
-nominally triggered the exception) to the `entrypoint` of the kernel, and issuing a `reti` (Return from Interrupt) opcode.
+nominally triggered the exception) to the `entrypoint` of the kernel, and issuing an `mret` (Machine-mode Return) instruction.
 
 Thus one can effectively think of this entire "boot process" as just one big machine mode exception that started at the reset vector, and now, we can return from this exception and resume in Supervisor (kernel) code.
 
