@@ -71,20 +71,23 @@ There are different memory regions in virtual address space:
 | 0x6000_0000 | default | DEFAULT_BASE | Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here
 | 0x7fff_ffff | stack   | - | The default stack for the first thread - grows downwards from 0x8000_0000 not inclusive
 | 0xa000_0000 | swhal   | SWAP_HAL_VADDR | Hardware-specific pages for the swapper. For configs that use memory-mapped swap, contains the memory mapping (and thus constrains total swap size). For configs that use register-mapped swap, contains the HAL structures for the register driver. These configurations could potentially have effectively unlimited swap.
+| 0xb000_0000 | mmap    | MMAP_VIRT_BASE | Base of the virtual region used for `mmap`-style mappings. Shares the 0xA000_0000 - 0xE000_0000 aperture with the swap HAL region.
 | 0xe000_0000 | swpt    | SWAP_PT_VADDR | Swap page table roots. One page per process, contains virtual addresses (meant to be walked with code)
 | 0xe100_0000 | swcfg   | SWAP_CFG_VADDR | Swap configuration page. Contains all the arguments necessary to set up the swapper.
 | 0xe100_1000 | swrpt   | SWAP_RPT_VADDR | Location where the memory allocation tracker (runtime page tracker) is mapped when it is shared into userspace.
 | 0xe110_0000 | swcount | SWAP_COUNT_VADDR | Location of the block swap count table. This is statically allocated by the loader before the kernel starts.
-| 0xe800_0000 | swstack | SWAP_STACK_VADDR | Location of the swap handler context's stack pointer. Needed because swap events in TID=0 don't always have a proper stack. Builds down from this address.
+| 0xe180_0000 | swuart  | SWAP_APP_UART_VADDR | Virtual address of the userspace UART used by the swapper for early/debug output.
+| 0xe180_1000 | swuiram | SWAP_APP_UART_IFRAM_VADDR | Virtual address of the IFRAM region backing the swapper's debug UART.
+| 0xe800_0000 | swstack | SWAP_STACK_TOP_VADDR | Top of the swap handler context's stack. Needed because swap events in TID=0 don't always have a proper stack. Builds down from this address.
 | 0xff00_0000 | kernel  | USER_AREA_END | The end of user area and the start of kernel area
 | 0xff40_0000 | pgtable | PAGE_TABLE_OFFSET | A process' page table is located at this offset, accessible only to the kernel
 | 0xff80_0000 | pgroot  | PAGE_TABLE_ROOT_OFFSET | The root page table is located at this offset, accessible only to the kernel
-| 0xff80_1000 | process | PROCESS | The process context descriptor page
+| 0xff80_1000 | tcx     | THREAD_CONTEXT_AREA | The thread context descriptor page (formerly called `PROCESS`)
 | 0xff90_0000 | buffer  | USERSPACE_BUFFER | Location for userspace buffer mappings
 | 0xffc0_0000 | kargs   | KERNEL_ARGUMENT_OFFSET | Location of kernel arguments
 | 0xffd0_0000 | ktext   | - | Kernel `.text` area. Mapped into all processes.
 | 0xfff7_ffff | kstack  | - | Kernel stack top, grows down from 0xFFF8_0000 not inclusive
-| 0xfffe_ffff | exstack | - | Stack area for exception handlers, grows down from 0xFFFF_0000 not inclusive
+| 0xfffe_ffff | exstack | - | Stack area for exception handlers, grows down from `EXCEPTION_STACK_TOP` (0xFFFF_0000) not inclusive
 
 
 In addition, there are special addresses that indicate the end of a function. The kernel will set these as the return address for various situations, and they are documented here for completeness:
