@@ -27,9 +27,9 @@ pub fn get(
 ) -> Result<PddbKey>
 ```
 
-`dict_name` and `key_name` are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the `:` character as that is the path separator. Dictionary names can be up to 111 bytes long, and key names up to 95 bytes long.
+`dict_name` and `key_name` are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the `:` character as that is the path separator. Dictionary names can be up to 110 bytes long, and key names up to 94 bytes long. (The `DICT_NAME_LEN` and `KEY_NAME_LEN` constants in `services/pddb/src/api.rs` give the slot size — 111 and 95 — but `Pddb::get` rejects names equal to or longer than the slot, so the accepted maximum is one less.)
 
-`basis_name` is an optional Basis name, that can be any valid UTF-8 string that avoids `:`. Basis names can be up to 64 bytes long. If `basis_name` is `None`, then the Basis to use will be computed as follows:
+`basis_name` is an optional Basis name, that can be any valid UTF-8 string that avoids `:`. Basis names can be up to 63 bytes long. If `basis_name` is `None`, then the Basis to use will be computed as follows:
 
 - If the key exists in any Basis, the most recently open Basis is accessed for that key.
 - If the key does not exist, then either it returns an error (depending on the flags), or it creates the key in the most recently opened Basis.
