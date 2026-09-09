@@ -219,16 +219,24 @@ pub enum SwapAbi {
     Invalid = 0,
     ClearMemoryNow = 1,
     GetFreePages = 2,
-    RetrievePage = 3,
-    HardOom = 4,
+    // RetrievePage = 3, // meant to be initiated within the kernel to itself
+    // HardOom = 4, // meant to be initiated within the kernel to itself
     StealPage = 5,
     ReleaseMemory = 6,
+    WritePage = 7,
+    BlockErase = 8,
+    DebugProcesses = 9,
+    DebugServers = 10,
+    DebugFree = 11,
+    DebugInterrupts = 12,
 }
 ```
 
 `ClearMemoryNow` is the call used when the system has run out of physical memory. Only the swapper is allowed to invoke this call; other processes may proxy a request for memory through the swapper's userspace server. This call stops all interrupts, and immediately enters the userspace handler to nominate pages to evict in hopes of recovery.
 
 `GetFreePages` returns the number of physical pages currently unallocated.
+
+`RetrievePage` and `HardOom` are kernel-internal — they live in the kernel's own `SwapAbi` definition but are commented out in the userspace enum because no userspace caller is supposed to issue them.
 
 `RetrievePage` is used to retrieve a page that has been previously swapped out into physical memory. It must be called with the target PID and virtual address of the page to be retrieved, along with a physical address of where to put the retrieved page.
 
@@ -237,6 +245,12 @@ pub enum SwapAbi {
 `StealPage` instructs the kernel to mark a specified page in the victim process' memory space as swapped, and return its contents for storage in swap. The userspace swapper is responsible for swap strategy, and this is one half of the call that it uses to execute the strategy.
 
 `ReleaseMemory` instructs the kernel to mark a specified physical page in the swapper's memory space as no longer used, returning it to the free memory pool. This is called after a successful `StealPage` call followed up by archival of the swapped page to encrypted swap.
+
+`WritePage` is the swapper-only call that pushes a page's contents into encrypted swap on FLASH. The kernel takes the page contents at the swapper-provided virtual address and writes them to the given flash offset.
+
+`BlockErase` is the swapper-only call that erases a FLASH block in preparation for new swap writes. As with `WritePage`, only the swapper is allowed to invoke it.
+
+`DebugProcesses`, `DebugServers`, `DebugFree`, and `DebugInterrupts` are diagnostic calls that ask the kernel to print or return tables of currently-allocated processes, registered servers, free-memory totals, and claimed interrupts, respectively. They exist primarily so a console user can introspect the swapper-affected kernel state without rebuilding with a debug print enabled.
 
 Most of the interesting code for the swapper is split between the kernel stub (inside kernel/src/swap.rs) and the userspace service (services/xous-swapper). The userspace service itself is split into the blocking handler and the regular preemptable handler, with most of the action happening in the blocking handler. The blocking handler is named such because it happens in an interrupt-like context: no pre-emption of any type is allowed.
 
