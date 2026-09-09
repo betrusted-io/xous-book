@@ -13,7 +13,7 @@ Below are some excerpts from the Wiki, but some links may be out of date.
 ## Setting up Security
 * [Inspecting your mainboard](https://github.com/betrusted-io/betrusted-wiki/wiki/Inspecting-Your-Mainboard#trusted-domain-point-by-point)
 * [Initialize Root Keys](https://github.com/betrusted-io/betrusted-wiki/wiki/Initializing-Root-Keys) on "factory new" devices, by selecting the item from the main menu.
-* (Optional) [Burn Battery-Backed RAM keys](https://github.com/betrusted-io/betrusted-wiki/wiki/FAQ:-FPGA-AES-Encryption-Key-(eFuse-BBRAM)#how-do-i-externally-provision-my-device) Note: do not use this if you plan to store long-term secrets on the device.
+* (Optional) [Burn Battery-Backed RAM keys](https://github.com/betrusted-io/betrusted-wiki/wiki/FAQ:-FPGA-AES-Encryption-Key-(eFuse-BBRAM)#tldr-how-do-i-provision-my-bbram-keys) Note: do not use this if you plan to store long-term secrets on the device.
 
 ## Jargon
 * [Jargon](https://github.com/betrusted-io/betrusted-wiki/wiki/Jargon): Confused by terms like SoC and EC? You're not alone.
@@ -31,7 +31,7 @@ Below are some excerpts from the Wiki, but some links may be out of date.
 
 ### Hardware Documentation
 * [SoC register set](https://ci.betrusted.io/betrusted-soc/doc/index.html) / generated from [SoC Litex Design Source](https://github.com/betrusted-io/betrusted-soc/blob/main/betrusted_soc.py)
-* [SoC block diagram](https://github.com/betrusted-io/betrusted-soc#readme) is embedded in the README for the SoC
+* [SoC block diagram](https://github.com/betrusted-io/betrusted-soc) is embedded in the README for the SoC
 * [EC register set](https://ci.betrusted.io/betrusted-ec/doc/) / generated from [EC Litex Design Source](https://github.com/betrusted-io/betrusted-ec/blob/main/betrusted_ec.py)
 * [Hardware design files](https://github.com/betrusted-io/betrusted-hardware) PDFs of schematics are in the "mainboard-*" directories
 
