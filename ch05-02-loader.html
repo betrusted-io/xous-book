@@ -199,7 +199,7 @@
 <tr><td>0</td><td>4</td><td>Version</td><td>Version number of the signature record. Currently <code>1</code></td></tr>
 <tr><td>4</td><td>4</td><td>Length</td><td>Length of the signed region (should be exactly +4 over the Length field in the signed region)</td></tr>
 <tr><td>8</td><td>64</td><td>Signature</td><td>64-byte Ed25519 signature of the signed region</td></tr>
-<tr><td>12</td><td>pad</td><td>Padding</td><td>0-pad up to 4096 bytes</td></tr>
+<tr><td>72</td><td>pad</td><td>Padding</td><td>0-pad up to 4096 bytes</td></tr>
 </tbody></table>
 </div>
 <p>The signed region has the following format:</p>
