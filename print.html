@@ -3299,8 +3299,9 @@ of keys in the dictionary. Following the header is a list of key descriptors. Si
 the key descriptors are stored at a stride of 127 (or 32 per <code>VPAGE</code>); they can be deleted by being marked
 as invalid, and a linear scan is used to identify all the entries. A KeyDescriptor contains the name
 of the key, flags, its age, and pointers to the key data in virtual memory space + its length.
-This leads to a name length restriction of roughly 115 characters for keys and dictionaries, which is
-about half of what most filesystems allow, but accommodates roughly 99.99% of the use cases.</p>
+This leads to a name length restriction of up to 110 bytes for dictionary names and 94 bytes for key
+names (see <a href="https://github.com/betrusted-io/xous-core/blob/5397e1b488c081566cef2c0e597e05426f67c1c3/services/pddb/src/lib.rs#L542-L555"><code>Pddb::get</code></a>),
+which is about half of what most filesystems allow but accommodates roughly 99.99% of the use cases.</p>
 <p>Thus adding a new dictionary always consumes at least one 4k page, but you can have up to 15 keys
 in that dictionary with no extra bookkeeping cost, once the first dictionary is added.</p>
 <p>Each <code>VPAGE</code> is encrypted with AES-GCM-SIV, takes "Additional Authenticating Data", or AAD. The AAD associated with the BasisRoot consist of a bytewise concatenation of:</p>
@@ -3578,8 +3579,8 @@ key_data = aes_key_unwrap_with_padding(bytes(user_key), bytes(wrapped_key_data))
     alloc_hint: Option&lt;usize&gt;,
     key_changed_cb: Option&lt;impl Fn() + 'static + Send&gt;
 ) -&gt; Result&lt;PddbKey&gt;</code></pre>
-<p><code>dict_name</code> and <code>key_name</code> are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the <code>:</code> character as that is the path separator. Dictionary names can be up to 111 bytes long, and key names up to 95 bytes long.</p>
-<p><code>basis_name</code> is an optional Basis name, that can be any valid UTF-8 string that avoids <code>:</code>. Basis names can be up to 64 bytes long. If <code>basis_name</code> is <code>None</code>, then the Basis to use will be computed as follows:</p>
+<p><code>dict_name</code> and <code>key_name</code> are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the <code>:</code> character as that is the path separator. Dictionary names can be up to 110 bytes long, and key names up to 94 bytes long. (The <code>DICT_NAME_LEN</code> and <code>KEY_NAME_LEN</code> constants in <code>services/pddb/src/api.rs</code> give the slot size — 111 and 95 — but <code>Pddb::get</code> rejects names equal to or longer than the slot, so the accepted maximum is one less.)</p>
+<p><code>basis_name</code> is an optional Basis name, that can be any valid UTF-8 string that avoids <code>:</code>. Basis names can be up to 63 bytes long. If <code>basis_name</code> is <code>None</code>, then the Basis to use will be computed as follows:</p>
 <ul>
 <li>If the key exists in any Basis, the most recently open Basis is accessed for that key.</li>
 <li>If the key does not exist, then either it returns an error (depending on the flags), or it creates the key in the most recently opened Basis.</li>
@@ -4036,18 +4037,28 @@ in the image creator to catch this issue.</p>
     Invalid = 0,
     ClearMemoryNow = 1,
     GetFreePages = 2,
-    RetrievePage = 3,
-    HardOom = 4,
+    // RetrievePage = 3, // meant to be initiated within the kernel to itself
+    // HardOom = 4, // meant to be initiated within the kernel to itself
     StealPage = 5,
     ReleaseMemory = 6,
+    WritePage = 7,
+    BlockErase = 8,
+    DebugProcesses = 9,
+    DebugServers = 10,
+    DebugFree = 11,
+    DebugInterrupts = 12,
 }
 <span class="boring">}</span></code></pre></pre>
 <p><code>ClearMemoryNow</code> is the call used when the system has run out of physical memory. Only the swapper is allowed to invoke this call; other processes may proxy a request for memory through the swapper's userspace server. This call stops all interrupts, and immediately enters the userspace handler to nominate pages to evict in hopes of recovery.</p>
 <p><code>GetFreePages</code> returns the number of physical pages currently unallocated.</p>
+<p><code>RetrievePage</code> and <code>HardOom</code> are kernel-internal — they live in the kernel's own <code>SwapAbi</code> definition but are commented out in the userspace enum because no userspace caller is supposed to issue them.</p>
 <p><code>RetrievePage</code> is used to retrieve a page that has been previously swapped out into physical memory. It must be called with the target PID and virtual address of the page to be retrieved, along with a physical address of where to put the retrieved page.</p>
 <p><code>HardOom</code> is the kernel interface to <code>ClearMemoryNow</code>. It is what is used to demand a page when another page operation requires it, e.g. you're in the middle of a lend, and the target process needs an L1 page table page, but you're out of free pages; <code>HardOom</code> will try to free up some pages to allow an operation like this to proceed. Unlike <code>ClearMemoryNow</code>, this call can originate from any process ID, but only from within the kernel.</p>
 <p><code>StealPage</code> instructs the kernel to mark a specified page in the victim process' memory space as swapped, and return its contents for storage in swap. The userspace swapper is responsible for swap strategy, and this is one half of the call that it uses to execute the strategy.</p>
 <p><code>ReleaseMemory</code> instructs the kernel to mark a specified physical page in the swapper's memory space as no longer used, returning it to the free memory pool. This is called after a successful <code>StealPage</code> call followed up by archival of the swapped page to encrypted swap.</p>
+<p><code>WritePage</code> is the swapper-only call that pushes a page's contents into encrypted swap on FLASH. The kernel takes the page contents at the swapper-provided virtual address and writes them to the given flash offset.</p>
+<p><code>BlockErase</code> is the swapper-only call that erases a FLASH block in preparation for new swap writes. As with <code>WritePage</code>, only the swapper is allowed to invoke it.</p>
+<p><code>DebugProcesses</code>, <code>DebugServers</code>, <code>DebugFree</code>, and <code>DebugInterrupts</code> are diagnostic calls that ask the kernel to print or return tables of currently-allocated processes, registered servers, free-memory totals, and claimed interrupts, respectively. They exist primarily so a console user can introspect the swapper-affected kernel state without rebuilding with a debug print enabled.</p>
 <p>Most of the interesting code for the swapper is split between the kernel stub (inside kernel/src/swap.rs) and the userspace service (services/xous-swapper). The userspace service itself is split into the blocking handler and the regular preemptable handler, with most of the action happening in the blocking handler. The blocking handler is named such because it happens in an interrupt-like context: no pre-emption of any type is allowed.</p>
 <p>There are also a couple of modifications to the architecture-specific implementations (kernel/src/arch/riscv/irq.rs and kernel/src/arch/riscv/mem.rs) to shim the swap into core memory routines. Keep in mind at least half the effort for swap is in the loader, which is responsible for setting up and initializing all the relevant data structures so that swap is even possible.</p>
 <h4 id="flags-and-states"><a class="header" href="#flags-and-states">Flags and States</a></h4>

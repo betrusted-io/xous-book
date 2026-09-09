@@ -193,8 +193,8 @@
     alloc_hint: Option&lt;usize&gt;,
     key_changed_cb: Option&lt;impl Fn() + 'static + Send&gt;
 ) -&gt; Result&lt;PddbKey&gt;</code></pre>
-<p><code>dict_name</code> and <code>key_name</code> are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the <code>:</code> character as that is the path separator. Dictionary names can be up to 111 bytes long, and key names up to 95 bytes long.</p>
-<p><code>basis_name</code> is an optional Basis name, that can be any valid UTF-8 string that avoids <code>:</code>. Basis names can be up to 64 bytes long. If <code>basis_name</code> is <code>None</code>, then the Basis to use will be computed as follows:</p>
+<p><code>dict_name</code> and <code>key_name</code> are the names of the dictionary and key. They can be any valid UTF-8 string but you should avoid the <code>:</code> character as that is the path separator. Dictionary names can be up to 110 bytes long, and key names up to 94 bytes long. (The <code>DICT_NAME_LEN</code> and <code>KEY_NAME_LEN</code> constants in <code>services/pddb/src/api.rs</code> give the slot size — 111 and 95 — but <code>Pddb::get</code> rejects names equal to or longer than the slot, so the accepted maximum is one less.)</p>
+<p><code>basis_name</code> is an optional Basis name, that can be any valid UTF-8 string that avoids <code>:</code>. Basis names can be up to 63 bytes long. If <code>basis_name</code> is <code>None</code>, then the Basis to use will be computed as follows:</p>
 <ul>
 <li>If the key exists in any Basis, the most recently open Basis is accessed for that key.</li>
 <li>If the key does not exist, then either it returns an error (depending on the flags), or it creates the key in the most recently opened Basis.</li>

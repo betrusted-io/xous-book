@@ -231,8 +231,9 @@ of keys in the dictionary. Following the header is a list of key descriptors. Si
 the key descriptors are stored at a stride of 127 (or 32 per <code>VPAGE</code>); they can be deleted by being marked
 as invalid, and a linear scan is used to identify all the entries. A KeyDescriptor contains the name
 of the key, flags, its age, and pointers to the key data in virtual memory space + its length.
-This leads to a name length restriction of roughly 115 characters for keys and dictionaries, which is
-about half of what most filesystems allow, but accommodates roughly 99.99% of the use cases.</p>
+This leads to a name length restriction of up to 110 bytes for dictionary names and 94 bytes for key
+names (see <a href="https://github.com/betrusted-io/xous-core/blob/5397e1b488c081566cef2c0e597e05426f67c1c3/services/pddb/src/lib.rs#L542-L555"><code>Pddb::get</code></a>),
+which is about half of what most filesystems allow but accommodates roughly 99.99% of the use cases.</p>
 <p>Thus adding a new dictionary always consumes at least one 4k page, but you can have up to 15 keys
 in that dictionary with no extra bookkeeping cost, once the first dictionary is added.</p>
 <p>Each <code>VPAGE</code> is encrypted with AES-GCM-SIV, takes "Additional Authenticating Data", or AAD. The AAD associated with the BasisRoot consist of a bytewise concatenation of:</p>
