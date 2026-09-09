@@ -197,7 +197,7 @@ Execution continues in `start_kernel`, which is currently located in `asm.S` (bu
 In order to allow interrupts and exceptions to be handled by the kernel, which runs in Supervisor mode, the loader sets `mideleg` to `0xffffffff` in order to delegate all interrupts to Supervisor mode, and it sets `medeleg` to `0xffffffff` in order to delegate all CPU exceptions to the kernel.
 
 The loader then does the handover by setting `mepc` (the exception return program counter - contains the virtual address of the instruction that
-nominally triggered the exception) to the `entrypoint` of the kernel, and issuing a `reti` (Return from Interrupt) opcode.
+nominally triggered the exception) to the `entrypoint` of the kernel, and issuing an `mret` (Machine-mode Return) instruction.
 
 Thus one can effectively think of this entire "boot process" as just one big machine mode exception that started at the reset vector, and now, we can return from this exception and resume in Supervisor (kernel) code.
 
