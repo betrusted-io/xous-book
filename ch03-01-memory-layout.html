@@ -221,6 +221,7 @@
 <tr><td>0x6000_0000</td><td>default</td><td>DEFAULT_BASE</td><td>Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here</td></tr>
 <tr><td>0x7fff_ffff</td><td>stack</td><td>-</td><td>The default stack for the first thread - grows downwards from 0x8000_0000 not inclusive</td></tr>
 <tr><td>0xa000_0000</td><td>swhal</td><td>SWAP_HAL_VADDR</td><td>Hardware-specific pages for the swapper. For configs that use memory-mapped swap, contains the memory mapping (and thus constrains total swap size). For configs that use register-mapped swap, contains the HAL structures for the register driver. These configurations could potentially have effectively unlimited swap.</td></tr>
+<tr><td>0xb000_0000</td><td>vxip</td><td>MMAP_VIRT_BASE</td><td>Virtual XIP memory base. Off-chip SPI flash is "parked" into this memory range and XIP behavior is emulated by fetching each page by fetching the offset from this base from the SPI device and mapping it into physical RAM.</td></tr>
 <tr><td>0xe000_0000</td><td>swpt</td><td>SWAP_PT_VADDR</td><td>Swap page table roots. One page per process, contains virtual addresses (meant to be walked with code)</td></tr>
 <tr><td>0xe100_0000</td><td>swcfg</td><td>SWAP_CFG_VADDR</td><td>Swap configuration page. Contains all the arguments necessary to set up the swapper.</td></tr>
 <tr><td>0xe100_1000</td><td>swrpt</td><td>SWAP_RPT_VADDR</td><td>Location where the memory allocation tracker (runtime page tracker) is mapped when it is shared into userspace.</td></tr>
