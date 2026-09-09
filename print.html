@@ -1226,9 +1226,9 @@ offsets must be in the range <code>0xffc0_0000</code> - <code>0xfff0_0000</code>
 </div>
 <p>Following this is a list of <em>section definitions</em>. Section definitions must be sequential in RAM -- that is, it is not permitted for <code>SECTIONn_OFFSET</code> to decrease.</p>
 <div class="table-wrapper"><table><thead><tr><th>Offset</th><th>Size</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td>n*3+8</td><td>8</td><td>SECTIONn_OFFSET</td><td>Virtual memory address of memory section <em>n</em></td></tr>
-<tr><td>n*3+12</td><td>3</td><td>SECTIONn_SIZE</td><td>Size of memory section <em>n</em></td></tr>
-<tr><td>n*3+15</td><td>1</td><td>SECTIONn_FLAGS</td><td>Flags describing memory section <em>n</em></td></tr>
+<tr><td>8n+8</td><td>4</td><td>SECTIONn_OFFSET</td><td>Virtual memory address of memory section <em>n</em></td></tr>
+<tr><td>8n+12</td><td>3</td><td>SECTIONn_SIZE</td><td>Size of memory section <em>n</em></td></tr>
+<tr><td>8n+15</td><td>1</td><td>SECTIONn_FLAGS</td><td>Flags describing memory section <em>n</em></td></tr>
 </tbody></table>
 </div>
 <p>The fields <code>size</code>, <code>flags</code>, and <code>offset</code> together occupy 64 bits (8 bytes). The
@@ -1289,9 +1289,9 @@ The format for this tag consists of a single word defining how many additional s
 </div>
 <p>Each additional memory entry is 3 words of 4-bytes each:</p>
 <div class="table-wrapper"><table><thead><tr><th>Offset</th><th>Size</th><th>Name</th><th>Description</th></tr></thead><tbody>
-<tr><td>n*3 + 4</td><td>4</td><td>Start</td><td>The start offset of this additional region</td></tr>
-<tr><td>n*3 + 8</td><td>4</td><td>Length</td><td>The length of this additional region</td></tr>
-<tr><td>n*3 + 12</td><td>4</td><td>Name</td><td>A 4-character name of this region that should be printable -- useful for debugging</td></tr>
+<tr><td>12n + 4</td><td>4</td><td>Start</td><td>The start offset of this additional region</td></tr>
+<tr><td>12n + 8</td><td>4</td><td>Length</td><td>The length of this additional region</td></tr>
+<tr><td>12n + 12</td><td>4</td><td>Name</td><td>A 4-character name of this region that should be printable -- useful for debugging</td></tr>
 </tbody></table>
 </div>
 <p>Additional memory regions should be non-overlapping. Creating overlapping memory regions will simply waste memory, as the loader will allocate multiple regions to track the memory yet will only allow it to be shared once.</p>
