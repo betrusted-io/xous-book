@@ -299,6 +299,11 @@ fn xmain() -&gt; ! {
 <li><a href="ch07-06-deferred.html">Deferred response</a></li>
 <li><a href="ch07-07-forwarding.html">Forwarding messages</a></li>
 </ul>
+<p>Two further server patterns exist as raw syscalls without dedicated example chapters:</p>
+<ul>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/5397e1b488c081566cef2c0e597e05426f67c1c3/xous-rs/src/syscall.rs#L457-L492"><code>ReplyAndReceiveNext</code></a> replies to the just-handled message and blocks waiting for the next one in a single syscall. This is the high-throughput server inner loop; see the discussion of <code>scalar5</code> messaging in <a href="ch07-08-performance.html">Messaging Performance</a> for the performance-oriented usage.</li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/5397e1b488c081566cef2c0e597e05426f67c1c3/xous-rs/src/syscall.rs#L161-L175"><code>TryReceiveMessage</code></a> is the non-blocking variant of <code>ReceiveMessage</code>, returning <code>Result::None</code> immediately when the queue is empty. Useful for poll-style servers that need to interleave message handling with other work.</li>
+</ul>
 
                     </main>
 
