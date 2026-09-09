@@ -242,7 +242,7 @@ under grant agreement No 825310.</p>
 <ul>
 <li><a href="https://github.com/betrusted-io/betrusted-wiki/wiki/Inspecting-Your-Mainboard#trusted-domain-point-by-point">Inspecting your mainboard</a></li>
 <li><a href="https://github.com/betrusted-io/betrusted-wiki/wiki/Initializing-Root-Keys">Initialize Root Keys</a> on "factory new" devices, by selecting the item from the main menu.</li>
-<li>(Optional) <a href="https://github.com/betrusted-io/betrusted-wiki/wiki/FAQ:-FPGA-AES-Encryption-Key-(eFuse-BBRAM)#how-do-i-externally-provision-my-device">Burn Battery-Backed RAM keys</a> Note: do not use this if you plan to store long-term secrets on the device.</li>
+<li>(Optional) <a href="https://github.com/betrusted-io/betrusted-wiki/wiki/FAQ:-FPGA-AES-Encryption-Key-(eFuse-BBRAM)#tldr-how-do-i-provision-my-bbram-keys">Burn Battery-Backed RAM keys</a> Note: do not use this if you plan to store long-term secrets on the device.</li>
 </ul>
 <h2 id="jargon"><a class="header" href="#jargon">Jargon</a></h2>
 <ul>
@@ -264,7 +264,7 @@ under grant agreement No 825310.</p>
 <h3 id="hardware-documentation"><a class="header" href="#hardware-documentation">Hardware Documentation</a></h3>
 <ul>
 <li><a href="https://ci.betrusted.io/betrusted-soc/doc/index.html">SoC register set</a> / generated from <a href="https://github.com/betrusted-io/betrusted-soc/blob/main/betrusted_soc.py">SoC Litex Design Source</a></li>
-<li><a href="https://github.com/betrusted-io/betrusted-soc#readme">SoC block diagram</a> is embedded in the README for the SoC</li>
+<li><a href="https://github.com/betrusted-io/betrusted-soc">SoC block diagram</a> is embedded in the README for the SoC</li>
 <li><a href="https://ci.betrusted.io/betrusted-ec/doc/">EC register set</a> / generated from <a href="https://github.com/betrusted-io/betrusted-ec/blob/main/betrusted_ec.py">EC Litex Design Source</a></li>
 <li><a href="https://github.com/betrusted-io/betrusted-hardware">Hardware design files</a> PDFs of schematics are in the "mainboard-*" directories</li>
 </ul>
@@ -698,7 +698,6 @@ In order to wake only one thread, pass <code>1</code>.</p>
 <tr><td>0x6000_0000</td><td>default</td><td>DEFAULT_BASE</td><td>Default region when calling `MapMemory(..., None, ..., ...) -- most threads have their stack here</td></tr>
 <tr><td>0x7fff_ffff</td><td>stack</td><td>-</td><td>The default stack for the first thread - grows downwards from 0x8000_0000 not inclusive</td></tr>
 <tr><td>0xa000_0000</td><td>swhal</td><td>SWAP_HAL_VADDR</td><td>Hardware-specific pages for the swapper. For configs that use memory-mapped swap, contains the memory mapping (and thus constrains total swap size). For configs that use register-mapped swap, contains the HAL structures for the register driver. These configurations could potentially have effectively unlimited swap.</td></tr>
-<tr><td>0xb000_0000</td><td>vxip</td><td>MMAP_VIRT_BASE</td><td>Virtual XIP memory base. Off-chip SPI flash is "parked" into this memory range and XIP behavior is emulated by fetching each page by fetching the offset from this base from the SPI device and mapping it into physical RAM.</td></tr>
 <tr><td>0xe000_0000</td><td>swpt</td><td>SWAP_PT_VADDR</td><td>Swap page table roots. One page per process, contains virtual addresses (meant to be walked with code)</td></tr>
 <tr><td>0xe100_0000</td><td>swcfg</td><td>SWAP_CFG_VADDR</td><td>Swap configuration page. Contains all the arguments necessary to set up the swapper.</td></tr>
 <tr><td>0xe100_1000</td><td>swrpt</td><td>SWAP_RPT_VADDR</td><td>Location where the memory allocation tracker (runtime page tracker) is mapped when it is shared into userspace.</td></tr>
@@ -1330,7 +1329,7 @@ The format for this tag consists of a single word defining how many additional s
 </tbody></table>
 </div>
 <p>Exactly every byte in the signed region, including the Version and Length, are signed. By including the Version and Length field in the signed region, we can mitigate downgrade and length extension attacks.</p>
-<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/curve25519-dalek">Dalek Cryptography Curve25519</a> crate.</p>
+<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/curve25519-dalek/tree/main/ed25519-dalek">Dalek Cryptography Ed25519</a> crate.</p>
 <p>The public key used to check the signature can come from one of three sources:</p>
 <ol>
 <li>A self-generated key. This is the "most trusted" source. Ultimately, every device should self-sign its code.</li>
@@ -1440,7 +1439,7 @@ The format for this tag consists of a single word defining how many additional s
 <p>Execution continues in <code>start_kernel</code>, which is currently located in <code>asm.S</code> (but is slated to migrate into a <code>.rs</code> file now that assembly is part of stable Rust).</p>
 <p>In order to allow interrupts and exceptions to be handled by the kernel, which runs in Supervisor mode, the loader sets <code>mideleg</code> to <code>0xffffffff</code> in order to delegate all interrupts to Supervisor mode, and it sets <code>medeleg</code> to <code>0xffffffff</code> in order to delegate all CPU exceptions to the kernel.</p>
 <p>The loader then does the handover by setting <code>mepc</code> (the exception return program counter - contains the virtual address of the instruction that
-nominally triggered the exception) to the <code>entrypoint</code> of the kernel, and issuing a <code>reti</code> (Return from Interrupt) opcode.</p>
+nominally triggered the exception) to the <code>entrypoint</code> of the kernel, and issuing an <code>mret</code> (Machine-mode Return) instruction.</p>
 <p>Thus one can effectively think of this entire "boot process" as just one big machine mode exception that started at the reset vector, and now, we can return from this exception and resume in Supervisor (kernel) code.</p>
 <h2 id="resuming-from-suspend"><a class="header" href="#resuming-from-suspend">Resuming from Suspend</a></h2>
 <p>The operating system supports resuming from a cold poweroff. In order to get into this state, a program in the operating system wrote some values into RAM, then issued a command to power off the CPU in the middle of an interrupt handler.</p>
@@ -1630,7 +1629,7 @@ $
 <p>They also write the actual contents of the tag during the <code>last_data()</code> call.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="target-specification-and-hardware-registers-with-utra"><a class="header" href="#target-specification-and-hardware-registers-with-utra">Target Specification and Hardware Registers with UTRA</a></h1>
 <p>Xous isolates target-specific code, such as the location and fields of hardware registers, inside the Unambiguous Thin Register Abstraction (UTRA).</p>
-<p>The UTRA is contained in the <code>utralib</code> crate, and its contents are generated from <a href="https://www.keil.com/pack/doc/CMSIS/SVD/html/svd_Format_pg.html">SVD files</a> using <a href="https://crates.io/crates/svd2utra"><code>svd2utra</code></a>. SVD itself is an XML format commonly used by hardware vendors for the interchange of SoC registers, and is a native output format of SoC building tools such as LiteX. SVD files are also readily available for many commercial MCUs.</p>
+<p>The UTRA is contained in the <code>utralib</code> crate, and its contents are generated from <a href="https://open-cmsis-pack.github.io/svd-spec/main/svd_Format_pg.html">SVD files</a> using <a href="https://crates.io/crates/svd2utra"><code>svd2utra</code></a>. SVD itself is an XML format commonly used by hardware vendors for the interchange of SoC registers, and is a native output format of SoC building tools such as LiteX. SVD files are also readily available for many commercial MCUs.</p>
 <h2 id="specifying-targets"><a class="header" href="#specifying-targets">Specifying Targets</a></h2>
 <p>Services that talk to hardware will typically have one or more <code>implementation</code> modules that encapsulate the target-specific back ends. These are gated with <code>#[cfg(feature="X")]</code> directives, where "X" is the specific build target.</p>
 <p>This means that a specific build target is selected by passing a <code>--feature</code> flag during compilation, e.g. <code>--feature precursor</code>, <code>--feature hosted</code>, or <code>--feature renode</code>.</p>
@@ -3217,7 +3216,7 @@ are rendered in the order that the <code>MenuItem</code>s are added to the list.
 </ul>
 <p>If you don't need the above functionality, it's recommended that you do not create the server, as it consumes memory and eats up connection and server name space.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="the-plausibly-deniable-database-pddb-overview"><a class="header" href="#the-plausibly-deniable-database-pddb-overview">The Plausibly Deniable DataBase (PDDB) Overview</a></h1>
-<p>The Plausibly Deniable DataBase (<a href="https://www.bunniestudios.com/blog/?p=6307">PDDB</a>) is Xous' filesystem abstraction. It plays the role that a filesystem like <code>FAT</code> or <code>ext4</code> might play in other OSes, combined with full disk encryption like <code>LUKS</code> or <code>VeraCrypt</code>. It also features "plausible deniability", which aims to make it difficult to prove "beyond a reasonable doubt" that additional secrets exist on the disk, even in the face of forensic evidence.</p>
+<p>The Plausibly Deniable DataBase (<a href="https://www.bunniestudios.com/blog/2022/the-plausibly-deniable-database-pddb/">PDDB</a>) is Xous' filesystem abstraction. It plays the role that a filesystem like <code>FAT</code> or <code>ext4</code> might play in other OSes, combined with full disk encryption like <code>LUKS</code> or <code>VeraCrypt</code>. It also features "plausible deniability", which aims to make it difficult to prove "beyond a reasonable doubt" that additional secrets exist on the disk, even in the face of forensic evidence.</p>
 <p>The PDDB can be accessed through a native API, or through Rust's <code>std::fs::File</code> layer. <code>std::fs::File</code> enables applications and libraries that are "naive" to deniability to run. Applications are free to mix-and-match between native and <code>std::fs::File</code> calls, and in most cases will deliver a less confusing and safer user experience if they are written with deniability built into the user work flow.</p>
 <p><img src="images/betrusted-pddb-architecture.png" alt="dictionary to key mapping example" /></p>
 <p>The PDDB is structured as a <code>key:value</code> store divided into <code>dictionaries</code> that features multiple overlay views. Each overlay view is called a <code>Basis</code> (plural Bases). A Basis has the following properties:</p>
@@ -3693,13 +3692,13 @@ match record.read_to_end(&amp;mut data) {
 <ul>
 <li><a href="https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L163"><code>list_basis(..)</code></a></li>
 <li><a href="https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L208"><code>create_basis(..)</code></a></li>
-<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L230"><code>unlock_basis(..)</code></a></li>
-<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L252"><code>lock_basis(..)</code></a></li>
-<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L274"><code>delete_basis(..)</code></a></li>
-<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L386"><code>delete_key(..)</code></a></li>
-<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L435"><code>delete_dict(..)</code></a></li>
-<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L498"><code>list_keys(..)</code></a></li>
-<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L560"><code>list_dict(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L408"><code>unlock_basis(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L472"><code>lock_basis(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L499"><code>delete_basis(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L624"><code>delete_key(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L737"><code>delete_dict(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L831"><code>list_keys(..)</code></a></li>
+<li><a href="https://github.com/betrusted-io/xous-core/blob/main/services/pddb/src/lib.rs#L950"><code>list_dict(..)</code></a></li>
 <li><a href="https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L143"><code>is_mounted_blocking(..)</code></a> - blocks until the PDDB is mounted</li>
 </ul>
 <p>For non-blocking queries of PDDB mount status, there is an object called <code>PddbMountPoller</code> which has a method <a href="https://github.com/betrusted-io/xous-core/blob/ac1f7465667aabb7bc7fa3e3e9ced8e980ea4a0c/services/pddb/src/lib.rs#L44"><code>is_mounted_nonblocking()</code></a>.</p>

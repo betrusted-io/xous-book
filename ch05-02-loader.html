@@ -210,7 +210,7 @@
 </tbody></table>
 </div>
 <p>Exactly every byte in the signed region, including the Version and Length, are signed. By including the Version and Length field in the signed region, we can mitigate downgrade and length extension attacks.</p>
-<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/curve25519-dalek">Dalek Cryptography Curve25519</a> crate.</p>
+<p>Signatures are computed using the <a href="https://github.com/dalek-cryptography/curve25519-dalek/tree/main/ed25519-dalek">Dalek Cryptography Ed25519</a> crate.</p>
 <p>The public key used to check the signature can come from one of three sources:</p>
 <ol>
 <li>A self-generated key. This is the "most trusted" source. Ultimately, every device should self-sign its code.</li>
@@ -320,7 +320,7 @@
 <p>Execution continues in <code>start_kernel</code>, which is currently located in <code>asm.S</code> (but is slated to migrate into a <code>.rs</code> file now that assembly is part of stable Rust).</p>
 <p>In order to allow interrupts and exceptions to be handled by the kernel, which runs in Supervisor mode, the loader sets <code>mideleg</code> to <code>0xffffffff</code> in order to delegate all interrupts to Supervisor mode, and it sets <code>medeleg</code> to <code>0xffffffff</code> in order to delegate all CPU exceptions to the kernel.</p>
 <p>The loader then does the handover by setting <code>mepc</code> (the exception return program counter - contains the virtual address of the instruction that
-nominally triggered the exception) to the <code>entrypoint</code> of the kernel, and issuing a <code>reti</code> (Return from Interrupt) opcode.</p>
+nominally triggered the exception) to the <code>entrypoint</code> of the kernel, and issuing an <code>mret</code> (Machine-mode Return) instruction.</p>
 <p>Thus one can effectively think of this entire "boot process" as just one big machine mode exception that started at the reset vector, and now, we can return from this exception and resume in Supervisor (kernel) code.</p>
 <h2 id="resuming-from-suspend"><a class="header" href="#resuming-from-suspend">Resuming from Suspend</a></h2>
 <p>The operating system supports resuming from a cold poweroff. In order to get into this state, a program in the operating system wrote some values into RAM, then issued a command to power off the CPU in the middle of an interrupt handler.</p>
